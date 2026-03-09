@@ -1,13 +1,47 @@
 {
-  "name": "static-cache-server",
+  "name": "bakery-tech-pro",
   "version": "1.0.0",
-  "description": "Simple static server with caching headers and gzip compression",
+  "description": "Professional bakery equipment website with multi-language support and modular architecture",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "NODE_ENV=development nodemon server.js",
+    "build": "cp assets/styles.css assets/styles.min.css && ./node_modules/.bin/terser assets/main.js assets/translations.js assets/init.js -o assets/bundle.min.js",
+    "minify-css": "clean-css -o assets/styles.min.css assets/styles.css",
+    "minify-js": "terser assets/main.js assets/translations.js assets/init.js -o assets/bundle.min.js",
+    "test": "node test-translations-cli.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "docker:build": "docker build -t html-yuql .",
+    "docker:run": "docker run -p 3000:3000 html-yuql",
+    "prestart": "npm run build"
   },
   "dependencies": {
     "compression": "^1.7.4",
-    "express": "^4.18.2"
-  }
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5"
+  },
+  "devDependencies": {
+    "clean-css": "^5.3.2",
+    "terser": "^5.19.2",
+    "nodemon": "^3.0.1",
+    "eslint": "^8.53.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "bakery",
+    "equipment",
+    "commercial",
+    "kitchen",
+    "multi-language",
+    "i18n",
+    "modular",
+    "performance"
+  ],
+  "author": "YuKoLi Technology",
+  "license": "MIT"
 }
