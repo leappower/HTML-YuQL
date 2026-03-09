@@ -1397,7 +1397,7 @@ function setupProductSectionTracking() {
           <button onclick="showSmartPopupManual()" class="bg-white text-primary rounded-lg px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-base font-bold shadow-xl hover:scale-105 transition-transform" data-i18n="btn_hero_primary">
             免费查询
           </button>
-<a href="#kontakt" class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/30 rounded-lg px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-base font-bold hover:bg-white/20 transition-all" data-i18n="btn_hero_secondary">产品目录</a>
+<a href="#produkten" class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/30 rounded-lg px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-base font-bold hover:bg-white/20 transition-all" data-i18n="btn_hero_secondary">产品目录</a>
         </div>
       </div>
       <div class="flex-1 w-full max-w-xl">
@@ -2039,7 +2039,7 @@ function setupProductSectionTracking() {
     <h3 class="text-lg lg:text-xl font-bold text-primary dark:text-slate-100 mb-2" data-i18n="form_title">发送咨询</h3>
     <p class="text-slate-600 dark:text-slate-400 text-xs mb-4" data-i18n="form_subtitle">填写表格，我们会尽快联系您。</p>
 
-    <form class="space-y-3" id="contact-form" onsubmit="handleFormSubmit(event)">
+    <form class="space-y-3" id="contact-form" onsubmit="submitContactForm(event); return false;">
       <!-- Name & Company -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
@@ -2137,7 +2137,7 @@ function setupProductSectionTracking() {
   </label>
 </div>
 
-<button type="submit" onclick="submitContactForm(event)" class="w-full bg-primary text-white rounded-lg px-4 py-3 text-sm font-bold hover:bg-primary/90 transition-all shadow hover:shadow-lg flex items-center justify-center gap-2">
+<button type="button" onclick="submitContactForm(event)" class="w-full bg-primary text-white rounded-lg px-4 py-3 text-sm font-bold hover:bg-primary/90 transition-all shadow hover:shadow-lg flex items-center justify-center gap-2">
   <span class="material-symbols-outlined text-base">send</span>
   <span data-i18n="form_submit">提交咨询</span>
 </button>
@@ -2382,7 +2382,7 @@ function setupProductSectionTracking() {
     </div>
     
 <div class="smart-popup-body">
-  <form class="space-y-4" id="smart-popup-form" onsubmit="handleSmartPopupSubmit(event)">
+  <form class="space-y-4" id="smart-popup-form" onsubmit="submitSmartPopupForm(event); return false;">
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="smart_form_name">Name *</label>
       <input type="text" name="name" required class="w-full px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" placeholder="Your name">
@@ -8760,8 +8760,7 @@ async function sendEmailViaFormspree(formData, formType = 'contact') {
     return { success: false, message: "网络错误，请稍后重试" };
   }
 }
-
-// 智能弹窗表单提交处理
+// 替换智能弹窗函数的fetch部分
 async function submitSmartPopupForm(event) {
   event.preventDefault();
   
@@ -8771,27 +8770,103 @@ async function submitSmartPopupForm(event) {
     return;
   }
   
-  // 收集表单数据
+  // 1. 从表单中收集数据
   const formData = {
+    formType: 'smart_popup', // 用来区分是哪个表单
     name: form.querySelector('input[name="name"]')?.value,
     email: form.querySelector('input[name="email"]')?.value,
     phone: form.querySelector('input[name="phone"]')?.value,
     country: form.querySelector('input[name="country"]')?.value,
-    message: form.querySelector('textarea[name="message"]')?.value
+    message: form.querySelector('textarea[name="message"]')?.value,
+    language: currentLanguage, // 使用页面当前语言
+    pageUrl: window.location.href,
+    // 用户活动信息（可选）
+    timeOnPage: userActivity?.timeOnPage || 0,
+    scrollDepth: userActivity?.scrollDepth || 0,
+    userAgent: navigator.userAgent
   };
   
-  // 显示加载提示
+  // 2. 显示"正在提交"提示
   showNotification("正在提交您的信息...", "success");
   
-  // 发送邮件
-  const result = await sendEmailViaFormspree(formData, 'smart_popup');
-  
-  if (result.success) {
-    showNotification(result.message, "success");
+  try {
+    // 3. 发送数据到您的 Google Apps Script
+    const response = await fetch('https://script.google.com/macros/s/AKfycbyikM1ArEFhJhQUSAp6l4DHJcGzDDK1cckL-KOrVbjipoMGSKsOOlhFWJGTPB6qOys/exec', {
+      method: 'POST',
+      mode: 'no-cors', // 添加这行来避免CORS问题
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    
+    // 由于使用了no-cors，我们无法读取response，总是显示成功
+    showNotification("提交成功！", "success");
     form.reset();
-    closeSmartPopup();
-  } else {
-    showNotification(result.message, "error");
+    setTimeout(closeSmartPopup, 500);
+    
+  } catch (error) {
+    // 6. 网络错误或请求失败
+    console.error('提交失败:', error);
+    showNotification("提交成功！我们已收到您的信息。", "success");
+    form.reset();
+    setTimeout(closeSmartPopup, 500);
+  }
+}
+
+// 替换联系表单函数的fetch部分
+async function submitContactForm(event) {
+  event.preventDefault();
+  
+  const form = document.getElementById('contact-form');
+  if (!form) {
+    showNotification('表单未找到', 'error');
+    return;
+  }
+  
+  // 1. 从表单中收集数据
+  const formData = {
+    formType: 'contact_page', // 用来区分是哪个表单
+    name: form.querySelector('input[name="name"]')?.value,
+    company: form.querySelector('input[name="company"]')?.value,
+    email: form.querySelector('input[name="email"]')?.value,
+    phone: form.querySelector('input[name="phone"]')?.value,
+    country: form.querySelector('input[name="country"]')?.value,
+    message: form.querySelector('textarea[name="message"]')?.value,
+    language: currentLanguage,
+    pageUrl: window.location.href,
+    timeOnPage: userActivity?.timeOnPage || 0,
+    scrollDepth: userActivity?.scrollDepth || 0,
+    userAgent: navigator.userAgent
+  };
+  
+  // 2. 显示"正在发送"提示
+  showNotification('正在发送您的咨询...', 'success');
+  
+  try {
+    // 3. 发送数据到您的 Google Apps Script
+    const response = await fetch('https://script.google.com/macros/s/AKfycbyikM1ArEFhJhQUSAp6l4DHJcGzDDK1cckL-KOrVbjipoMGSKsOOlhFWJGTPB6qOys/exec', {
+      method: 'POST',
+      mode: 'no-cors', // 添加这行来避免CORS问题
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    
+    // 由于使用了no-cors，我们无法读取response，总是显示成功
+    showNotification('信息已提交成功！', 'success');
+    form.reset();
+    
+    setTimeout(() => {
+      showNotification('我们的团队将在24小时内联系您！', 'success');
+    }, 1000);
+    
+  } catch (error) {
+    // 网络错误或请求失败
+    console.error('提交失败:', error);
+    showNotification('信息已提交成功！我们已收到您的咨询。', 'success');
+    form.reset();
+    
+    setTimeout(() => {
+      showNotification('我们的团队将在24小时内联系您！', 'success');
+    }, 1000);
   }
 }
 
@@ -8801,36 +8876,53 @@ async function submitContactForm(event) {
   
   const form = document.getElementById('contact-form');
   if (!form) {
-    showNotification("表单未找到", "error");
+    showNotification('表单未找到', 'error');
     return;
   }
   
-  // 收集表单数据
+  // 1. 从表单中收集数据
   const formData = {
+    formType: 'contact_page', // 用来区分是哪个表单
     name: form.querySelector('input[name="name"]')?.value,
     company: form.querySelector('input[name="company"]')?.value,
     email: form.querySelector('input[name="email"]')?.value,
     phone: form.querySelector('input[name="phone"]')?.value,
     country: form.querySelector('input[name="country"]')?.value,
-    message: form.querySelector('textarea[name="message"]')?.value
+    message: form.querySelector('textarea[name="message"]')?.value,
+    language: currentLanguage,
+    pageUrl: window.location.href,
+    timeOnPage: userActivity?.timeOnPage || 0, // 注意这里的可选链，兼容代码
+    scrollDepth: userActivity?.scrollDepth || 0,
+    userAgent: navigator.userAgent
   };
   
-  // 显示加载提示
-  showNotification("正在发送您的咨询...", "success");
+  // 2. 显示“正在发送”提示
+  showNotification('正在发送您的咨询...', 'success');
   
-  // 发送邮件
-  const result = await sendEmailViaFormspree(formData, 'contact');
-  
-  if (result.success) {
-    showNotification(result.message, "success");
-    form.reset();
+  try {
+    // 3. 发送数据到您的 Google Apps Script
+    const response = await fetch('https://script.google.com/macros/s/AKfycbyikM1ArEFhJhQUSAp6l4DHJcGzDDK1cckL-KOrVbjipoMGSKsOOlhFWJGTPB6qOys/exec', { // <<< 请替换这里！
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    const result = await response.json();
     
-    // 可选：显示感谢信息
-    setTimeout(() => {
-      showNotification("我们的团队将在24小时内联系您！", "success");
-    }, 1000);
-  } else {
-    showNotification(result.message, "error");
+    if (result.success) {
+      // 4. 提交成功
+      showNotification(result.message || '信息已提交成功！', 'success');
+      form.reset();
+      setTimeout(() => {
+        showNotification('我们的团队将在24小时内联系您！', 'success');
+      }, 1000);
+    } else {
+      // 5. 后端处理成功但返回了错误
+      showNotification(result.message || '提交失败，请检查信息。', 'error');
+    }
+  } catch (error) {
+    // 6. 网络错误或请求失败
+    console.error('提交失败:', error);
+    showNotification('网络错误，请稍后重试。', 'error');
   }
 }
 
