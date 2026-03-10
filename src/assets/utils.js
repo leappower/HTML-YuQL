@@ -498,19 +498,60 @@ import { IMAGE_ASSETS } from './image-assets.js';
   // ============================================
   // MOBILE MENU
   // ============================================
-  function toggleMobileMenu() {
+  function isMobileMenuOpen(menu) {
+    return menu.classList.contains('translate-x-0') && !menu.classList.contains('translate-x-full');
+  }
+
+  let lastMobileMenuToggleAt = 0;
+
+  function setMobileMenuOpen(shouldOpen) {
     const overlay = document.getElementById('mobile-menu-overlay');
     const menu = document.getElementById('mobile-menu');
-    overlay.classList.toggle('hidden');
-    if (menu.classList.contains('translate-x-full')) {
+
+    if (!overlay || !menu) return;
+
+    if (shouldOpen) {
+      overlay.classList.remove('hidden');
       menu.classList.remove('translate-x-full');
       menu.classList.add('translate-x-0');
       document.body.style.overflow = 'hidden';
     } else {
+      overlay.classList.add('hidden');
       menu.classList.add('translate-x-full');
       menu.classList.remove('translate-x-0');
       document.body.style.overflow = '';
     }
+  }
+
+  function toggleMobileMenu(forceOpen) {
+    const menu = document.getElementById('mobile-menu');
+    if (!menu) return;
+
+    lastMobileMenuToggleAt = Date.now();
+    const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !isMobileMenuOpen(menu);
+    setMobileMenuOpen(shouldOpen);
+  }
+
+  function setupMobileMenuAutoClose() {
+    document.addEventListener('click', (event) => {
+      const menu = document.getElementById('mobile-menu');
+      if (!menu || !isMobileMenuOpen(menu)) return;
+
+      // Ignore the same click event that just toggled the menu open.
+      if (Date.now() - lastMobileMenuToggleAt < 200) return;
+
+      const clickedToggle = event.target.closest('[data-mobile-menu-toggle="true"]');
+      if (menu.contains(event.target) || clickedToggle) return;
+
+      setMobileMenuOpen(false);
+    });
+
+    // Ensure stale mobile state is reset when switching to desktop viewport.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        setMobileMenuOpen(false);
+      }
+    });
   }
 
   // ============================================
@@ -835,8 +876,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
   function showSmartPopupManual() {
     const overlay = document.getElementById('smart-popup-overlay');
     if (!overlay) return;
-    if (window.smartPopup && smartPopup.state.popupShownThisSession >= smartPopup.state.maxPopupsPerSession) return;
-    if (window.smartPopup && smartPopup.state.lastPopupTime && (Date.now() - smartPopup.state.lastPopupTime) < smartPopup.state.popupCooldown) return;
+    // Manual trigger should always respond to explicit user action on mobile/desktop.
     if (window.smartPopup) {
       smartPopup.state.popupShownThisSession++;
       smartPopup.state.lastPopupTime = Date.now();
@@ -969,6 +1009,7 @@ ${tr('mailto_label_resolution', 'Resolution')}: ${window.screen.width}x${window.
     setTimeout(() => smartPopup.init(), 1000);
     setTimeout(setupJumpingAnimation, 1000);
     setTimeout(showIndicator, 2500);
+    setupMobileMenuAutoClose();
   });
 
   let jumpAnimationSystem = null;

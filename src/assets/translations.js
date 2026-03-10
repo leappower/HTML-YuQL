@@ -387,6 +387,9 @@ class TranslationManager {
       // Close language dropdown
       this.closeLanguageDropdown();
 
+      // Reset dropdown search state so next open shows full language list.
+      this.resetLanguageSearch();
+
       // Show success notification
       if (window.showNotification) {
         const prefix = this.uiText('notify_language_changed', 'Language changed to');
@@ -461,6 +464,17 @@ class TranslationManager {
     });
   }
 
+  resetLanguageSearch() {
+    const { dropdown } = this.getCachedElements();
+    if (!dropdown) return;
+
+    const input = dropdown.querySelector('input[data-i18n-placeholder="lang_search_placeholder"]');
+    if (input) {
+      input.value = '';
+    }
+    this.filterLanguages('');
+  }
+
   setupEventListeners() {
     const { container, dropdown } = this.getCachedElements();
 
@@ -475,6 +489,14 @@ class TranslationManager {
     if (dropdown) {
       dropdown.addEventListener('click', (event) => {
         event.stopPropagation();
+      });
+
+      // On touch devices, close immediately when a language option is tapped.
+      dropdown.addEventListener('click', (event) => {
+        const option = event.target.closest('.lang-option');
+        if (option) {
+          this.closeLanguageDropdown();
+        }
       });
     }
   }
