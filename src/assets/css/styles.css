@@ -339,6 +339,10 @@ header nav a.active::after {
 
 /* 确保工具提示不会溢出屏幕 */
 @media (max-width: 768px) {
+  .product-filter-rail {
+    padding-top: 18px;
+  }
+
     .secondary-btn .contact-tooltip {
         right: 45px;
         white-space: normal;
@@ -650,6 +654,28 @@ header nav a.active::after {
 
 .product-card .aspect-\[4\/3\] {
   aspect-ratio: 4/3;
+}
+
+#product-filter-bar .filter-btn[data-active='true'] {
+  background: #271b3b !important;
+  color: #ffffff !important;
+}
+
+#product-filter-bar .filter-btn[data-active='false'] {
+  background: #ffffff;
+}
+
+.dark #product-filter-bar .filter-btn[data-active='false'] {
+  background: #1e293b;
+}
+
+.product-filter-rail {
+  position: relative;
+  padding-top: 0;
+}
+
+.product-filter-swipe-hint {
+  display: none;
 }
 
 /* Language Dropdown */
@@ -1300,6 +1326,111 @@ header nav a.active::after {
     max-width: min(74vw, 260px);
   }
 
+  #product-filter-bar {
+    display: flex !important;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding: 2px 2px 8px;
+    margin-bottom: 18px;
+    mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  }
+
+  #product-filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  #product-filter-bar .filter-btn {
+    flex: 0 0 auto;
+    min-width: 108px;
+    width: auto;
+    height: 34px;
+    padding: 0 0.85rem;
+    font-size: 0.76rem;
+    line-height: 1;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    border: 1px solid rgba(39, 27, 59, 0.14);
+    border-radius: 9999px;
+    box-shadow: 0 1px 2px rgba(39, 27, 59, 0.06);
+  }
+
+  .product-filter-swipe-hint {
+    position: absolute;
+    right: 4px;
+    top: -20px;
+    bottom: auto;
+    width: 98px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+    padding-right: 4px;
+    color: rgba(39, 27, 59, 0.72);
+    background: linear-gradient(to left, rgba(247, 248, 252, 0.96) 56%, rgba(247, 248, 252, 0));
+    pointer-events: auto;
+    cursor: pointer;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    animation: swipeHintPulse 1.2s ease-in-out infinite;
+  }
+
+  .product-filter-swipe-hint .hint-icon {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .product-filter-swipe-hint .hint-text {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #271b3b 0%, #e84545 40%, #3a2a52 60%, #271b3b 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: swipeHintTextShimmer 3s ease-in-out infinite;
+  }
+
+  .product-filter-swipe-hint .hint-arrow {
+    font-size: 10px;
+    color: rgba(39, 27, 59, 0.72);
+    line-height: 1;
+  }
+
+  .product-filter-swipe-hint.is-hidden {
+    opacity: 0;
+  }
+
+  .dark .product-filter-swipe-hint {
+    color: rgba(255, 255, 255, 0.8);
+    background: linear-gradient(to left, rgba(30, 28, 40, 0.92) 58%, rgba(30, 28, 40, 0));
+  }
+
+  .dark .product-filter-swipe-hint .hint-text {
+    background: linear-gradient(90deg, rgba(255,255,255,0.92) 0%, #d4aaff 40%, rgba(255,255,255,0.95) 60%, rgba(255,255,255,0.92) 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: swipeHintTextShimmer 2.5s ease-in-out infinite;
+  }
+
+  .dark .product-filter-swipe-hint .hint-arrow {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
   .footer-main-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
@@ -1341,7 +1472,32 @@ header nav a.active::after {
   }
 }
 
+@keyframes swipeHintPulse {
+  0%,
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateX(3px) scale(1.03);
+    opacity: 1;
+  }
+}
+
+@keyframes swipeHintTextShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -150% 0;
+  }
+}
+
 @media (max-width: 480px) {
+  .product-filter-rail {
+    padding-top: 16px;
+  }
+
   .fixed-header h2[data-i18n="company_name"] {
     max-width: 38vw;
     font-size: 0.9rem;
@@ -1396,6 +1552,40 @@ header nav a.active::after {
   .sidebar-indicator > div {
     max-width: min(78vw, 230px);
     padding: 10px;
+  }
+
+  #product-filter-bar {
+    gap: 8px;
+    padding: 2px 2px 8px;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  #product-filter-bar .filter-btn {
+    min-width: 96px;
+    height: 32px;
+    padding: 0 0.72rem;
+    font-size: 0.72rem;
+  }
+
+  .product-filter-swipe-hint {
+    width: 88px;
+    right: 2px;
+    top: -18px;
+    height: 22px;
+    padding-right: 3px;
+  }
+
+  .product-filter-swipe-hint .hint-text {
+    font-size: 10px;
+  }
+
+  .product-filter-swipe-hint .hint-icon {
+    font-size: 14px;
+  }
+
+  .product-filter-swipe-hint .hint-arrow {
+    font-size: 9px;
   }
 }
 

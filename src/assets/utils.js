@@ -248,8 +248,11 @@ import { IMAGE_ASSETS } from './image-assets.js';
         ? 'bg-primary text-white'
         : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700';
       const fallbackLabel = key;
-      return `<button onclick="filterProducts('${key}')" class="${baseClass} ${stateClass}" data-i18n="${filterKey}" data-filter="${key}">${fallbackLabel}</button>`;
+      return `<button onclick="filterProducts('${key}')" class="${baseClass} ${stateClass}" data-i18n="${filterKey}" data-filter="${key}" data-active="${isActive ? 'true' : 'false'}" aria-pressed="${isActive ? 'true' : 'false'}">${fallbackLabel}</button>`;
     }).join('');
+
+    setupProductFilterSwipeHint();
+    updateProductFilterSwipeHint();
 
     return defaultFilter;
   }
@@ -266,12 +269,47 @@ import { IMAGE_ASSETS } from './image-assets.js';
   let currentPage = 1;
   const itemsPerPage = 6;
   let currentFilter = '';
+  let productFilterSwipeHintBound = false;
 
-  function filterProducts(filter) {
-    currentFilter = filter;
-    currentPage = 1;
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      if (btn.getAttribute('data-filter') === filter) {
+  function updateProductFilterSwipeHint() {
+    const filterBar = document.getElementById('product-filter-bar');
+    const hint = document.getElementById('product-filter-swipe-hint');
+    if (!filterBar || !hint) return;
+
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const canScroll = filterBar.scrollWidth - filterBar.clientWidth > 8;
+    const scrolledToEnd = filterBar.scrollLeft + filterBar.clientWidth >= filterBar.scrollWidth - 8;
+    const shouldShow = isMobile && canScroll && !scrolledToEnd;
+
+    hint.classList.toggle('is-hidden', !shouldShow);
+  }
+
+  function setupProductFilterSwipeHint() {
+    if (productFilterSwipeHintBound) return;
+
+    const filterBar = document.getElementById('product-filter-bar');
+    if (!filterBar) return;
+
+    filterBar.addEventListener('scroll', updateProductFilterSwipeHint, { passive: true });
+    window.addEventListener('resize', updateProductFilterSwipeHint);
+
+    const hint = document.getElementById('product-filter-swipe-hint');
+    if (hint) {
+      hint.addEventListener('click', () => {
+        filterBar.scrollBy({ left: 120, behavior: 'smooth' });
+      });
+    }
+
+    productFilterSwipeHintBound = true;
+  }
+
+  function updateProductFilterButtonState(activeFilter) {
+    document.querySelectorAll('#product-filter-bar .filter-btn').forEach(btn => {
+      const isActive = btn.getAttribute('data-filter') === activeFilter;
+      btn.setAttribute('data-active', isActive ? 'true' : 'false');
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+
+      if (isActive) {
         btn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
         btn.classList.add('bg-primary', 'text-white');
       } else {
@@ -279,6 +317,12 @@ import { IMAGE_ASSETS } from './image-assets.js';
         btn.classList.remove('bg-primary', 'text-white');
       }
     });
+  }
+
+  function filterProducts(filter) {
+    currentFilter = filter;
+    currentPage = 1;
+    updateProductFilterButtonState(filter);
     renderProducts();
   }
 

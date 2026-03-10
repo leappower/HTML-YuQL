@@ -227,33 +227,33 @@
           <span class="hidden sm:inline">咨询</span>
         </button>
 
-        <button class="md:hidden text-primary" onclick="toggleMobileMenu()" data-mobile-menu-toggle="true">
+        <button class="md:hidden text-primary" onclick="toggleMobileMenu(true)" data-mobile-menu-toggle="true">
         <span class="material-symbols-outlined">menu</span>
         </button>
       </div>
     </header>
 
     <!-- Mobile Menu -->
-    <div class="fixed inset-0 bg-transparent z-[999] hidden" id="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+    <div class="fixed inset-0 bg-transparent z-[999] hidden" id="mobile-menu-overlay" onclick="toggleMobileMenu(false)"></div>
     <div
       class="fixed top-0 right-0 h-full w-80 bg-white dark:bg-slate-900 z-[1000] transform translate-x-full transition-transform duration-300 shadow-2xl"
       id="mobile-menu">
       <div class="p-6">
         <div class="flex justify-between items-center mb-6">
           <h3 class="text-lg font-bold" data-i18n="mobile_menu_title">Menu</h3>
-          <button onclick="toggleMobileMenu()" class="text-slate-400 hover:text-slate-600">
+          <button onclick="toggleMobileMenu(false)" class="text-slate-400 hover:text-slate-600">
             <span class="material-symbols-outlined">close</span>
           </button>
         </div>
         <nav class="flex flex-col gap-4">
           <a class="text-sm font-medium hover:text-primary/70 transition-colors" href="#advantages"
-            onclick="toggleMobileMenu()" data-i18n="nav_vorteile">优势</a>
+            onclick="toggleMobileMenu(false)" data-i18n="nav_vorteile">优势</a>
           <a class="text-sm font-medium hover:text-primary/70 transition-colors" href="#products"
-            onclick="toggleMobileMenu()" data-i18n="nav_produkte">产品</a>
+            onclick="toggleMobileMenu(false)" data-i18n="nav_produkte">产品</a>
           <a class="text-sm font-medium hover:text-primary/70 transition-colors" href="#certificates"
-            onclick="toggleMobileMenu()" data-i18n="nav_vertrauen">信任</a>
+            onclick="toggleMobileMenu(false)" data-i18n="nav_vertrauen">信任</a>
           <a class="text-sm font-medium hover:text-primary/70 transition-colors" href="#contact"
-            onclick="toggleMobileMenu()" data-i18n="nav_contact">联系</a>
+            onclick="toggleMobileMenu(false)" data-i18n="nav_contact">联系</a>
         </nav>
       </div>
     </div>
@@ -519,7 +519,13 @@
         </div>
 
         <!-- Filter Buttons -->
-        <div class="flex flex-wrap justify-center gap-3 mb-8" id="product-filter-bar"></div>
+        <div class="product-filter-rail mb-8">
+          <div class="flex flex-wrap justify-center gap-3" id="product-filter-bar"></div>
+          <div class="product-filter-swipe-hint is-hidden" id="product-filter-swipe-hint" aria-hidden="true">
+            <span class="hint-text" data-i18n="swipe_hint">Swipe</span>
+            <span class="material-symbols-outlined hint-arrow">arrow_forward_ios</span>
+          </div>
+        </div>
 
         <!-- Product Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="product-grid">

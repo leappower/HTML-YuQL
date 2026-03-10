@@ -43,6 +43,10 @@ module.exports = (_, argv = {}) => {
           directory: path.join(__dirname, 'dist'),
         },
         {
+          directory: path.join(__dirname, 'src/assets/translations'),
+          publicPath: '/translations',
+        },
+        {
           directory: path.join(__dirname, 'src/assets'),
           publicPath: '/assets',
         },
