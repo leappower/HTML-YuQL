@@ -140,7 +140,7 @@
 </div>
 
 <!-- Hero Section -->
-<section class="relative px-4 py-10 lg:py-16 mt-16 animate-fadeIn" style="background-image: url('https://img0.baidu.com/it/u=837002806,797265044&fm=253&fmt=auto&app=120&f=JPEG?w=1023&h=682'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+<section class="relative px-4 py-10 lg:py-16 mt-16 animate-fadeIn" data-bg-image-key="hero_bg" style="background-size: cover; background-position: center; background-repeat: no-repeat;">
   <div class="mx-auto max-w-7xl">
     <div class="flex min-h-[480px] flex-col lg:flex-row gap-8 lg:gap-12 items-center">
       <div class="flex-1 flex flex-col gap-5 text-center lg:text-left">
@@ -160,7 +160,7 @@
       </div>
       <div class="flex-1 w-full max-w-xl">
         <div class="relative rounded-2xl overflow-hidden shadow-2xl">
-          <img alt="Professional fermentation cabinet" class="w-full h-auto" src="https://img0.baidu.com/it/u=3626245982,2742441385&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500">
+          <img alt="Professional fermentation cabinet" class="w-full h-auto" data-image-key="hero_main" src="https://img0.baidu.com/it/u=3626245982,2742441385&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500">
           <div class="absolute bottom-4 left-4 right-4 bg-white/95 rounded-lg p-4">
             <div class="flex items-center gap-2 text-primary">
               <span class="material-symbols-outlined">verified</span>
@@ -292,7 +292,7 @@
       <!-- Video Player -->
       <div class="rounded-xl overflow-hidden shadow-2xl">
         <div class="relative aspect-video bg-black">
-          <video class="w-full h-full object-cover" poster="https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" controls>
+          <video class="w-full h-full object-cover" data-poster-key="factory_video_poster" poster="https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" controls>
             <source src="factory-tour.mp4" type="video/mp4">
           </video>
         </div>
@@ -342,16 +342,16 @@
       <h3 class="text-2xl font-bold mb-8 text-center" data-i18n="gallery_title">我们的生产印象</h3>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="rounded-lg overflow-hidden">
-          <img src="https://img2.baidu.com/it/u=168332913,1085575385&fm=253&fmt=auto&app=120&f=JPEG?w=1067&h=800" alt="CNC machining" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
+          <img src="https://img2.baidu.com/it/u=168332913,1085575385&fm=253&fmt=auto&app=120&f=JPEG?w=1067&h=800" data-image-key="factory_gallery_1" alt="CNC machining" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
         </div>
         <div class="rounded-lg overflow-hidden">
-          <img src="https://img1.baidu.com/it/u=3546157132,670778482&fm=253&fmt=auto&app=120&f=JPEG?w=889&h=500" alt="Assembly line" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
+          <img src="https://img1.baidu.com/it/u=3546157132,670778482&fm=253&fmt=auto&app=120&f=JPEG?w=889&h=500" data-image-key="factory_gallery_2" alt="Assembly line" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
         </div>
         <div class="rounded-lg overflow-hidden">
-          <img src="https://img2.baidu.com/it/u=1657229497,365692017&fm=253&fmt=auto&app=138&f=JPEG?w=667&h=500" alt="Quality testing" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
+          <img src="https://img2.baidu.com/it/u=1657229497,365692017&fm=253&fmt=auto&app=138&f=JPEG?w=667&h=500" data-image-key="factory_gallery_3" alt="Quality testing" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
         </div>
         <div class="rounded-lg overflow-hidden">
-          <img src="https://img0.baidu.com/it/u=2595055860,25921156&fm=253&app=138&f=JPEG?w=1067&h=800" alt="Finished products" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
+          <img src="https://img0.baidu.com/it/u=2595055860,25921156&fm=253&app=138&f=JPEG?w=1067&h=800" data-image-key="factory_gallery_4" alt="Finished products" class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
         </div>
       </div>
     </div>
@@ -371,20 +371,7 @@
     </div>
 
     <!-- Filter Buttons -->
-    <div class="flex flex-wrap justify-center gap-3 mb-8">
-      <button onclick="filterProducts('all')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold transition-all bg-primary text-white" data-i18n="filter_all" data-filter="all">
-        全部
-      </button>
-      <button onclick="filterProducts('compact')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold transition-all bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700" data-i18n="filter_compact" data-filter="compact">
-        紧凑
-      </button>
-      <button onclick="filterProducts('professional')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold transition-all bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700" data-i18n="filter_professional" data-filter="professional">
-        专业
-      </button>
-      <button onclick="filterProducts('industrial')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold transition-all bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700" data-i18n="filter_industrial" data-filter="industrial">
-        工业
-      </button>
-    </div>
+    <div class="flex flex-wrap justify-center gap-3 mb-8" id="product-filter-bar"></div>
 
     <!-- Product Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="product-grid">
@@ -455,27 +442,27 @@
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
       <div class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
-        <img alt="CE Certification" class="w-24 h-24 object-contain mb-4" src="https://liuzhoume.com/wp-content/uploads/2024/03/CT11022603-S-E-%E8%AF%81%E4%B9%A6-724x1024.webp">
+        <img alt="CE Certification" class="w-24 h-24 object-contain mb-4" data-image-key="cert_1" src="https://liuzhoume.com/wp-content/uploads/2024/03/CT11022603-S-E-%E8%AF%81%E4%B9%A6-724x1024.webp">
         <p class="text-sm font-bold text-center text-primary" data-i18n="cert_1">CE认证</p>
       </div>
       <div class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
-        <img alt="GS Certificate" class="w-24 h-24 object-contain mb-4" src="https://liuzhoume.com/wp-content/uploads/2024/03/CT11022604-S-R-%E8%AF%81%E4%B9%A6-724x1024.webp">
+        <img alt="GS Certificate" class="w-24 h-24 object-contain mb-4" data-image-key="cert_2" src="https://liuzhoume.com/wp-content/uploads/2024/03/CT11022604-S-R-%E8%AF%81%E4%B9%A6-724x1024.webp">
         <p class="text-sm font-bold text-center text-primary" data-i18n="cert_2">ROHS认证</p>
       </div>
       <div class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
-        <img alt="ISO 9001" class="w-24 h-24 object-contain mb-4" src="https://liuzhoume.com/wp-content/uploads/2024/03/CTL2305128012-Q-ROHS10%E9%A1%B9%EF%BC%88%E6%89%AB%E6%8F%8F%E5%8C%96%E6%B5%8B%EF%BC%89%E4%B8%AD%E8%8B%B1%E6%8A%A5%E5%91%8A-%E5%A3%B0%E6%B3%A2%E7%94%B5%E5%8A%A8%E7%89%99%E5%88%B7%E7%B3%BB%E5%88%97-Y1_proc1.webp">
+        <img alt="ISO 9001" class="w-24 h-24 object-contain mb-4" data-image-key="cert_3" src="https://liuzhoume.com/wp-content/uploads/2024/03/CTL2305128012-Q-ROHS10%E9%A1%B9%EF%BC%88%E6%89%AB%E6%8F%8F%E5%8C%96%E6%B5%8B%EF%BC%89%E4%B8%AD%E8%8B%B1%E6%8A%A5%E5%91%8A-%E5%A3%B0%E6%B3%A2%E7%94%B5%E5%8A%A8%E7%89%99%E5%88%B7%E7%B3%BB%E5%88%97-Y1_proc1.webp">
         <p class="text-sm font-bold text-center text-primary" data-i18n="cert_3">测试报告</p>
       </div>
       <div class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
-        <img alt="Energy Efficiency" class="w-24 h-24 object-contain mb-4" src="https://liuzhoume.com/wp-content/uploads/2024/03/GP-BBQ022%E5%A4%96%E8%A7%82%E4%B8%93%E5%88%A9%E8%AF%81%E4%B9%A6-_proc1-723x1024.webp">
+        <img alt="Energy Efficiency" class="w-24 h-24 object-contain mb-4" data-image-key="cert_4" src="https://liuzhoume.com/wp-content/uploads/2024/03/GP-BBQ022%E5%A4%96%E8%A7%82%E4%B8%93%E5%88%A9%E8%AF%81%E4%B9%A6-_proc1-723x1024.webp">
         <p class="text-sm font-bold text-center text-primary" data-i18n="cert_4">设计专利</p>
       </div>
       <div class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
-        <img alt="Made in Germany" class="w-24 h-24 object-contain mb-4" src="https://liuzhoume.com/wp-content/uploads/2024/03/ISO%E8%AF%81%E4%B9%A6-B201709-723x1024.webp">
+        <img alt="Made in Germany" class="w-24 h-24 object-contain mb-4" data-image-key="cert_5" src="https://liuzhoume.com/wp-content/uploads/2024/03/ISO%E8%AF%81%E4%B9%A6-B201709-723x1024.webp">
         <p class="text-sm font-bold text-center text-primary" data-i18n="cert_5">QAC证书</p>
       </div>
       <div class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
-        <img alt="Quality Award" class="w-24 h-24 object-contain mb-4" src="https://liuzhoume.com/wp-content/uploads/2024/03/CTL2305128011-Q%E7%94%B5%E5%8A%A8%E7%89%99%E5%88%B7_proc1.webp">
+        <img alt="Quality Award" class="w-24 h-24 object-contain mb-4" data-image-key="cert_6" src="https://liuzhoume.com/wp-content/uploads/2024/03/CTL2305128011-Q%E7%94%B5%E5%8A%A8%E7%89%99%E5%88%B7_proc1.webp">
         <p class="text-sm font-bold text-center text-primary" data-i18n="cert_6">质检报告</p>
       </div>
     </div>
@@ -1334,27 +1321,60 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================
 // PRODUCT DATA & RENDERING
 // ============================================
-const products = [
-  // Compact Series
-  { id: 1, nameKey: "product_mini", category: "compact", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400", capacity: "8 Backbleche", temp: "5-40°C", humidity: "60-95%", price: "2.490 €", badgeKey: "bestseller", badgeColor: "bg-green-500" },
-  { id: 2, nameKey: "product_compact16", category: "compact", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400", capacity: "16 Backbleche", temp: "5-40°C", humidity: "60-95%", price: "3.990 €", badge: null },
-  { id: 3, nameKey: "product_compact24", category: "compact", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400", capacity: "24 Backbleche", temp: "5-40°C", humidity: "60-95%", price: "5.490 €", badge: null },
-  
-  // Professional Series
-  { id: 4, nameKey: "product_profi32", category: "professional", image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400", capacity: "32 Backbleche", temp: "-5 bis 40°C", humidity: "50-98%", price: "8.990 €", badgeKey: "recommendation", badgeColor: "bg-primary" },
-  { id: 5, nameKey: "product_profi48", category: "professional", image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400", capacity: "48 Backbleche", temp: "-5 bis 40°C", humidity: "50-98%", price: "12.490 €", badge: null },
-  { id: 6, nameKey: "product_profi64", category: "professional", image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400", capacity: "64 Backbleche", temp: "-5 bis 40°C", humidity: "50-98%", price: "15.990 €", badge: null },
-  { id: 7, nameKey: "product_profiduo40", category: "professional", image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400", capacity: "2 x 20 Backbleche", temp: "-5 bis 40°C", humidity: "50-98%", price: "14.990 €", badgeKey: "two_chambers", badgeColor: "bg-blue-500" },
-  
-  // Industrial Series
-  { id: 8, nameKey: "product_ind96", category: "industrial", image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400", capacity: "96 Backbleche", temp: "-10 bis 40°C", humidity: "40-99%", price: "Auf Anfrage", badgeKey: "industrial", badgeColor: "bg-orange-500" },
-  { id: 9, nameKey: "product_ind128", category: "industrial", image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400", capacity: "128 Backbleche", temp: "-10 bis 40°C", humidity: "40-99%", price: "Auf Anfrage", badge: null },
-  { id: 10, nameKey: "product_indcustom", category: "industrial", image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400", capacity: "Individuell", temp: "-15 bis 45°C", humidity: "30-99%", price: "Auf Anfrage", badgeKey: "custom_made", badgeColor: "bg-yellow-500" }
-];
+function getAppUtils() {
+  return window.AppUtils || null;
+}
+
+function resolveImage(imageKey) {
+  const utils = getAppUtils();
+  return utils ? utils.resolveImage(imageKey) : '';
+}
+
+let products = [];
+
+function getProducts() {
+  if (products.length > 0) return products;
+
+  const utils = getAppUtils();
+  if (!utils) return [];
+
+  products = utils.buildProductCatalog();
+  return products;
+}
+
+function renderProductFilters() {
+  const filterBar = document.getElementById('product-filter-bar');
+  if (!filterBar) return '';
+
+  const utils = getAppUtils();
+  const seriesFilters = utils ? utils.getSeriesFilters() : [];
+  const defaultFilter = seriesFilters[0]?.key || '';
+
+  filterBar.innerHTML = seriesFilters.map(({ key, filterKey }) => {
+    const isActive = key === currentFilter || (!currentFilter && key === defaultFilter);
+    const baseClass = 'filter-btn px-5 py-2 rounded-full text-sm font-bold transition-all';
+    const stateClass = isActive
+      ? 'bg-primary text-white'
+      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700';
+    const fallbackLabel = key;
+    return `<button onclick="filterProducts('${key}')" class="${baseClass} ${stateClass}" data-i18n="${filterKey}" data-filter="${key}">${fallbackLabel}</button>`;
+  }).join('');
+
+  return defaultFilter;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const utils = getAppUtils();
+  if (utils) {
+    utils.applyImageAssets();
+  }
+  currentFilter = renderProductFilters() || 'all';
+  renderProducts();
+});
 
 let currentPage = 1;
 const itemsPerPage = 6;
-let currentFilter = 'all';
+let currentFilter = '';
 
 function filterProducts(filter) {
   currentFilter = filter;
@@ -1373,41 +1393,44 @@ function filterProducts(filter) {
 
 function renderProducts() {
   const grid = document.getElementById('product-grid');
-  const filtered = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
+  const allProducts = getProducts();
+  const filtered = currentFilter === 'all' ? allProducts : allProducts.filter(p => p.category === currentFilter);
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   const start = (currentPage - 1) * itemsPerPage;
   const pageProducts = filtered.slice(start, start + itemsPerPage);
 
-  grid.innerHTML = pageProducts.map(p => `
+  grid.innerHTML = pageProducts.map((p) => {
+    const highlights = (p.highlights || []).slice(0, 3).map((item) => `<span class="px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">${item}</span>`).join('');
+    const specs = p.detailParams || {};
+    return `
     <div class="product-card bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/5 group" data-category="${p.category}">
       <div class="aspect-[4/3] overflow-hidden relative">
-        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+        <img src="${p.productImage || resolveImage(p.imageKey)}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
         ${p.badgeKey ? `<span class="absolute top-3 left-3 ${p.badgeColor} text-white px-3 py-1 rounded-full text-xs font-bold">${window.t(p.badgeKey)}</span>` : ''}
+        ${p.status ? `<span class="absolute top-3 right-3 bg-slate-900/75 text-white px-2 py-1 rounded text-xs">${p.status}</span>` : ''}
       </div>
       <div class="p-4 lg:p-6">
-        <h3 class="text-lg font-bold text-primary dark:text-white mb-1">${window.t(p.nameKey)}</h3>
+        <h3 class="text-lg font-bold text-primary dark:text-white mb-1">${p.name}</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">型号: ${p.model || '-'}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">品牌: ${p.brand || '-'}</p>
         <span class="text-xs font-medium text-primary uppercase">${window.t('category_' + p.category) || p.category}</span>
-        
+
+        <div class="flex flex-wrap gap-2 my-4">${highlights}</div>
+
         <div class="space-y-2 text-xs text-slate-600 dark:text-slate-300 my-4">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-sm">layers</span>
-            <span><strong>${window.t('capacity')}:</strong> ${p.capacity}</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-sm">thermostat</span>
-            <span><strong>${window.t('temperature')}:</strong> ${p.temp}</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-sm">water_drop</span>
-            <span><strong>${window.t('humidity')}:</strong> ${p.humidity}</span>
-          </div>
+          <div><strong>上市时间:</strong> ${p.launchDate || '-'}</div>
+          <div><strong>发货时长:</strong> ${p.shippingLeadTime || '-'}</div>
+          <div><strong>最少起订量:</strong> ${p.minOrderQty || '-'}</div>
+          <div><strong>价格:</strong> ${p.price || '-'}</div>
+          <div><strong>适用场景:</strong> ${p.scene || '-'}</div>
+          <div><strong>用途:</strong> ${p.usage || '-'}</div>
+          <div><strong>材质:</strong> ${specs.material || '-'}</div>
+          <div><strong>电压/频率:</strong> ${specs.voltage || '-'} / ${specs.frequency || '-'}</div>
+          <div><strong>容量/产能:</strong> ${specs.capacity || '-'} / ${specs.throughput || '-'}</div>
+          <div><strong>平均烹饪时长:</strong> ${specs.avgCookTime || '-'}</div>
         </div>
-        
+
         <div class="flex items-center justify-between">
-          <div>
-            <span class="text-xs text-slate-500">${window.t('price')}</span>
-            <p class="font-bold text-primary">${p.price}</p>
-          </div>
           <button onclick="showSmartPopupManual()" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors flex items-center gap-1">
             <span class="material-symbols-outlined text-sm">request_page</span>
             ${window.t('product_request')}
@@ -1415,7 +1438,8 @@ function renderProducts() {
         </div>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   renderPagination(totalPages);
 }
@@ -1444,7 +1468,8 @@ function renderPagination(totalPages) {
 }
 
 function goToPage(page) {
-  const filtered = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
+  const allProducts = getProducts();
+  const filtered = currentFilter === 'all' ? allProducts : allProducts.filter(p => p.category === currentFilter);
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   if (page >= 1 && page <= totalPages) {
     currentPage = page;
