@@ -27,8 +27,20 @@ class TranslationManager {
   constructor() {
     this.currentLanguage = this.getInitialLanguage();
     this.translationsCache = new Map();
+    this.pendingLoads = new Map();
+    this.keyPathCache = new Map();
     this.isInitialized = false;
     this.eventListeners = new Map();
+    this.cacheInvalidated = true;
+    this.domObserver = null;
+    this.cachedElements = {
+      i18nElements: [],
+      placeholderElements: [],
+      languageLabel: null,
+      dropdown: null,
+      container: null,
+      langOptions: []
+    };
   }
 
   getInitialLanguage() {
@@ -49,6 +61,21 @@ class TranslationManager {
       return this.translationsCache.get(lang);
     }
 
+    if (this.pendingLoads.has(lang)) {
+      return this.pendingLoads.get(lang);
+    }
+
+    const loadPromise = this.fetchTranslations(lang);
+    this.pendingLoads.set(lang, loadPromise);
+
+    try {
+      return await loadPromise;
+    } finally {
+      this.pendingLoads.delete(lang);
+    }
+  }
+
+  async fetchTranslations(lang) {
     try {
       const response = await fetch(`./translations/${lang}.json`);
       if (!response.ok) {
@@ -67,16 +94,69 @@ class TranslationManager {
     }
   }
 
-  translate(key) {
-    const lang = this.translationsCache.get(this.currentLanguage);
-    if (!lang) return key;
+  resolveTranslationValue(dictionary, key) {
+    if (!dictionary || !key) return key;
 
-    const keys = key.split('.');
-    let value = lang;
+    const keys = this.getKeyPath(key);
+    let value = dictionary;
     for (const k of keys) {
       value = value?.[k];
     }
     return value || key;
+  }
+
+  getKeyPath(key) {
+    if (!this.keyPathCache.has(key)) {
+      this.keyPathCache.set(key, key.split('.'));
+    }
+    return this.keyPathCache.get(key);
+  }
+
+  getCachedElements() {
+    if (this.cacheInvalidated) {
+      this.cachedElements.i18nElements = Array.from(document.querySelectorAll('[data-i18n]'));
+      this.cachedElements.placeholderElements = Array.from(document.querySelectorAll('[data-i18n-placeholder]'));
+      this.cachedElements.languageLabel = document.getElementById('current-lang-label');
+      this.cachedElements.dropdown = document.getElementById('language-dropdown');
+      this.cachedElements.container = document.querySelector('.lang-dropdown-container');
+      this.cachedElements.langOptions = Array.from(document.querySelectorAll('.lang-option'));
+      this.cacheInvalidated = false;
+    }
+    return this.cachedElements;
+  }
+
+  invalidateDomCache() {
+    this.cacheInvalidated = true;
+  }
+
+  setupDomObserver() {
+    if (this.domObserver) return;
+
+    this.domObserver = new MutationObserver(() => {
+      this.invalidateDomCache();
+    });
+
+    this.domObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  setElementTranslation(el, translation) {
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      if (el.placeholder !== translation) {
+        el.placeholder = translation;
+      }
+      return;
+    }
+    if (el.textContent !== translation) {
+      el.textContent = translation;
+    }
+  }
+
+  translate(key) {
+    const lang = this.translationsCache.get(this.currentLanguage);
+    return this.resolveTranslationValue(lang, key);
   }
 
   async applyTranslations() {
@@ -92,49 +172,49 @@ class TranslationManager {
         return;
       }
 
+      const { i18nElements, placeholderElements, languageLabel } = this.getCachedElements();
+
       // Apply data-i18n attributes
-      document.querySelectorAll('[data-i18n]').forEach(el => {
+      i18nElements.forEach(el => {
         const key = el.getAttribute('data-i18n');
         const translation = this.translate(key);
 
         // Only update if translation is different from current content
         if (translation && translation !== key) {
-          if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            el.placeholder = translation;
-          } else {
-            el.textContent = translation;
-          }
+          this.setElementTranslation(el, translation);
         } else if (!translation || translation === key) {
           // Fallback to default language if translation fails
           const fallbackTranslation = this.getFallbackTranslation(key);
           if (fallbackTranslation && fallbackTranslation !== key) {
-            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-              el.placeholder = fallbackTranslation;
-            } else {
-              el.textContent = fallbackTranslation;
-            }
+            this.setElementTranslation(el, fallbackTranslation);
           }
         }
       });
 
       // Apply data-i18n-placeholder
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      placeholderElements.forEach(el => {
         const key = el.getAttribute('data-i18n-placeholder');
         const translation = this.translate(key);
         if (translation && translation !== key) {
-          el.placeholder = translation;
+          if (el.placeholder !== translation) {
+            el.placeholder = translation;
+          }
         } else {
           const fallbackTranslation = this.getFallbackTranslation(key);
           if (fallbackTranslation && fallbackTranslation !== key) {
-            el.placeholder = fallbackTranslation;
+            if (el.placeholder !== fallbackTranslation) {
+              el.placeholder = fallbackTranslation;
+            }
           }
         }
       });
 
       // Update current language label
-      const label = document.getElementById('current-lang-label');
-      if (label) {
-        label.textContent = languageNames[this.currentLanguage] || this.currentLanguage.toUpperCase();
+      if (languageLabel) {
+        const nextLabel = languageNames[this.currentLanguage] || this.currentLanguage.toUpperCase();
+        if (languageLabel.textContent !== nextLabel) {
+          languageLabel.textContent = nextLabel;
+        }
       }
 
       this.emit('translationsApplied', { language: this.currentLanguage });
@@ -149,12 +229,7 @@ class TranslationManager {
     // Try Chinese Simplified as fallback
     if (this.currentLanguage !== 'zh-CN' && this.translationsCache.has('zh-CN')) {
       const zhTranslations = this.translationsCache.get('zh-CN');
-      const keys = key.split('.');
-      let value = zhTranslations;
-      for (const k of keys) {
-        value = value?.[k];
-      }
-      return value || key;
+      return this.resolveTranslationValue(zhTranslations, key);
     }
     return key;
   }
@@ -163,21 +238,12 @@ class TranslationManager {
     // Apply Chinese Simplified translations as fallback
     if (this.translationsCache.has('zh-CN')) {
       const zhTranslations = this.translationsCache.get('zh-CN');
+      const { i18nElements } = this.getCachedElements();
 
-      document.querySelectorAll('[data-i18n]').forEach(el => {
+      i18nElements.forEach(el => {
         const key = el.getAttribute('data-i18n');
-        const keys = key.split('.');
-        let value = zhTranslations;
-        for (const k of keys) {
-          value = value?.[k];
-        }
-        const translation = value || key;
-
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-          el.placeholder = translation;
-        } else {
-          el.textContent = translation;
-        }
+        const translation = this.resolveTranslationValue(zhTranslations, key);
+        this.setElementTranslation(el, translation);
       });
     }
   }
@@ -276,7 +342,7 @@ class TranslationManager {
   // Dropdown management
   toggleLanguageDropdown(event) {
     event?.stopPropagation();
-    const dropdown = document.getElementById('language-dropdown');
+    const { dropdown } = this.getCachedElements();
     if (!dropdown) return;
 
     const isVisible = dropdown.classList.contains('show');
@@ -288,21 +354,21 @@ class TranslationManager {
   }
 
   openLanguageDropdown() {
-    const dropdown = document.getElementById('language-dropdown');
+    const { dropdown } = this.getCachedElements();
     if (dropdown) {
       dropdown.classList.add('show');
     }
   }
 
   closeLanguageDropdown() {
-    const dropdown = document.getElementById('language-dropdown');
+    const { dropdown } = this.getCachedElements();
     if (dropdown) {
       dropdown.classList.remove('show');
     }
   }
 
   filterLanguages(query) {
-    const langOptions = document.querySelectorAll('.lang-option');
+    const { langOptions } = this.getCachedElements();
     const q = query.toLowerCase();
     langOptions.forEach(opt => {
       const code = opt.getAttribute('data-code').toLowerCase();
@@ -312,16 +378,16 @@ class TranslationManager {
   }
 
   setupEventListeners() {
+    const { container, dropdown } = this.getCachedElements();
+
     // Click outside to close dropdown
     document.addEventListener('click', (event) => {
-      const container = document.querySelector('.lang-dropdown-container');
       if (container && !container.contains(event.target)) {
         this.closeLanguageDropdown();
       }
     });
 
     // Prevent dropdown internal clicks from closing
-    const dropdown = document.getElementById('language-dropdown');
     if (dropdown) {
       dropdown.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -381,6 +447,7 @@ class TranslationManager {
 
       // Set up event listeners
       this.setupEventListeners();
+      this.setupDomObserver();
 
       // Update document language
       document.documentElement.lang = this.currentLanguage;
@@ -460,9 +527,6 @@ class TranslationManager {
 const translationManager = new TranslationManager();
 
 // Legacy API for backward compatibility
-let currentLanguage = translationManager.currentLanguage;
-let translationsCache = translationManager.translationsCache;
-
 function loadTranslations(lang) {
   return translationManager.loadTranslations(lang);
 }

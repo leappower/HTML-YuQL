@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack serve --mode development",
     "dev": "NODE_ENV=development nodemon server.js",
-    "build": "webpack --mode=production && cp -r src/assets/translations dist/",
+    "build": "webpack --mode=production && node scripts/copy-translations.js",
     "dev:webpack": "webpack serve --mode=development",
     "test": "node test-translations-cli.js",
     "lint": "eslint . --ext .js",
@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "compression": "^1.7.4",
-    "copy-webpack-plugin": "14.0.0",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0"
@@ -27,6 +26,7 @@
     "css-loader": "7.1.4",
     "eslint": "^8.53.0",
     "html-webpack-plugin": "^5.6.6",
+    "mini-css-extract-plugin": "2.10.0",
     "nodemon": "^3.0.1",
     "postcss": "8.5.8",
     "postcss-loader": "8.2.1",
