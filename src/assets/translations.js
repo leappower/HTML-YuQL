@@ -50,7 +50,7 @@ class TranslationManager {
     }
 
     try {
-      const response = await fetch(`assets/translations/${lang}.json`);
+      const response = await fetch(`./translations/${lang}.json`);
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -503,3 +503,4 @@ window.t = t;
 window.setLanguage = setLanguage;
 window.toggleLanguageDropdown = toggleLanguageDropdown;
 window.filterLanguages = filterLanguages;
+window.setupLanguageSystem = setupLanguageSystem;

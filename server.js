@@ -103,7 +103,7 @@ app.get('/health', (req, res) => {
 });
 
 // Serve static files with advanced optimizations
-app.use(express.static(path.join(__dirname), {
+app.use(express.static(path.join(__dirname, 'dist'), {
   etag: true,
   lastModified: true,
   maxAge: 0, // Let Cache-Control header handle caching
@@ -120,10 +120,7 @@ app.use(express.static(path.join(__dirname), {
       res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400'); // 1 hour + 1 day stale
     }
 
-    // Add preload hints for critical resources
-    if (path.includes('main.js')) {
-      res.setHeader('Link', '</assets/translations.js>; rel=preload; as=script');
-    }
+    // Removed incorrect preload hint for translations
   }
 }));
 
@@ -136,7 +133,7 @@ app.get('*', (req, res) => {
     res.sendFile(filePath);
   } else {
     // For SPA routes, serve index.html
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
   }
 });
 

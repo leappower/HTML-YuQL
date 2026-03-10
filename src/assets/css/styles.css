@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Moved from index.html <style> block (full CSS) */
 
 /* Material icons */
@@ -734,7 +738,7 @@ header nav a.active::after {
   border: none;
 }
 
-/* 智能弹窗样式 */
+/* 智能弹窗样式 - 优化高度80%/90% 并确保居中 */
 #smart-popup-overlay {
   position: fixed;
   top: 0;
@@ -751,7 +755,9 @@ header nav a.active::after {
 }
 
 #smart-popup-overlay.show {
-  display: flex;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 #smart-popup {
@@ -762,6 +768,23 @@ header nav a.active::after {
   width: 100%;
   overflow: hidden;
   animation: scaleIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+  margin: auto; /* 后备居中 */
+}
+
+/* 手机端最大高度 80% */
+@media (max-width: 768px) {
+  #smart-popup {
+    max-height: 80vh;
+  }
+}
+
+/* 电脑端最大高度 90% */
+@media (min-width: 769px) {
+  #smart-popup {
+    max-height: 90vh;
+  }
 }
 
 .dark #smart-popup {
@@ -772,7 +795,8 @@ header nav a.active::after {
 .smart-popup-header {
   background: linear-gradient(135deg, #271b3b, #3a2a52);
   color: white;
-  padding: 24px;
+  padding: 10px;
+  flex-shrink: 0;
 }
 
 .dark .smart-popup-header {
@@ -780,10 +804,36 @@ header nav a.active::after {
 }
 
 .smart-popup-body {
-  padding: 24px;
+  padding: 10px;
+  overflow-y: auto;
+  flex: 1;
 }
 
-/* 修改智能弹窗关闭按钮位置 */
+.smart-popup-body input,
+.smart-popup-body textarea {
+  padding-top: 0.58rem;
+  padding-bottom: 0.58rem;
+}
+
+/* 小屏幕进一步微调 */
+@media (max-width: 480px) {
+  .smart-popup-header h3 {
+    font-size: 1.1rem;
+  }
+  .smart-popup-header {
+    padding: 14px;
+  }
+  .smart-popup-body {
+    padding: 14px;
+  }
+  .smart-popup-body .space-y-4 > * + * {
+    margin-top: 0.4rem;
+  }
+  .smart-popup-body p.text-center {
+    margin-top: 0.5rem;
+  }
+}
+
 .smart-popup-close {
   position: absolute;
   top: 16px;
@@ -827,27 +877,23 @@ header nav a.active::after {
   transform: scale(1.1);
 }
 
-/* 优化弹窗关闭动画 - 缩小到右侧导航栏 */
-.popup-overlay.closing .bg-white,
-.popup-overlay.closing .bg-slate-900,
-#smart-popup-overlay.closing #smart-popup {
-  animation: smartClosePopup 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+/* 优化弹窗关闭动画 - 简化版，消除抖动 */
+#smart-popup-overlay.closing {
+  animation: fadeOutOverlay 0.2s ease-out forwards;
 }
 
-@keyframes smartClosePopup {
-  0% {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-  }
-  70% {
-    transform: scale(0.7) translateX(300px) translateY(-50px);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(0.5) translateX(400px) translateY(-100px);
-    opacity: 0;
-    visibility: hidden;
-  }
+#smart-popup-overlay.closing #smart-popup {
+  animation: none; /* 不移位，仅跟随父级淡出 */
+}
+
+@keyframes fadeOutOverlay {
+  0% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+/* 为弹窗添加 will-change 提升性能 */
+#smart-popup {
+  will-change: opacity, transform;
 }
 
 /* 弹窗背景淡出动画 */

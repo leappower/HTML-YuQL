@@ -27,6 +27,9 @@ out/
 .vercel/
 .svelte-kit/
 
+# Webpack
+.webpack/
+
 # Minified files
 *.min.js
 *.min.css
@@ -35,6 +38,7 @@ out/
 coverage/
 .nyc_output/
 report/
+*.lcov
 
 # Logs
 logs/
@@ -48,13 +52,22 @@ logs/
 .idea/
 *.sublime-project
 *.sublime-workspace
+*.swp
+*.swo
+*~
 
 # OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
 # Docker
 .dockerignore
+docker-compose.override.yml
 
 # ESLint cache
 .eslintcache
@@ -68,14 +81,21 @@ Thumbs.db
 # Backup files
 *.bak
 *.backup
+*.orig
 
-# Misc
+# Archives
 *.tgz
+*.tar.gz
 *.zip
+*.rar
+*.7z
+
+# Cache directories
 .cache/
 .history/
+.clinic/
 
-# Lock files
-.package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# Lock files (optional - uncomment if you want to ignore)
+# .package-lock.json
+# yarn.lock
+# pnpm-lock.yaml

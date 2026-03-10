@@ -4,17 +4,12 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>BäckereiTechnik Profi | Professionelle Gärschränke</title>
-
 <!-- Preconnect to external domains for performance -->
 <link rel="preconnect" href="https://cdn.tailwindcss.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="//fonts.googleapis.com">
 <!-- Load translations script immediately for language setup -->
-<script src="assets/translations.js"></script>
-<!-- Load Tailwind CSS asynchronously -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" defer></script>
-<script src="assets/tailwind-config.js" defer></script>
 
 <!-- Load fonts asynchronously -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -27,49 +22,7 @@
 </noscript>
 
 <!-- Critical CSS for above-the-fold content -->
-<style>
-/* Critical styles for initial render */
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-}
-
-body {
-  font-family: Inter, sans-serif;
-  background: #f7f6f7;
-  color: #0f172a;
-}
-
-/* Fixed Header - Critical */
-.fixed-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background: rgba(247, 246, 247, 0.98);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(39, 27, 59, 0.1);
-  transition: all 0.3s ease;
-}
-
-/* Hide content initially to prevent FOUC */
-main {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-main.loaded {
-  opacity: 1;
-}
-</style>
-
-<!-- Load full CSS asynchronously -->
-<link rel="preload" href="assets/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="assets/styles.css"></noscript>
-
-<!-- Load initialization script immediately (not deferred) -->
-<script src="assets/init.js"></script>
-<!-- Load test script for debugging (remove in production) -->
-<script src="assets/translations.js"></script>
+<!-- CSS will be injected by webpack's style-loader -->
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
 
@@ -935,11 +888,9 @@ main.loaded {
       </div>
 
       <!-- Privacy & Submit -->
-<div class="flex items-start gap-3">
-  <input type="checkbox" required checked id="smart-privacy-agree" name="privacy" class="mt-1 w-4 h-4 text-primary focus:ring-primary rounded">
-  <label for="smart-privacy-agree" class="text-xs text-slate-600 dark:text-slate-400" data-i18n="smart_form_privacy">
-    我同意根据隐私政策处理我的数据。 *
-  </label>
+<div class="flex items-center gap-3">
+  <input type="checkbox" required checked id="smart-privacy-agree" name="privacy" class="mt-0 w-4 h-4 text-primary focus:ring-primary rounded">
+  <label for="smart-privacy-agree" class="text-xs text-slate-600 dark:text-slate-400" data-i18n="smart_form_privacy">我同意根据隐私政策处理我的数据。 *</label>
 </div>
 
 <button type="submit" class="w-full bg-primary text-white rounded-lg px-4 py-3 text-sm font-bold hover:bg-primary/90 transition-all shadow hover:shadow-lg flex items-center justify-center gap-2">
@@ -1107,11 +1058,11 @@ main.loaded {
 </button>
 </div>
 
-<!-- 智能弹窗 -->
+<!-- 智能弹窗 - 优化高度80% 且 测试环境显示计数器/触发原因 -->
 <div id="smart-popup-overlay">
   <div id="smart-popup" class="w-full max-w-md mx-4">
     <div class="smart-popup-header relative">
-      <div class="popup-today-count">
+      <div class="popup-today-count" id="popup-today-count">
         <span class="material-symbols-outlined text-sm">schedule</span>
         <span id="today-popup-count">1/4</span>
       </div>
@@ -1130,16 +1081,16 @@ main.loaded {
   <form class="space-y-4" id="smart-popup-form" onsubmit="submitSmartPopupForm(event); return false;">
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="smart_form_name">Name *</label>
-      <input type="text" name="name" required class="w-full px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" placeholder="Your name">
+      <input type="text" name="name" required class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" placeholder="Your name">
     </div>
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="smart_form_email">E-Mail *</label>
-      <input type="email" name="email" required class="w-full px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" placeholder="email@beispiel.de">
+      <input type="email" name="email" required class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" placeholder="email@beispiel.de">
     </div>    
     
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="smart_form_phone">Telefon (optional)</label>
-      <input type="tel" name="phone" class="w-full px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" placeholder="+49 123 456789">
+      <input type="tel" name="phone" class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" placeholder="+49 123 456789">
     </div>
 
     <!-- 国家选择框 -->
@@ -1642,66 +1593,13 @@ function toggleMobileMenu() {
 }
 
 // ============================================
-// INITIALIZE
+// 测试环境判断 (localhost / 127.0.0.1)
 // ============================================
-document.addEventListener('DOMContentLoaded', () => {
-  initDarkMode();
-  loadUserState();
-  renderProducts();
-  setInterval(trackTimeOnPage, 1000);
-  window.addEventListener('scroll', trackScrollDepth);
-  setTimeout(() => {
-    if (!userState.popupShown && userState.visitCount === 1) showIndicator();
-  }, 8000);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeSmartPopup();
-      closeLanguageDropdown();
-      if (!document.getElementById('mobile-menu-overlay').classList.contains('hidden')) toggleMobileMenu();
-    }
-  });
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('animate-fadeIn');
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('section').forEach(section => observer.observe(section));
-
-  setupSidebarAutoAnimation();
-  setupBackToTopButton();
-});
-
-function setupSidebarAutoAnimation() {
-  setTimeout(triggerSidebarAnimation, 20000);
-  setInterval(triggerSidebarAnimation, 20000);
+function isTestEnvironment() {
+  const host = window.location.hostname;
+  return host === 'localhost' || host === '127.0.0.1' || host.includes('.local') || host.includes('test');
 }
 
-function triggerSidebarAnimation() {
-  const sidebar = document.getElementById('floating-sidebar');
-  if (!sidebar) return;
-  sidebar.classList.add('modern-animate');
-  const primaryButtons = document.querySelectorAll('.primary-contact-btn');
-  let delay = 0;
-  primaryButtons.forEach((btn, index) => {
-    setTimeout(() => {
-      btn.classList.add('pulse');
-      setTimeout(() => btn.classList.remove('pulse'), 1000);
-    }, delay);
-    delay += 200;
-  });
-  setTimeout(() => sidebar.classList.remove('modern-animate'), 3000);
-}
-
-// ============================================
-// 高级元素轮流跳动动画系统
-// ============================================
 function setupJumpingAnimation() {
   const jumpButtons = [
     document.getElementById('jump-btn-1'),
@@ -1846,7 +1744,7 @@ function setupJumpingAnimation() {
 }
 
 // ============================================
-// 智能弹窗系统
+// 智能弹窗系统 (优化版)
 // ============================================
 const smartPopup = {
   state: {
@@ -1954,10 +1852,16 @@ const smartPopup = {
     this.state.lastPopupTime = Date.now();
     this.updateSessionCount();
     this.updateTriggerReason(triggerReason);
+    applyPopupVisibility();
+
     const overlay = document.getElementById('smart-popup-overlay');
     if (overlay) {
-      overlay.classList.add('show');
+      // 滚动条补偿
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.paddingRight = scrollbarWidth + 'px';
       document.body.style.overflow = 'hidden';
+
+      overlay.classList.add('show');
       this.resetTrigger(triggerReason);
     }
   },
@@ -1986,15 +1890,25 @@ const smartPopup = {
   },
   closePopup() {
     const overlay = document.getElementById('smart-popup-overlay');
-    if (overlay) {
-      overlay.classList.add('closing');
-      setTimeout(() => {
-        overlay.classList.remove('show', 'closing');
-        document.body.style.overflow = '';
-      }, 600);
-    }
+    if (!overlay) return;
+    
+    overlay.classList.add('closing');
+    setTimeout(() => {
+      overlay.classList.remove('show', 'closing');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }, 200);
   }
 };
+
+// 控制弹窗中测试环境才显示的元素
+function applyPopupVisibility() {
+  const isTest = isTestEnvironment();
+  const countEl = document.getElementById('popup-today-count');
+  const reasonEl = document.getElementById('trigger-reason');
+  if (countEl) countEl.style.display = isTest ? 'flex' : 'none';
+  if (reasonEl) reasonEl.style.display = isTest ? 'flex' : 'none';
+}
 
 function showSmartPopupManual() {
   const overlay = document.getElementById('smart-popup-overlay');
@@ -2009,7 +1923,12 @@ function showSmartPopupManual() {
   if (countElement) countElement.textContent = `${smartPopup.state.popupShownThisSession}/${smartPopup.state.maxPopupsPerSession}`;
   const reasonElement = document.getElementById('trigger-reason');
   if (reasonElement) reasonElement.innerHTML = `<span class="material-symbols-outlined">info</span><span>您点击了咨询按钮</span>`;
+  // 同样应用环境可见性
+  applyPopupVisibility();
   overlay.classList.add('show');
+  // 在显示弹窗前，获取滚动条宽度并设置 padding
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+  document.body.style.paddingRight = scrollbarWidth + 'px';
   document.body.style.overflow = 'hidden';
 }
 
@@ -2018,7 +1937,7 @@ function closeSmartPopup() {
 }
 
 // ============================================
-// 邮件发送功能 - 发送到指定邮箱
+// 邮件发送功能 - 发送到指定邮箱 (增强数据收集)
 // ============================================
 async function submitSmartPopupForm(event) {
   event.preventDefault();
@@ -2032,6 +1951,10 @@ async function submitSmartPopupForm(event) {
     country: form.querySelector('input[name="country"]')?.value,
     message: form.querySelector('textarea[name="message"]')?.value,
     language: currentLanguage,
+    browserLanguage: navigator.language,
+    screenWidth: window.screen.width,
+    screenHeight: window.screen.height,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     pageUrl: window.location.href,
     timeOnPage: userState?.timeOnPage || 0,
     scrollDepth: userState?.scrollDepth || 0,
@@ -2068,6 +1991,10 @@ async function submitContactForm(event) {
     country: form.querySelector('input[name="country"]')?.value || '',
     message: form.querySelector('textarea[name="message"]')?.value || '',
     language: currentLanguage,
+    browserLanguage: navigator.language,
+    screenWidth: window.screen.width,
+    screenHeight: window.screen.height,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     pageUrl: window.location.href,
     timeOnPage: userState?.timeOnPage || 0,
     scrollDepth: userState?.scrollDepth || 0,
@@ -2100,6 +2027,9 @@ function submitViaMailto(formData, formType) {
 ------------ 用户信息 ------------
 IP地址：正在获取中...
 用户语言：${currentLanguage}
+浏览器语言：${navigator.language}
+屏幕分辨率：${window.screen.width}x${window.screen.height}
+时区：${Intl.DateTimeFormat().resolvedOptions().timeZone}
 页面URL：${window.location.href}
 提交时间：${new Date().toLocaleString()}
 页面停留时间：${userState.timeOnPage || 0}秒
@@ -2131,7 +2061,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- External JavaScript Files -->
-<script src="assets/main.js"></script>
-
-</body>
+<script defer src="./assets/main.js"></script>
+<script defer src="./assets/translations.js"></script>
+<script defer src="./assets/init.js"></script>
 </html>
