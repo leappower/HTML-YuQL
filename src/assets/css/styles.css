@@ -1176,6 +1176,34 @@ header nav a.active::after {
     gap: 7px;
   }
 
+  .footer-main-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .footer-company-info,
+  .footer-products,
+  .footer-support,
+  .footer-company-links {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 14px;
+    height: 100%;
+  }
+
+  .footer-company-info h3,
+  .footer-products h4,
+  .footer-support h4,
+  .footer-company-links h4 {
+    margin-bottom: 10px;
+  }
+
+  footer .border-t > div {
+    gap: 12px;
+    text-align: center;
+  }
+
   .primary-contact-btn {
     width: 50px;
     height: 50px;
@@ -1261,6 +1289,46 @@ header nav a.active::after {
 
   .sidebar-indicator > div {
     max-width: min(74vw, 260px);
+  }
+
+  .footer-main-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .footer-main-grid > :first-child,
+  .footer-main-grid > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .footer-main-grid > div {
+    height: 100%;
+  }
+
+  .footer-company-info,
+  .footer-products,
+  .footer-support,
+  .footer-company-links {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .footer-company-info h3,
+  .footer-products h4,
+  .footer-support h4,
+  .footer-company-links h4 {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+
+  .footer-company-info p,
+  .footer-products ul,
+  .footer-support ul,
+  .footer-company-links ul {
+    font-size: 0.82rem;
+    line-height: 1.45;
   }
 }
 
