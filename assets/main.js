@@ -14,7 +14,7 @@ class App {
 
     try {
       // Initialize all modules
-      for (const [name, module] of this.modules) {
+      for (const [, module] of this.modules) {
         if (typeof module.init === 'function') {
           await module.init();
         }

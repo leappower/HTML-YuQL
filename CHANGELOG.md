@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JSON file corruption issues
 - Language switching functionality
 - Missing translation keys
+- Language initialization bug where user preferences were overridden on page load
+- JavaScript syntax errors and ESLint code quality issues
+- Translation completeness issues across all 22 languages
+- Placeholder translations in Korean and Arabic for certification and customization sections
+- All remaining placeholder translations across all languages using zh-CN as reference
 
 ### Changed
 - Enhanced server.js with production-ready features

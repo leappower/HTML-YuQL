@@ -32,9 +32,16 @@ class TranslationManager {
   }
 
   getInitialLanguage() {
-    return localStorage.getItem('userLanguage') ||
-           localStorage.getItem('browserLang') ||
-           'zh-CN';
+    // Always prioritize user's explicit choice
+    const userChoice = localStorage.getItem('userLanguage');
+    if (userChoice && languageNames[userChoice]) {
+      console.log('Using user-selected language:', userChoice);
+      return userChoice;
+    }
+
+    // Default to Chinese, don't use browser language for initial choice
+    console.log('Using default language: zh-CN');
+    return 'zh-CN';
   }
 
   async loadTranslations(lang) {
@@ -349,9 +356,107 @@ class TranslationManager {
     await this.loadTranslations(this.currentLanguage);
     await this.applyTranslations();
   }
+
+  async initialize() {
+    try {
+      console.log('Initializing translation system...');
+
+      // Detect browser language if not already set (only once)
+      if (!localStorage.getItem('browserLang')) {
+        const browserLang = this.detectBrowserLanguage();
+        localStorage.setItem('browserLang', browserLang);
+        console.log('Detected and saved browser language:', browserLang);
+      }
+
+      // Get initial language (respect user's choice first)
+      const initialLang = this.getInitialLanguage();
+      console.log('Initializing with language:', initialLang);
+
+      // Set current language without triggering save
+      this.currentLanguage = initialLang;
+
+      // Load and apply translations
+      await this.loadTranslations(initialLang);
+      await this.applyTranslations();
+
+      // Set up event listeners
+      this.setupEventListeners();
+
+      // Update document language
+      document.documentElement.lang = this.currentLanguage;
+
+      // Mark as initialized
+      this.isInitialized = true;
+
+      console.log('Translation system initialized successfully with language:', this.currentLanguage);
+
+      // Emit initialization event
+      this.emit('initialized', { language: this.currentLanguage });
+
+    } catch (error) {
+      console.error('Failed to initialize translation system:', error);
+
+      // Fallback: try to initialize with Chinese Simplified (but don't save it as user choice)
+      try {
+        this.currentLanguage = 'zh-CN';
+        await this.loadTranslations('zh-CN');
+        await this.applyTranslations();
+        document.documentElement.lang = 'zh-CN';
+        console.log('Fallback initialization successful');
+      } catch (fallbackError) {
+        console.error('Fallback initialization also failed:', fallbackError);
+      }
+    }
+  }
+
+  detectBrowserLanguage() {
+    // Get browser language
+    const browserLang = navigator.language || navigator.userLanguage || 'en';
+
+    // Map to supported languages
+    const langMap = {
+      'zh': 'zh-CN',
+      'zh-CN': 'zh-CN',
+      'zh-TW': 'zh-TW',
+      'zh-HK': 'zh-TW',
+      'en': 'en',
+      'en-US': 'en',
+      'en-GB': 'en',
+      'de': 'de',
+      'de-DE': 'de',
+      'fr': 'fr',
+      'fr-FR': 'fr',
+      'it': 'it',
+      'it-IT': 'it',
+      'pt': 'pt',
+      'pt-BR': 'pt',
+      'ja': 'ja',
+      'ja-JP': 'ja',
+      'ko': 'ko',
+      'ko-KR': 'ko',
+      'nl': 'nl',
+      'nl-NL': 'nl',
+      'pl': 'pl',
+      'pl-PL': 'pl',
+      'ru': 'ru',
+      'ru-RU': 'ru',
+      'tr': 'tr',
+      'tr-TR': 'tr',
+      'th': 'th',
+      'th-TH': 'th',
+      'vi': 'vi',
+      'vi-VN': 'vi',
+      'ar': 'ar',
+      'he': 'he',
+      'id': 'id',
+      'ms': 'ms',
+      'fil': 'fil'
+    };
+
+    return langMap[browserLang] || langMap[browserLang.split('-')[0]] || 'zh-CN';
+  }
 }
 
-// Create global instance
 const translationManager = new TranslationManager();
 
 // Legacy API for backward compatibility

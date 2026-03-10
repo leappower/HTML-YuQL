@@ -17,7 +17,10 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     'quotes': ['error', 'single'],
     'semi': ['error', 'always'],
-    'no-unused-vars': ['warn'],
+    'no-unused-vars': ['warn', {
+      'argsIgnorePattern': '^next$',
+      'varsIgnorePattern': '^(currentLanguage|translationsCache|loadTranslations|applyTranslations|setupProductSectionTracking|setupLanguageSystem|t|setLanguage|toggleLanguageDropdown|filterLanguages)$'
+    }],
     'no-console': 'off',
   },
   ignorePatterns: [

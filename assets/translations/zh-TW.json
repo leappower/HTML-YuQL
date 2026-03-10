@@ -1,5 +1,4 @@
 {
-  "lang_name": "繁體中文",
   "nav_produkte": "產品",
   "sidebar_expand": "更多聯絡人",
   "sidebar_collapse": "收起聯絡人",
@@ -9,7 +8,7 @@
   "btn_consultation": "諮詢",
   "hero_badge": "自2004年品質保證",
   "hero_title": "專業商廚 - 20年經驗，助力您的餐飲事業",
-  "hero_desc": "擁有超過20年的ODM&OEM服務經驗，專業與嚴格的品質控制，確保卓越品質。",
+  "hero_desc": "擁有超過20年的ODM&amp;OEM服務經驗，專業與嚴格的品質控制，確保卓越品質。",
   "btn_hero_primary": "免費諮詢",
   "btn_hero_secondary": "產品目錄",
   "hero_trust": "20+年經驗 • 500+滿意客戶",
@@ -22,7 +21,7 @@
   "vorteile_title": "用戶選擇我們的理由",
   "vorteile_subtitle": "我們的技術保證穩定的結果，讓您的工藝更加出色。",
   "vorteil_1_title": "專業服務",
-  "vorteil_1_desc": "擁有超過20年的ODM&OEM服務經驗，我們全天候24小時為您服務。",
+  "vorteil_1_desc": "擁有超過20年的ODM&amp;OEM服務經驗，我們全天候24小時為您服務。",
   "vorteil_2_title": "認證齊全",
   "vorteil_2_desc": "全球最高安全標準，保護您的企業和員工。",
   "vorteil_3_title": "節能高效",
