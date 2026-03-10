@@ -556,7 +556,8 @@ header nav a.active::after {
 /* Sidebar indicator animation */
 .sidebar-indicator {
   position: fixed;
-  right: 80px;
+  /* Keep a safe gap from the right floating sidebar (16 + 54 + 24). */
+  right: calc(16px + 54px + 24px);
   top: 50%;
   transform: translateY(-50%) translateX(20px);
   z-index: 1002;
@@ -572,15 +573,32 @@ header nav a.active::after {
 }
 
 .sidebar-indicator::after {
-  content: '→';
+  content: '\203A';
+  --indicator-arrow-size: 30px;
   position: absolute;
-  right: -30px;
+  right: calc(var(--indicator-arrow-size) / -2);
   top: 50%;
+  width: var(--indicator-arrow-size);
+  height: var(--indicator-arrow-size);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transform: translateY(-50%);
-  font-size: 24px;
-  color: #22c55e;
-  font-weight: bold;
+  line-height: 1;
+  font-size: 22px;
+  color: #fff;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  border: 2px solid #fff;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(249, 115, 22, 0.45);
   animation: slideArrow 1s infinite;
+}
+
+@media (max-width: 768px) {
+  .sidebar-indicator {
+    right: calc(12px + 48px + 16px);
+  }
 }
 
 @keyframes slideArrow {
@@ -1127,6 +1145,188 @@ header nav a.active::after {
   50% {
     transform: scale(1.1);
     box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  }
+}
+
+/* ============================================
+   Responsive hardening (tablet/mobile)
+   ============================================ */
+@media (max-width: 1024px) {
+  .floating-sidebar {
+    right: 12px;
+    gap: 7px;
+  }
+
+  .primary-contact-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+  }
+
+  .secondary-btn,
+  .expand-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .sidebar-indicator {
+    right: calc(12px + 50px + 20px);
+  }
+}
+
+@media (max-width: 768px) {
+  .fixed-header {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .fixed-header h2[data-i18n="company_name"] {
+    max-width: 62vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .min-h-\[480px\] {
+    min-height: 360px !important;
+  }
+
+  [data-i18n="hero_title"],
+  [data-i18n="hero_desc"] {
+    max-width: 100% !important;
+    display: block;
+  }
+
+  .floating-sidebar {
+    top: auto;
+    bottom: 14px;
+    right: 10px;
+    transform: none;
+    gap: 6px;
+  }
+
+  .floating-sidebar:hover {
+    transform: none;
+    gap: 6px;
+  }
+
+  .primary-contact-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 20px;
+  }
+
+  .secondary-btn,
+  .expand-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .back-to-top-btn {
+    width: 46px;
+    height: 46px;
+    bottom: 0;
+    font-size: 20px;
+  }
+
+  .sidebar-indicator {
+    top: auto;
+    bottom: 92px;
+    right: calc(10px + 46px + 12px);
+    transform: translateX(16px);
+  }
+
+  .sidebar-indicator.show {
+    transform: translateX(0);
+  }
+
+  .sidebar-indicator > div {
+    max-width: min(74vw, 260px);
+  }
+}
+
+@media (max-width: 480px) {
+  .fixed-header h2[data-i18n="company_name"] {
+    max-width: 56vw;
+    font-size: 0.9rem;
+  }
+
+  .floating-sidebar {
+    right: 8px;
+    bottom: 10px;
+  }
+
+  .primary-contact-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+
+  .secondary-btn,
+  .expand-btn,
+  .back-to-top-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sidebar-indicator {
+    bottom: 82px;
+    right: calc(8px + 42px + 10px);
+  }
+
+  .sidebar-indicator::after {
+    --indicator-arrow-size: 26px;
+    width: 26px;
+    height: 26px;
+    font-size: 18px;
+    right: calc(var(--indicator-arrow-size) / -2);
+  }
+
+  .sidebar-indicator > div {
+    max-width: min(78vw, 230px);
+    padding: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .fixed-header h2[data-i18n="company_name"] {
+    max-width: 52vw;
+    font-size: 0.82rem;
+  }
+
+  .floating-sidebar {
+    right: 6px;
+    bottom: 8px;
+    gap: 5px;
+  }
+
+  .primary-contact-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+
+  .secondary-btn,
+  .expand-btn,
+  .back-to-top-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .sidebar-indicator {
+    bottom: 74px;
+    right: calc(6px + 38px + 8px);
+  }
+
+  .sidebar-indicator::after {
+    --indicator-arrow-size: 22px;
+    font-size: 15px;
+    right: calc(var(--indicator-arrow-size) / -2);
+  }
+
+  .sidebar-indicator > div {
+    max-width: min(82vw, 208px);
+    padding: 8px;
   }
 }
 

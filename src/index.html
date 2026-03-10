@@ -13,7 +13,7 @@
 
 <!-- Load fonts asynchronously -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
 <!-- Fallback for fonts -->
 <noscript>
@@ -1544,12 +1544,15 @@ function toggleSecondaryContacts() {
 
 function showIndicator() {
   const indicator = document.getElementById('sidebar-indicator');
-  indicator.classList.add('visible');
+  if (!indicator) return;
+  indicator.classList.add('show');
   setTimeout(hideIndicator, 15000);
 }
 
 function hideIndicator() {
-  document.getElementById('sidebar-indicator').classList.remove('visible');
+  const indicator = document.getElementById('sidebar-indicator');
+  if (!indicator) return;
+  indicator.classList.remove('show');
 }
 
 function startWhatsApp() { window.open('https://wa.me/4975112345678?text=' + encodeURIComponent('Hallo! Ich interessiere mich für Ihre Gärschränke.'), '_blank'); }
@@ -2071,6 +2074,7 @@ IP地址：正在获取中...
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => smartPopup.init(), 1000);
   setTimeout(setupJumpingAnimation, 1000);
+  setTimeout(showIndicator, 2500);
 });
 
 window.addEventListener('beforeunload', () => {
