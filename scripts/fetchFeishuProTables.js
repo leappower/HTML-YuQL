@@ -189,9 +189,10 @@ async function fetchFeishuSheetRows({ appId, appSecret, spreadsheetToken, sheetR
   }
 
   let pageToken = '';
+  let hasMore = true;
   const rows = [];
 
-  while (true) {
+  while (hasMore) {
     const params = new URLSearchParams();
     params.set('page_size', '500');
     if (pageToken) params.set('page_token', pageToken);
@@ -215,7 +216,8 @@ async function fetchFeishuSheetRows({ appId, appSecret, spreadsheetToken, sheetR
       }
     }
 
-    if (!resp.data?.has_more) break;
+    hasMore = Boolean(resp.data?.has_more);
+    if (!hasMore) break;
     pageToken = resp.data?.page_token || '';
     if (!pageToken) break;
   }

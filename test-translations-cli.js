@@ -4,7 +4,7 @@ const path = require('path');
 
 class TranslationTester {
   constructor() {
-    this.translationsDir = path.join(__dirname, 'assets', 'translations');
+    this.translationsDir = path.join(__dirname, 'src', 'assets', 'translations');
     this.results = {
       totalFiles: 0,
       validFiles: 0,

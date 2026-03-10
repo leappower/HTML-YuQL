@@ -28,5 +28,6 @@ module.exports = {
     'dist/',
     'build/',
     '*.min.js',
+    'src/assets/product-data-table.js',
   ],
 };
