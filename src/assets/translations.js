@@ -1,5 +1,6 @@
 // assets/translations.js - Internationalization Module
 const languageNames = {
+  'zh': '中文',
   'zh-CN': '中文 (简体)',
   'de': 'Deutsch',
   'en': 'English',

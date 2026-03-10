@@ -181,7 +181,7 @@
   "back_to_top": "回到顶部",
   "lang_search_placeholder": "搜索语言...",
   "mobile_menu_title": "菜单",
-  "lang_group_asian": "亚洲人",
+  "lang_group_asian": "亚洲",
   "lang_group_middle_east": "中东",
   "form_name_placeholder": "你的名字",
   "form_company_placeholder": "你的公司",
@@ -260,5 +260,8 @@
   "vorteile_kitchen": "商用厨房设备包括烹饪设备（如商用燃气灶、电磁炉、蒸锅、炸锅和烤架）、制冷设备（如商业冰箱、冰柜、展示柜和冰柜）、食品制备设备（如蔬菜切割机、切片机、搅拌机和食品加工机）、烘焙设备（如分层烤箱、热风炉、滗水器和面条机）和清洁设备（如家用洗碗机、洗杯机和消毒器）。",
   "vorteile_machinery": "食品加工机械包括肉类加工设备（如绞肉机、灌肠机和搅拌机）、饮料设备（如商用搅拌机、榨汁机和咖啡机）和专用加工设备（如冰机、开水器和隔热柜）。",
   "vorteile_stats": "我们的工厂拥有超过5000平方米的生产车间，50多名经验丰富的工程师和技术人员，为您提供高质量的产品和专业的服务。",
-  "page_title": "跃迁力科技 | 专业发酵柜"
+  "page_title": "跃迁力科技 | 专业发酵柜",
+  "lang_group_europe_global": "欧洲和全球",
+  "lang_group_europe": "欧洲",
+  "lang_group_global": "全球"
 }

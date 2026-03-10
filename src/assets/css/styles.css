@@ -676,6 +676,25 @@ header nav a.active::after {
   display: none;
 }
 
+.lang-dropdown > .p-2 {
+  max-height: min(62vh, 460px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.lang-dropdown > .p-2::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lang-dropdown > .p-2::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.4);
+  border-radius: 9999px;
+}
+
+.lang-dropdown > .p-2::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .dark .lang-dropdown {
   background: #18151d;
   border-color: rgba(255,255,255,0.1);
