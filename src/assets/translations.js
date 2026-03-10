@@ -77,13 +77,16 @@ class TranslationManager {
 
   async fetchTranslations(lang) {
     try {
-      const response = await fetch(`./translations/${lang}.json`);
+      const response = await fetch(`./translations/${lang}.json?ts=${Date.now()}`, {
+        cache: 'no-store'
+      });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const data = await response.json();
-      this.translationsCache.set(lang, data);
-      return data;
+      const normalizedData = this.normalizeTranslationKeys(data);
+      this.translationsCache.set(lang, normalizedData);
+      return normalizedData;
     } catch (error) {
       console.error(`Failed to load translations for ${lang}:`, error);
       // Fallback to Chinese (Simplified)
@@ -92,6 +95,23 @@ class TranslationManager {
       }
       throw error;
     }
+  }
+
+  normalizeTranslationKeys(value) {
+    if (Array.isArray(value)) {
+      return value.map((item) => this.normalizeTranslationKeys(item));
+    }
+
+    if (!value || typeof value !== 'object') {
+      return value;
+    }
+
+    const normalized = {};
+    Object.entries(value).forEach(([key, nestedValue]) => {
+      const normalizedKey = typeof key === 'string' ? key.replace(/^\uFEFF/, '') : key;
+      normalized[normalizedKey] = this.normalizeTranslationKeys(nestedValue);
+    });
+    return normalized;
   }
 
   resolveTranslationValue(dictionary, key) {
@@ -217,12 +237,29 @@ class TranslationManager {
         }
       }
 
+      // Ensure company name always reflects the active language.
+      this.refreshCompanyName(translations);
+
       this.emit('translationsApplied', { language: this.currentLanguage });
     } catch (error) {
       console.error('Error applying translations:', error);
       // Try to apply fallback translations
       this.applyFallbackTranslations();
     }
+  }
+
+  refreshCompanyName(translations) {
+    let companyName = translations?.company_name || this.getFallbackTranslation('company_name');
+    if ((!companyName || companyName === 'company_name') && this.currentLanguage === 'zh-CN') {
+      companyName = '佛山市跃迁力科技有限公司';
+    }
+    if (!companyName || companyName === 'company_name') return;
+
+    document.querySelectorAll('[data-i18n="company_name"]').forEach((el) => {
+      if (el.textContent !== companyName) {
+        el.textContent = companyName;
+      }
+    });
   }
 
   getFallbackTranslation(key) {
