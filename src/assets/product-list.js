@@ -1,4 +1,5 @@
 import { IMAGE_ASSETS } from './image-assets.js';
+import { PRODUCT_DATA_TABLE } from './product-data-table.js';
 
 // 测试数据
 export const PRODUCT_DEFAULTS = {
@@ -227,24 +228,38 @@ const MOCK_PRODUCT_SERIES = [
   }
 ];
 
-function detectRuntimeEnv() {
-  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV) {
-    return process.env.NODE_ENV;
-  }
-  return 'development';
-}
+const GENERATED_PRODUCT_SERIES = PRODUCT_DATA_TABLE.map((series) => ({
+  ...series,
+  products: (series.products || []).map((product) =>
+    new ProductEntity({
+      ...product,
+      detailParams: {
+        ...DEFAULT_DETAIL_PARAMS,
+        ...(product.detailParams || {})
+      }
+    })
+  )
+}));
 
-export function assembleProductSeries(options = {}) {
-  const runtimeEnv = options.runtimeEnv || detectRuntimeEnv();
-  const forceMock = Boolean(options.forceMock);
-  const isProduction = runtimeEnv === 'production';
+// FEISHU_SYNC_APPEND_START
+export const APPENDED_PRODUCT_SERIES = [];
+// FEISHU_SYNC_APPEND_END
 
-  if (isProduction && !forceMock) {
-    // 生成环境组装数据
-    return [];
-  }
+const APPENDED_PRODUCT_SERIES_NORMALIZED = APPENDED_PRODUCT_SERIES.map((series) => ({
+  ...series,
+  products: (series.products || []).map((product) =>
+    new ProductEntity({
+      ...product,
+      detailParams: {
+        ...DEFAULT_DETAIL_PARAMS,
+        ...(product.detailParams || {})
+      }
+    })
+  )
+}));
 
-  return MOCK_PRODUCT_SERIES.map((series) => ({
+function withImageUrl(seriesList) {
+  return seriesList.map((series) => ({
     ...series,
     products: series.products.map((product) => {
       const imageUrl = IMAGE_ASSETS[product.imageKey] || '';
@@ -254,6 +269,27 @@ export function assembleProductSeries(options = {}) {
       });
     })
   }));
+}
+
+function detectRuntimeEnv() {
+  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV) {
+    return process.env.NODE_ENV;
+  }
+  return 'development';
+}
+
+export function assembleProductSeries(options = {}) {
+  const runtimeEnv = options.runtimeEnv || detectRuntimeEnv();
+  const forceMock = options.forceMock === true;
+  const isProduction = runtimeEnv === 'production';
+
+  if (isProduction && !forceMock) {
+    // 生产环境默认只返回新增单独数据
+    return withImageUrl([...GENERATED_PRODUCT_SERIES, ...APPENDED_PRODUCT_SERIES_NORMALIZED]);
+  }
+
+  // 开发环境或强制 mock 时，返回 mock + 新增独立数据
+  return withImageUrl([...MOCK_PRODUCT_SERIES, ...GENERATED_PRODUCT_SERIES, ...APPENDED_PRODUCT_SERIES_NORMALIZED]);
 }
 
 export const PRODUCT_SERIES = assembleProductSeries();

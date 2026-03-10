@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (utils) {
     utils.applyImageAssets();
   }
-  currentFilter = renderProductFilters() || 'all';
+  currentFilter = renderProductFilters();
   renderProducts();
 });
 
@@ -279,7 +279,7 @@ function filterProducts(filter) {
 function renderProducts() {
   const grid = document.getElementById('product-grid');
   const allProducts = getProducts();
-  const filtered = currentFilter === 'all' ? allProducts : allProducts.filter(p => p.category === currentFilter);
+  const filtered = currentFilter ? allProducts.filter(p => p.category === currentFilter) : allProducts;
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   const start = (currentPage - 1) * itemsPerPage;
   const pageProducts = filtered.slice(start, start + itemsPerPage);
@@ -354,7 +354,7 @@ function renderPagination(totalPages) {
 
 function goToPage(page) {
   const allProducts = getProducts();
-  const filtered = currentFilter === 'all' ? allProducts : allProducts.filter(p => p.category === currentFilter);
+  const filtered = currentFilter ? allProducts.filter(p => p.category === currentFilter) : allProducts;
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   if (page >= 1 && page <= totalPages) {
     currentPage = page;

@@ -3,6 +3,13 @@ const compression = require('compression');
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const { feishuProTables } = require('./scripts/fetchFeishuProTables.js');
+const {
+  runFeishuSyncOnce,
+  startDailyFeishuSyncScheduler,
+  buildFeishuConfigFromEnv,
+  validateFeishuConfig
+} = feishuProTables;
 
 const app = express();
 
@@ -174,6 +181,22 @@ const server = app.listen(PORT, (err) => {
   if (process.env.NODE_ENV === 'development') {
     console.log('🔧 Development mode: Error details enabled');
   }
+
+  const feishuConfig = buildFeishuConfigFromEnv();
+  if (validateFeishuConfig(feishuConfig)) {
+    runFeishuSyncOnce({ syncTo: 'both' })
+      .then((result) => {
+        console.log('[feishu-sync] initial sync finished:', JSON.stringify(result));
+      })
+      .catch((err) => {
+        console.error('[feishu-sync] initial sync failed:', err.message);
+      });
+  } else {
+    console.log('[feishu-sync] initial sync skipped: missing FEISHU env config');
+  }
+
+  startDailyFeishuSyncScheduler();
+  console.log('[feishu-sync] daily scheduler enabled (04:00)');
 });
 
 // Graceful shutdown with connection draining
