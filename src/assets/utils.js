@@ -195,7 +195,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
 
     const mobileNavLinks = document.querySelectorAll('#mobile-menu nav a[href^="#"]');
     mobileNavLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
+      link.addEventListener('click', function() {
         setTimeout(() => {
           navLinks.forEach(navLink => {
             if (navLink.getAttribute('href') === this.getAttribute('href')) {
@@ -613,7 +613,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
     }
 
     function setupButtonInteractions() {
-      jumpButtons.forEach((btn, index) => {
+      jumpButtons.forEach((btn) => {
         if (btn) {
           btn.addEventListener('mouseenter', () => {
             btn.classList.remove('jump-active');
@@ -624,7 +624,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
             btn.style.transform = '';
             btn.style.transition = '';
           });
-          btn.addEventListener('click', (e) => {
+          btn.addEventListener('click', () => {
             btn.style.transform = 'scale(0.95)';
             setTimeout(() => { btn.style.transform = ''; }, 150);
             btn.dataset.lastClicked = Date.now();
@@ -651,7 +651,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
       setupVisibilityHandler();
       setTimeout(startAnimationCycle, 3000);
       let lastActivity = Date.now();
-      const activityCheck = setInterval(() => {
+      setInterval(() => {
         if (Date.now() - lastActivity > 30000 && animationTimer) {
           clearInterval(animationTimer);
           animationTimer = setInterval(startNextJump, 5000);
@@ -971,14 +971,13 @@ ${tr('mailto_label_resolution', 'Resolution')}: ${window.screen.width}x${window.
     setTimeout(showIndicator, 2500);
   });
 
-  window.addEventListener('beforeunload', () => {
-    const jumpAnimations = setupJumpingAnimation();
-    if (jumpAnimations && jumpAnimations.stop) jumpAnimations.stop();
-  });
-
   let jumpAnimationSystem = null;
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => jumpAnimationSystem = setupJumpingAnimation(), 1000);
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (jumpAnimationSystem && jumpAnimationSystem.stop) jumpAnimationSystem.stop();
   });
 
   global.smartPopup = smartPopup;

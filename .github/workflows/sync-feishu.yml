@@ -19,15 +19,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install openpyxl
+      - name: Install dependencies
+        run: npm ci
 
       - name: Sync product data from Feishu Bitable
         env:
@@ -36,10 +29,10 @@ jobs:
           FEISHU_SPREADSHEET_TOKEN: ${{ secrets.FEISHU_SPREADSHEET_TOKEN }}
           FEISHU_SHEET_RANGE: ${{ secrets.FEISHU_SHEET_RANGE }}
         run: |
-          python3 scripts/generate-products-data-table.py --source feishu
+          node scripts/generate-products-data-table.js --source feishu
 
       - name: Build site
-        run: npm ci && npm run build
+        run: npm run build
 
       - name: Commit and push if changed
         run: |

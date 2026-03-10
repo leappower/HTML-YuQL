@@ -3,7 +3,7 @@ const compression = require('compression');
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { feishuProTables } = require('./scripts/fetchFeishuProTables.js');
+const { feishuProTables } = require('./scripts/generate-products-data-table.js');
 const {
   runFeishuSyncOnce,
   startDailyFeishuSyncScheduler,
