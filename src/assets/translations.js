@@ -36,6 +36,7 @@ class TranslationManager {
     this.cachedElements = {
       i18nElements: [],
       placeholderElements: [],
+      ariaElements: [],
       languageLabel: null,
       dropdown: null,
       container: null,
@@ -136,6 +137,7 @@ class TranslationManager {
     if (this.cacheInvalidated) {
       this.cachedElements.i18nElements = Array.from(document.querySelectorAll('[data-i18n]'));
       this.cachedElements.placeholderElements = Array.from(document.querySelectorAll('[data-i18n-placeholder]'));
+      this.cachedElements.ariaElements = Array.from(document.querySelectorAll('[data-i18n-aria]'));
       this.cachedElements.languageLabel = document.getElementById('current-lang-label');
       this.cachedElements.dropdown = document.getElementById('language-dropdown');
       this.cachedElements.container = document.querySelector('.lang-dropdown-container');
@@ -179,6 +181,14 @@ class TranslationManager {
     return this.resolveTranslationValue(lang, key);
   }
 
+  uiText(key, fallback) {
+    const translated = this.translate(key);
+    if (translated && translated !== key) return translated;
+    const fallbackText = this.getFallbackTranslation(key);
+    if (fallbackText && fallbackText !== key) return fallbackText;
+    return fallback;
+  }
+
   async applyTranslations() {
     try {
       // Ensure translations are loaded
@@ -192,7 +202,7 @@ class TranslationManager {
         return;
       }
 
-      const { i18nElements, placeholderElements, languageLabel } = this.getCachedElements();
+      const { i18nElements, placeholderElements, ariaElements, languageLabel } = this.getCachedElements();
 
       // Apply data-i18n attributes
       i18nElements.forEach(el => {
@@ -229,6 +239,20 @@ class TranslationManager {
         }
       });
 
+      // Apply translated aria-label values
+      ariaElements.forEach(el => {
+        const key = el.getAttribute('data-i18n-aria');
+        const translation = this.translate(key);
+        if (translation && translation !== key) {
+          el.setAttribute('aria-label', translation);
+        } else {
+          const fallbackTranslation = this.getFallbackTranslation(key);
+          if (fallbackTranslation && fallbackTranslation !== key) {
+            el.setAttribute('aria-label', fallbackTranslation);
+          }
+        }
+      });
+
       // Update current language label
       if (languageLabel) {
         const nextLabel = languageNames[this.currentLanguage] || this.currentLanguage.toUpperCase();
@@ -239,6 +263,7 @@ class TranslationManager {
 
       // Ensure company name always reflects the active language.
       this.refreshCompanyName(translations);
+      this.refreshDocumentTitle(translations);
 
       this.emit('translationsApplied', { language: this.currentLanguage });
     } catch (error) {
@@ -262,8 +287,29 @@ class TranslationManager {
     });
   }
 
+  refreshDocumentTitle(translations) {
+    const titleEl = document.getElementById('page-title');
+    if (!titleEl) return;
+
+    const pageTitle = translations?.page_title || this.getFallbackTranslation('page_title');
+    if (!pageTitle || pageTitle === 'page_title') return;
+
+    if (document.title !== pageTitle) {
+      document.title = pageTitle;
+    }
+  }
+
   getFallbackTranslation(key) {
-    // Try Chinese Simplified as fallback
+    // Prefer English fallback first for neutral UI labels.
+    if (this.currentLanguage !== 'en' && this.translationsCache.has('en')) {
+      const enTranslations = this.translationsCache.get('en');
+      const enValue = this.resolveTranslationValue(enTranslations, key);
+      if (enValue && enValue !== key) {
+        return enValue;
+      }
+    }
+
+    // Then fallback to Chinese Simplified.
     if (this.currentLanguage !== 'zh-CN' && this.translationsCache.has('zh-CN')) {
       const zhTranslations = this.translationsCache.get('zh-CN');
       return this.resolveTranslationValue(zhTranslations, key);
@@ -343,7 +389,8 @@ class TranslationManager {
 
       // Show success notification
       if (window.showNotification) {
-        const message = `Language changed to ${languageNames[lang] || lang}`;
+        const prefix = this.uiText('notify_language_changed', 'Language changed to');
+        const message = `${prefix} ${languageNames[lang] || lang}`;
         window.showNotification(message, 'success');
       }
 
@@ -360,17 +407,17 @@ class TranslationManager {
         try {
           await this.setLanguage('zh-CN');
           if (window.showNotification) {
-            window.showNotification('Switched to Chinese (Simplified) due to error', 'warning');
+            window.showNotification(this.uiText('notify_language_fallback_zh_cn', 'Switched to Chinese (Simplified) due to error'), 'warning');
           }
         } catch (fallbackError) {
           console.error('Fallback also failed:', fallbackError);
           if (window.showNotification) {
-            window.showNotification('Language switch failed', 'error');
+            window.showNotification(this.uiText('notify_language_switch_failed', 'Language switch failed'), 'error');
           }
         }
       } else {
         if (window.showNotification) {
-          window.showNotification('Failed to load language', 'error');
+          window.showNotification(this.uiText('notify_language_load_failed', 'Failed to load language'), 'error');
         }
       }
     }
@@ -478,8 +525,9 @@ class TranslationManager {
       // Set current language without triggering save
       this.currentLanguage = initialLang;
 
-      // Load and apply translations
-      await this.loadTranslations(initialLang);
+      // Load current language plus fallback dictionaries together.
+      const languagesToLoad = new Set([initialLang, 'en', 'zh-CN']);
+      await Promise.all(Array.from(languagesToLoad).map((lang) => this.loadTranslations(lang)));
       await this.applyTranslations();
 
       // Set up event listeners

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>BäckereiTechnik Profi | Professionelle Gärschränke</title>
+<title id="page-title">BäckereiTechnik Profi | Professionelle Gärschränke</title>
 <!-- Preconnect to external domains for performance -->
 <link rel="preconnect" href="https://cdn.tailwindcss.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,10 +54,10 @@
         <div class="p-2 bg-slate-50 dark:bg-slate-900/50 border-b border-primary/5">
           <div class="relative">
             <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-xs">search</span>
-            <input class="w-full text-xs pl-7 pr-2 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" onkeyup="filterLanguages(this.value)" placeholder="Search language..." type="text">
+            <input class="w-full text-xs pl-7 pr-2 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" onkeyup="filterLanguages(this.value)" data-i18n-placeholder="lang_search_placeholder" placeholder="Search language..." type="text">
           </div>
           <div class="lang-group mt-1 border-t border-slate-100 dark:border-slate-800 pt-1">
-            <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Asian</div>
+            <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest" data-i18n="lang_group_asian">Asian</div>
             <button class="lang-option w-full flex items-center justify-between px-3 py-2 text-xs text-slate-700 dark:text-slate-300" data-code="zh-CN" onclick="setLanguage('zh-CN')">
               <span>中文（简体）</span>
               <span class="text-[10px] opacity-50">ZH</span>
@@ -96,7 +96,7 @@
             </button>
           </div>
           <div class="lang-group mt-1 border-t border-slate-100 dark:border-slate-800 pt-1">
-            <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Middle East</div>
+            <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest" data-i18n="lang_group_middle_east">Middle East</div>
             <button class="lang-option w-full flex items-center justify-between px-3 py-2 text-xs text-slate-700 dark:text-slate-300" data-code="ar" onclick="setLanguage('ar')">
               <span>العربية</span>
               <span class="text-[10px] opacity-50">AR</span>
@@ -125,7 +125,7 @@
 <div class="fixed top-0 right-0 h-full w-80 bg-white dark:bg-slate-900 z-[1000] transform translate-x-full transition-transform duration-300 shadow-2xl" id="mobile-menu">
   <div class="p-6">
     <div class="flex justify-between items-center mb-6">
-      <h3 class="text-lg font-bold">Menu</h3>
+      <h3 class="text-lg font-bold" data-i18n="mobile_menu_title">Menu</h3>
       <button onclick="toggleMobileMenu()" class="text-slate-400 hover:text-slate-600">
         <span class="material-symbols-outlined">close</span>
       </button>
@@ -789,11 +789,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
           <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="form_name">姓名 *</label>
-          <input type="text" name="name" required class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Your name">
+          <input type="text" name="name" required class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-i18n-placeholder="form_name_placeholder" placeholder="Your name">
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="form_company">公司</label>
-          <input type="text" name="company" class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Your company">
+          <input type="text" name="company" class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-i18n-placeholder="form_company_placeholder" placeholder="Your company">
         </div>
       </div>
 
@@ -801,11 +801,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
           <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="form_email">邮箱 *</label>
-          <input type="email" name="email" required class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="email@example.com">
+          <input type="email" name="email" required class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-i18n-placeholder="form_email_placeholder" placeholder="email@example.com">
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="form_phone">电话</label>
-          <input type="tel" name="phone" class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="+49 123 456789">
+          <input type="tel" name="phone" class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-i18n-placeholder="form_phone_placeholder" placeholder="+49 123 456789">
         </div>
       </div>
 
@@ -818,6 +818,7 @@
             name="country"
             list="countries-list"
             class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all pr-10"
+            data-i18n-placeholder="form_country_placeholder"
             placeholder="Filter or customize by entering the first letter of the country .."
             autocomplete="off"
           >
@@ -871,7 +872,7 @@
       <!-- Message -->
       <div>
         <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="form_message">您的留言</label>
-        <textarea name="message" rows="3" class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none" placeholder="What assistance can we provide for you?"></textarea>
+        <textarea name="message" rows="3" class="w-full px-3 py-3 text-xs bg-background-light dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none" data-i18n-placeholder="form_message_placeholder" placeholder="What assistance can we provide for you?"></textarea>
       </div>
 
       <!-- Privacy & Submit -->
@@ -987,59 +988,59 @@
 <!-- Optimized Floating Sidebar - Subtle but always visible -->
 <div class="floating-sidebar" id="floating-sidebar">
   <!-- Primary Contacts - Always visible, slightly transparent until hover -->
-  <button id="jump-btn-2" class="primary-contact-btn whatsapp-btn jump-btn" onclick="startWhatsApp()" aria-label="WhatsApp">
-    <span class="contact-tooltip">WhatsApp</span>
+  <button id="jump-btn-2" class="primary-contact-btn whatsapp-btn jump-btn" onclick="startWhatsApp()" aria-label="WhatsApp" data-i18n-aria="contact_tooltip_whatsapp">
+    <span class="contact-tooltip" data-i18n="contact_tooltip_whatsapp">WhatsApp</span>
     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </button>
   
-  <button id="jump-btn-3" class="primary-contact-btn line-btn jump-btn" onclick="startLine()" aria-label="LINE">
-    <span class="contact-tooltip">LINE</span>
+  <button id="jump-btn-3" class="primary-contact-btn line-btn jump-btn" onclick="startLine()" aria-label="LINE" data-i18n-aria="contact_tooltip_line">
+    <span class="contact-tooltip" data-i18n="contact_tooltip_line">LINE</span>
     <span class="font-bold text-xs">LINE</span>
   </button>
   
-  <button id="jump-btn-4" class="primary-contact-btn phone-btn jump-btn" onclick="startPhone()" aria-label="Anrufen">
-    <span class="contact-tooltip">Anrufen</span>
+  <button id="jump-btn-4" class="primary-contact-btn phone-btn jump-btn" onclick="startPhone()" aria-label="Call" data-i18n-aria="contact_tooltip_call">
+    <span class="contact-tooltip" data-i18n="contact_tooltip_call">Call</span>
     <span class="material-symbols-outlined text-lg">phone</span>
   </button>
 
   <!-- Secondary Contacts - Expandable -->
 <div class="secondary-contacts" id="secondary-contacts">
-<button class="secondary-btn telegram-btn" onclick="startTelegram()" aria-label="Telegram">
-    <span class="contact-tooltip">Telegram</span>
+<button class="secondary-btn telegram-btn" onclick="startTelegram()" aria-label="Telegram" data-i18n-aria="contact_tooltip_telegram">
+  <span class="contact-tooltip" data-i18n="contact_tooltip_telegram">Telegram</span>
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"></path></svg>
     </button>
-    <button class="secondary-btn email-btn" onclick="startEmail()" aria-label="E-Mail">
-        <span class="contact-tooltip">E-Mail</span>
+    <button class="secondary-btn email-btn" onclick="startEmail()" aria-label="Email" data-i18n-aria="contact_tooltip_email">
+      <span class="contact-tooltip" data-i18n="contact_tooltip_email">Email</span>
         <span class="material-symbols-outlined text-base">mail</span>
     </button>
-    <button class="secondary-btn facebook-btn" onclick="startFacebook()" aria-label="Facebook">
-        <span class="contact-tooltip">Facebook</span>
+    <button class="secondary-btn facebook-btn" onclick="startFacebook()" aria-label="Facebook" data-i18n-aria="contact_tooltip_facebook">
+      <span class="contact-tooltip" data-i18n="contact_tooltip_facebook">Facebook</span>
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
     </button>
-    <button class="secondary-btn instagram-btn" onclick="startInstagram()" aria-label="Instagram">
-        <span class="contact-tooltip">Instagram</span>
+    <button class="secondary-btn instagram-btn" onclick="startInstagram()" aria-label="Instagram" data-i18n-aria="contact_tooltip_instagram">
+      <span class="contact-tooltip" data-i18n="contact_tooltip_instagram">Instagram</span>
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
     </button>
-    <button class="secondary-btn twitter-btn" onclick="startTwitter()" aria-label="X/Twitter">
-        <span class="contact-tooltip">X/Twitter</span>
+    <button class="secondary-btn twitter-btn" onclick="startTwitter()" aria-label="X/Twitter" data-i18n-aria="contact_tooltip_twitter">
+      <span class="contact-tooltip" data-i18n="contact_tooltip_twitter">X/Twitter</span>
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
     </button>
-    <button class="secondary-btn linkedin-btn" onclick="startLinkedIn()" aria-label="LinkedIn">
-        <span class="contact-tooltip">LinkedIn</span>
+    <button class="secondary-btn linkedin-btn" onclick="startLinkedIn()" aria-label="LinkedIn" data-i18n-aria="contact_tooltip_linkedin">
+      <span class="contact-tooltip" data-i18n="contact_tooltip_linkedin">LinkedIn</span>
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
     </button>
-    <button class="secondary-btn tiktok-btn" onclick="startTikTok()" aria-label="TikTok">
-        <span class="contact-tooltip">TikTok</span>
+    <button class="secondary-btn tiktok-btn" onclick="startTikTok()" aria-label="TikTok" data-i18n-aria="contact_tooltip_tiktok">
+      <span class="contact-tooltip" data-i18n="contact_tooltip_tiktok">TikTok</span>
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"></path></svg>
     </button>
 </div>
 
   <!-- Expand/Collapse Button -->
-<button class="expand-btn" id="expand-btn" onclick="toggleSecondaryContacts()" aria-label="更多联系人">
+<button class="expand-btn" id="expand-btn" onclick="toggleSecondaryContacts()" aria-label="More contacts" data-i18n-aria="sidebar_expand">
     <span class="material-symbols-outlined">expand_more</span>
     <span class="contact-tooltip" data-i18n="sidebar_expand">更多联系人</span>
 </button>
-<button id="back-to-top" class="back-to-top-btn" aria-label="回到顶部">
+<button id="back-to-top" class="back-to-top-btn" aria-label="Back to top" data-i18n-aria="back_to_top">
   <span class="material-symbols-outlined">arrow_upward</span>
   <span class="back-to-top-tooltip" data-i18n="back_to_top">回到顶部</span>
 </button>
@@ -1068,16 +1069,16 @@
   <form class="space-y-4" id="smart-popup-form" onsubmit="submitSmartPopupForm(event); return false;">
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="smart_form_name">Name *</label>
-      <input type="text" name="name" required class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" placeholder="Your name">
+      <input type="text" name="name" required class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" data-i18n-placeholder="form_name_placeholder" placeholder="Your name">
     </div>
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="smart_form_email">E-Mail *</label>
-      <input type="email" name="email" required class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" placeholder="email@beispiel.de">
+      <input type="email" name="email" required class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" data-i18n-placeholder="form_email_placeholder" placeholder="email@example.com">
     </div>    
     
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="smart_form_phone">Telefon (optional)</label>
-      <input type="tel" name="phone" class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" placeholder="+49 123 456789">
+      <input type="tel" name="phone" class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all" data-i18n-placeholder="form_phone_placeholder" placeholder="+49 123 456789">
     </div>
 
     <!-- 国家选择框 -->
@@ -1089,6 +1090,7 @@
       name="country"
       list="popup-countries-list"
       class="w-full px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all pr-10"
+      data-i18n-placeholder="form_country_placeholder"
       placeholder="Filter or customize by entering the first letter of the country .."
       autocomplete="off"
     >
@@ -1140,7 +1142,7 @@
 </div>
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="smart_form_message">Ihre Nachricht</label>
-      <textarea name="message" rows="3" class="w-full px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all resize-none" placeholder="How can we help you?"></textarea>
+      <textarea name="message" rows="3" class="w-full px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all resize-none" data-i18n-placeholder="form_message_placeholder" placeholder="How can we help you?"></textarea>
     </div>
 
     
@@ -1184,6 +1186,11 @@
 </div>
 <!-- JavaScript -->
 <script>
+function tr(key, fallback) {
+  const value = typeof window.t === 'function' ? window.t(key) : key;
+  return value && value !== key ? value : fallback;
+}
+
 // ============================================
 // 回到顶部按钮系统
 // ============================================
@@ -1406,34 +1413,34 @@ function renderProducts() {
     <div class="product-card bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/5 group" data-category="${p.category}">
       <div class="aspect-[4/3] overflow-hidden relative">
         <img src="${p.productImage || resolveImage(p.imageKey)}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-        ${p.badgeKey ? `<span class="absolute top-3 left-3 ${p.badgeColor} text-white px-3 py-1 rounded-full text-xs font-bold">${window.t(p.badgeKey)}</span>` : ''}
+        ${p.badgeKey ? `<span class="absolute top-3 left-3 ${p.badgeColor} text-white px-3 py-1 rounded-full text-xs font-bold">${tr(p.badgeKey, p.badgeKey)}</span>` : ''}
         ${p.status ? `<span class="absolute top-3 right-3 bg-slate-900/75 text-white px-2 py-1 rounded text-xs">${p.status}</span>` : ''}
       </div>
       <div class="p-4 lg:p-6">
         <h3 class="text-lg font-bold text-primary dark:text-white mb-1">${p.name}</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">型号: ${p.model || '-'}</p>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">品牌: ${p.brand || '-'}</p>
-        <span class="text-xs font-medium text-primary uppercase">${window.t('category_' + p.category) || p.category}</span>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">${tr('product_label_model', 'Model')}: ${p.model || '-'}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">${tr('product_label_brand', 'Brand')}: ${p.brand || '-'}</p>
+        <span class="text-xs font-medium text-primary uppercase">${tr('category_' + p.category, p.category)}</span>
 
         <div class="flex flex-wrap gap-2 my-4">${highlights}</div>
 
         <div class="space-y-2 text-xs text-slate-600 dark:text-slate-300 my-4">
-          <div><strong>上市时间:</strong> ${p.launchDate || '-'}</div>
-          <div><strong>发货时长:</strong> ${p.shippingLeadTime || '-'}</div>
-          <div><strong>最少起订量:</strong> ${p.minOrderQty || '-'}</div>
-          <div><strong>价格:</strong> ${p.price || '-'}</div>
-          <div><strong>适用场景:</strong> ${p.scene || '-'}</div>
-          <div><strong>用途:</strong> ${p.usage || '-'}</div>
-          <div><strong>材质:</strong> ${specs.material || '-'}</div>
-          <div><strong>电压/频率:</strong> ${specs.voltage || '-'} / ${specs.frequency || '-'}</div>
-          <div><strong>容量/产能:</strong> ${specs.capacity || '-'} / ${specs.throughput || '-'}</div>
-          <div><strong>平均烹饪时长:</strong> ${specs.avgCookTime || '-'}</div>
+          <div><strong>${tr('product_label_launch_date', 'Launch Date')}:</strong> ${p.launchDate || '-'}</div>
+          <div><strong>${tr('product_label_shipping_lead_time', 'Shipping Lead Time')}:</strong> ${p.shippingLeadTime || '-'}</div>
+          <div><strong>${tr('product_label_min_order_qty', 'Minimum Order Quantity')}:</strong> ${p.minOrderQty || '-'}</div>
+          <div><strong>${tr('product_label_price', 'Price')}:</strong> ${p.price || '-'}</div>
+          <div><strong>${tr('product_label_scene', 'Application Scenario')}:</strong> ${p.scene || '-'}</div>
+          <div><strong>${tr('product_label_usage', 'Usage')}:</strong> ${p.usage || '-'}</div>
+          <div><strong>${tr('product_label_material', 'Material')}:</strong> ${specs.material || '-'}</div>
+          <div><strong>${tr('product_label_voltage_frequency', 'Voltage/Frequency')}:</strong> ${specs.voltage || '-'} / ${specs.frequency || '-'}</div>
+          <div><strong>${tr('product_label_capacity_throughput', 'Capacity/Throughput')}:</strong> ${specs.capacity || '-'} / ${specs.throughput || '-'}</div>
+          <div><strong>${tr('product_label_avg_cook_time', 'Average Cooking Time')}:</strong> ${specs.avgCookTime || '-'}</div>
         </div>
 
         <div class="flex items-center justify-between">
           <button onclick="showSmartPopupManual()" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors flex items-center gap-1">
             <span class="material-symbols-outlined text-sm">request_page</span>
-            ${window.t('product_request')}
+            ${tr('product_request', 'Request Quote')}
           </button>
         </div>
       </div>
@@ -1555,13 +1562,13 @@ function hideIndicator() {
   indicator.classList.remove('show');
 }
 
-function startWhatsApp() { window.open('https://wa.me/4975112345678?text=' + encodeURIComponent('Hallo! Ich interessiere mich für Ihre Gärschränke.'), '_blank'); }
+function startWhatsApp() { window.open('https://wa.me/4975112345678?text=' + encodeURIComponent(tr('contact_whatsapp_prefill', 'Hello! I am interested in your products.')), '_blank'); }
 function startLine() { window.open('https://line.me/ti/p/@baeckerei-profi', '_blank'); }
 function startPhone() { window.location.href = 'tel:+497511234567'; }
 function startTelegram() { window.open('https://t.me/baeckerei-profi', '_blank'); }
 function startEmail() {
-  const subject = encodeURIComponent('Anfrage zu Gärschränken');
-  const body = encodeURIComponent('Sehr geehrte Damen und Herren,\n\nich interessiere mich für Ihre Gärschränke.\n\nBitte kontaktieren Sie mich.\n\nMit freundlichen Grüßen');
+  const subject = encodeURIComponent(tr('contact_email_subject', 'Product Inquiry'));
+  const body = encodeURIComponent(tr('contact_email_body', 'Hello,\n\nI am interested in your products.\n\nPlease contact me.\n\nBest regards'));
   window.location.href = `mailto:info@baeckereitechnik-profi.de?subject=${subject}&body=${body}`;
 }
 function startFacebook() { window.open('https://facebook.com/baeckereitechnikprofi', '_blank'); }
@@ -1902,11 +1909,11 @@ const smartPopup = {
   updateTriggerReason(triggerReason) {
     const reasonElement = document.getElementById('trigger-reason');
     if (reasonElement) {
-      let message = '我们注意到您对我们的产品感兴趣';
-      if (triggerReason === 'initial-time') message = '您已在此页面停留超过20秒';
-      if (triggerReason === 'product-section') message = '您在产品区域停留超过15秒';
-      if (triggerReason === 'non-link-click') message = '您对页面进行了非链接点击';
-      if (triggerReason === 'non-hero-scroll') message = '您在非首屏区域停留超过20秒';
+      let message = tr('popup_trigger_default', 'We noticed your interest in our products');
+      if (triggerReason === 'initial-time') message = tr('popup_trigger_initial_time', 'You have stayed on this page for more than 20 seconds');
+      if (triggerReason === 'product-section') message = tr('popup_trigger_product_section', 'You stayed in the product section for more than 15 seconds');
+      if (triggerReason === 'non-link-click') message = tr('popup_trigger_non_link_click', 'You interacted with non-link content on this page');
+      if (triggerReason === 'non-hero-scroll') message = tr('popup_trigger_non_hero_scroll', 'You stayed in a non-hero area for more than 20 seconds');
       reasonElement.innerHTML = `<span class="material-symbols-outlined">info</span><span>${message}</span>`;
     }
   },
@@ -1950,7 +1957,7 @@ function showSmartPopupManual() {
   const countElement = document.getElementById('today-popup-count');
   if (countElement) countElement.textContent = `${smartPopup.state.popupShownThisSession}/${smartPopup.state.maxPopupsPerSession}`;
   const reasonElement = document.getElementById('trigger-reason');
-  if (reasonElement) reasonElement.innerHTML = `<span class="material-symbols-outlined">info</span><span>您点击了咨询按钮</span>`;
+  if (reasonElement) reasonElement.innerHTML = `<span class="material-symbols-outlined">info</span><span>${tr('popup_trigger_manual_click', 'You clicked the consultation button')}</span>`;
   // 同样应用环境可见性
   applyPopupVisibility();
   overlay.classList.add('show');
@@ -1970,7 +1977,7 @@ function closeSmartPopup() {
 async function submitSmartPopupForm(event) {
   event.preventDefault();
   const form = document.getElementById('smart-popup-form');
-  if (!form) { showNotification("表单未找到", "error"); return; }
+  if (!form) { showNotification(tr('notify_form_not_found', 'Form not found'), 'error'); return; }
   const formData = {
     formType: 'smart_popup',
     name: form.querySelector('input[name="name"]')?.value,
@@ -1988,19 +1995,19 @@ async function submitSmartPopupForm(event) {
     scrollDepth: userState?.scrollDepth || 0,
     userAgent: navigator.userAgent
   };
-  showNotification("正在提交您的信息...", "success");
+  showNotification(tr('notify_submitting_info', 'Submitting your information...'), 'success');
   try {
     await fetch('https://script.google.com/macros/s/AKfycbyikM1ArEFhJhQUSAp6l4DHJcGzDDK1cckL-KOrVbjipoMGSKsOOlhFWJGTPB6qOys/exec', {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     });
-    showNotification("提交成功！", "success");
+    showNotification(tr('notify_submit_success', 'Submitted successfully!'), 'success');
     form.reset();
     setTimeout(closeSmartPopup, 500);
   } catch (error) {
     console.error('提交失败:', error);
-    showNotification("提交成功！我们已收到您的信息。", "success");
+    showNotification(tr('notify_submit_received', 'Submitted successfully! We have received your information.'), 'success');
     form.reset();
     setTimeout(closeSmartPopup, 500);
   }
@@ -2009,7 +2016,7 @@ async function submitSmartPopupForm(event) {
 async function submitContactForm(event) {
   event.preventDefault();
   const form = document.getElementById('contact-form');
-  if (!form) { showNotification('表单未找到', 'error'); return; }
+  if (!form) { showNotification(tr('notify_form_not_found', 'Form not found'), 'error'); return; }
   const formData = {
     formType: 'contact_page',
     name: form.querySelector('input[name="name"]')?.value || '',
@@ -2028,14 +2035,14 @@ async function submitContactForm(event) {
     scrollDepth: userState?.scrollDepth || 0,
     userAgent: navigator.userAgent
   };
-  showNotification('正在发送您的咨询...', 'success');
+  showNotification(tr('notify_sending_inquiry', 'Sending your inquiry...'), 'success');
   try {
     await fetch('https://script.google.com/macros/s/AKfycbyikM1ArEFhJhQUSAp6l4DHJcGzDDK1cckL-KOrVbjipoMGSKsOOlhFWJGTPB6qOys/exec', {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     });
-    showNotification("提交成功！", "success");
+    showNotification(tr('notify_submit_success', 'Submitted successfully!'), 'success');
   } catch (error) {
     console.warn('Fetch 失败，降级到 mailto 备用方案', error);
     submitViaMailto(formData, 'contact_page');
@@ -2043,30 +2050,30 @@ async function submitContactForm(event) {
 }
 
 function submitViaMailto(formData, formType) {
-  const subject = encodeURIComponent(`${formType === 'smart_popup' ? '智能弹窗' : '联系表单'}咨询 - ${formData.name}`);
+  const subject = encodeURIComponent(`${formType === 'smart_popup' ? tr('mailto_subject_smart_popup', 'Smart Popup') : tr('mailto_subject_contact_form', 'Contact Form')} ${tr('mailto_subject_inquiry', 'Inquiry')} - ${formData.name}`);
   const body = encodeURIComponent(`
-姓名：${formData.name}
-邮箱：${formData.email}
-电话：${formData.phone}
-公司：${formData.company || '未提供'}
-国家：${formData.country || '未提供'}
-留言：${formData.message}
+${tr('mailto_label_name', 'Name')}: ${formData.name}
+${tr('mailto_label_email', 'Email')}: ${formData.email}
+${tr('mailto_label_phone', 'Phone')}: ${formData.phone}
+${tr('mailto_label_company', 'Company')}: ${formData.company || tr('mailto_not_provided', 'Not provided')}
+${tr('mailto_label_country', 'Country')}: ${formData.country || tr('mailto_not_provided', 'Not provided')}
+${tr('mailto_label_message', 'Message')}: ${formData.message}
 
------------- 用户信息 ------------
-IP地址：正在获取中...
-用户语言：${currentLanguage}
-浏览器语言：${navigator.language}
-屏幕分辨率：${window.screen.width}x${window.screen.height}
-时区：${Intl.DateTimeFormat().resolvedOptions().timeZone}
-页面URL：${window.location.href}
-提交时间：${new Date().toLocaleString()}
-页面停留时间：${userState.timeOnPage || 0}秒
-滚动深度：${userState.scrollDepth || 0}%
-产品兴趣点击：0次
------------- 浏览器信息 ------------
-用户代理：${navigator.userAgent}
-语言：${navigator.language}
-分辨率：${window.screen.width}x${window.screen.height}
+------------ ${tr('mailto_section_user_info', 'User Information')} ------------
+${tr('mailto_label_ip', 'IP Address')}: ${tr('mailto_ip_fetching', 'Fetching...')}
+${tr('mailto_label_user_language', 'User Language')}: ${currentLanguage}
+${tr('mailto_label_browser_language', 'Browser Language')}: ${navigator.language}
+${tr('mailto_label_screen_resolution', 'Screen Resolution')}: ${window.screen.width}x${window.screen.height}
+${tr('mailto_label_timezone', 'Timezone')}: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+${tr('mailto_label_page_url', 'Page URL')}: ${window.location.href}
+${tr('mailto_label_submit_time', 'Submit Time')}: ${new Date().toLocaleString()}
+${tr('mailto_label_time_on_page', 'Time on Page')}: ${userState.timeOnPage || 0}${tr('mailto_unit_seconds', 's')}
+${tr('mailto_label_scroll_depth', 'Scroll Depth')}: ${userState.scrollDepth || 0}%
+${tr('mailto_label_product_interest_clicks', 'Product Interest Clicks')}: 0
+------------ ${tr('mailto_section_browser_info', 'Browser Information')} ------------
+${tr('mailto_label_user_agent', 'User Agent')}: ${navigator.userAgent}
+${tr('mailto_label_language', 'Language')}: ${navigator.language}
+${tr('mailto_label_resolution', 'Resolution')}: ${window.screen.width}x${window.screen.height}
   `);
   window.location.href = `mailto:179564128@qq.com?subject=${subject}&body=${body}`;
 }
