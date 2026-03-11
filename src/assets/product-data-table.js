@@ -1,4 +1,4 @@
-// 产品数据表（由 scripts/products-table.xlsx 自动生成）
+// 产品数据表（由 Feishu Sheet 自动生成）
 export const PRODUCT_DATA_TABLE = [
   {
     "key": "滚筒炒菜机",
