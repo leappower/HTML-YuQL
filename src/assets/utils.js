@@ -1138,50 +1138,139 @@ import { IMAGE_ASSETS } from './image-assets.js';
   // ============================================
   const smartPopup = {
     state: {
-      popupShownThisSession: 0, maxPopupsPerSession: 4, lastPopupTime: null,
-      popupCooldown: 60000,
-      conditions: {
-        initialLoadTime: { triggered: false, threshold: 20 },
-        productSectionTime: { triggered: false, threshold: 15 },
-        nonLinkClick: { triggered: false },
-        nonHeroScrollTime: { triggered: false, threshold: 20 }
+      popupShownThisSession: 0,
+      maxPopupsPerSession: 2,
+      lastPopupTime: null,
+      popupCooldown: 30000,
+      pageStartAt: Date.now(),
+      autoPopupDisabledForSession: false,
+      initialDelayReached: false,
+      engagementScore: 0,
+      scoreThresholdDesktop: 50,
+      scoreThresholdMobile: 60,
+      minScrollPercentBeforeAuto: 20,
+      delayDesktopSeconds: 20,
+      delayMobileSeconds: 25,
+      forceShowAfterDesktopSeconds: 35,
+      forceShowAfterMobileSeconds: 40,
+      isActivelyScrolling: false,
+      scrollIdleTimer: null,
+      storageKeys: {
+        convertedUntil: 'smartPopupConvertedUntil'
       },
-      hasScrolledPastHero: false
+      suppression: {
+        convertedUntil: 0
+      },
+      flags: {
+        nonLinkClickScored: false,
+        productInteractionScored: false,
+        scrollDepthScored: false,
+        productDwellScored: false,
+        nonHeroDwellScored: false,
+        friendlyHandlersBound: false
+      }
     },
+
     init() {
+      this.state.pageStartAt = Date.now();
+      this.loadSuppressionState();
       this.setupTracking();
+      this.setupFriendlyCloseHandlers();
       this.checkConditionsLoop();
+      this.updateSessionCount();
     },
+
+    loadSuppressionState() {
+      const { convertedUntil } = this.state.storageKeys;
+      this.state.suppression.convertedUntil = Number(localStorage.getItem(convertedUntil) || 0);
+    },
+
+    addScore(points, flagKey) {
+      if (flagKey && this.state.flags[flagKey]) return;
+      if (flagKey) this.state.flags[flagKey] = true;
+      this.state.engagementScore += points;
+    },
+
+    getScrollPercent() {
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollableHeight <= 0) return 0;
+      return Math.round((window.scrollY / scrollableHeight) * 100);
+    },
+
+    hasInputFocus() {
+      const activeElement = document.activeElement;
+      if (!activeElement) return false;
+      return ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName) || activeElement.isContentEditable;
+    },
+
+    isSuppressedByStorage() {
+      if (isTestEnvironment()) return false;
+      const now = Date.now();
+      return now < this.state.suppression.convertedUntil;
+    },
+
+    isAutoPopupAllowed() {
+      if (document.hidden) return false;
+      if (this.state.autoPopupDisabledForSession) return false;
+      if (this.state.popupShownThisSession >= this.state.maxPopupsPerSession) return false;
+      if (this.isSuppressedByStorage()) return false;
+      if (this.state.lastPopupTime && (Date.now() - this.state.lastPopupTime) < this.state.popupCooldown) return false;
+      if (!this.state.initialDelayReached) return false;
+      if (this.hasInputFocus()) return false;
+      if (this.getScrollPercent() < this.state.minScrollPercentBeforeAuto) return false;
+      return true;
+    },
+
     setupTracking() {
       document.addEventListener('click', (e) => {
-        const isLink = e.target.closest('a, button, [role="button"]');
+        const isLinkLike = e.target.closest('a, button, [role="button"]');
         const isInput = e.target.closest('input, textarea, select');
-        if (!isLink && !isInput) {
-          this.state.conditions.nonLinkClick.triggered = true;
+        const productIntentTarget = e.target.closest('#products .product-card, #product-filter-bar .filter-btn, #pagination .pagination-btn, #product-grid-mobile-controls button');
+
+        if (productIntentTarget) {
+          this.addScore(35, 'productInteractionScored');
+        }
+
+        if (!isLinkLike && !isInput) {
+          this.addScore(10, 'nonLinkClickScored');
         }
       });
+
       this.setupScrollTracking();
       this.setupProductSectionObserver();
     },
+
     setupScrollTracking() {
-      let nonHeroTimer = 0, nonHeroInterval = null;
+      let nonHeroTimer = 0;
+      let nonHeroInterval = null;
+
       window.addEventListener('scroll', () => {
-        const heroSection = document.querySelector('section:first-of-type');
-        if (heroSection) {
-          const heroRect = heroSection.getBoundingClientRect();
-          const isPastHero = window.scrollY > heroRect.height;
-          if (isPastHero && !this.state.hasScrolledPastHero) {
-            this.state.hasScrolledPastHero = true;
-          }
+        this.state.isActivelyScrolling = true;
+        if (this.state.scrollIdleTimer) clearTimeout(this.state.scrollIdleTimer);
+        this.state.scrollIdleTimer = setTimeout(() => {
+          this.state.isActivelyScrolling = false;
+        }, 450);
+
+        const scrollPercent = this.getScrollPercent();
+        if (scrollPercent >= 50) {
+          this.addScore(30, 'scrollDepthScored');
         }
-        if (this.state.hasScrolledPastHero) {
-          if (!nonHeroInterval) {
+
+        const heroSection = document.querySelector('section:first-of-type');
+        if (!heroSection) return;
+
+        const heroRect = heroSection.getBoundingClientRect();
+        const isPastHero = window.scrollY > heroRect.height;
+
+        if (isPastHero) {
+          if (!nonHeroInterval && !this.state.flags.nonHeroDwellScored) {
             nonHeroTimer = 0;
             nonHeroInterval = setInterval(() => {
               nonHeroTimer++;
-              if (nonHeroTimer >= this.state.conditions.nonHeroScrollTime.threshold) {
-                this.state.conditions.nonHeroScrollTime.triggered = true;
+              if (nonHeroTimer >= 20) {
+                this.addScore(20, 'nonHeroDwellScored');
                 clearInterval(nonHeroInterval);
+                nonHeroInterval = null;
               }
             }, 1000);
           }
@@ -1189,105 +1278,167 @@ import { IMAGE_ASSETS } from './image-assets.js';
           clearInterval(nonHeroInterval);
           nonHeroInterval = null;
         }
-      });
+      }, { passive: true });
     },
+
     setupProductSectionObserver() {
       const productSection = document.getElementById('products');
       if (!productSection) return;
-      let productTimer = 0, productInterval = null;
+
+      let productTimer = 0;
+      let productInterval = null;
+
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
+            if (this.state.flags.productDwellScored) return;
             productTimer = 0;
+            if (productInterval) clearInterval(productInterval);
             productInterval = setInterval(() => {
               productTimer++;
-              if (productTimer >= this.state.conditions.productSectionTime.threshold) {
-                this.state.conditions.productSectionTime.triggered = true;
+              if (productTimer >= 20) {
+                this.addScore(40, 'productDwellScored');
                 clearInterval(productInterval);
+                productInterval = null;
               }
             }, 1000);
-          } else {
-            if (productInterval) { clearInterval(productInterval); productInterval = null; }
+          } else if (productInterval) {
+            clearInterval(productInterval);
+            productInterval = null;
           }
         });
-      }, { threshold: 0.3 });
+      }, { threshold: 0.35 });
+
       observer.observe(productSection);
     },
+
     checkConditionsLoop() {
-      let initialTimer = 0;
-      const initialInterval = setInterval(() => {
-        initialTimer++;
-        if (initialTimer >= this.state.conditions.initialLoadTime.threshold) {
-          this.state.conditions.initialLoadTime.triggered = true;
-          clearInterval(initialInterval);
-        }
-      }, 1000);
+      const delaySeconds = window.matchMedia('(max-width: 768px)').matches
+        ? this.state.delayMobileSeconds
+        : this.state.delayDesktopSeconds;
+
+      setTimeout(() => {
+        this.state.initialDelayReached = true;
+        // Evaluate immediately once the first-screen protection window ends.
+        this.evaluateConditions();
+      }, delaySeconds * 1000);
+
       setInterval(() => this.evaluateConditions(), 1000);
     },
+
     evaluateConditions() {
-      if (this.state.popupShownThisSession >= this.state.maxPopupsPerSession) return;
-      if (this.state.lastPopupTime && (Date.now() - this.state.lastPopupTime) < this.state.popupCooldown) return;
-      const shouldTrigger = this.shouldTriggerPopup();
-      if (shouldTrigger) this.showPopup(shouldTrigger.reason);
+      if (!this.isAutoPopupAllowed()) return;
+
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
+      const forceAfterSeconds = isMobile ? this.state.forceShowAfterMobileSeconds : this.state.forceShowAfterDesktopSeconds;
+      const elapsedSeconds = Math.floor((Date.now() - this.state.pageStartAt) / 1000);
+
+      if (elapsedSeconds >= forceAfterSeconds) {
+        this.showPopup('timed-fallback', { manual: false });
+        return;
+      }
+
+      const threshold = isMobile ? this.state.scoreThresholdMobile : this.state.scoreThresholdDesktop;
+
+      if (this.state.engagementScore >= threshold) {
+        this.showPopup('engagement-score', { manual: false });
+      }
     },
-    shouldTriggerPopup() {
-      if (this.state.conditions.initialLoadTime.triggered) return { reason: 'initial-time' };
-      if (this.state.conditions.productSectionTime.triggered) return { reason: 'product-section' };
-      if (this.state.conditions.nonLinkClick.triggered) return { reason: 'non-link-click' };
-      if (this.state.conditions.nonHeroScrollTime.triggered) return { reason: 'non-hero-scroll' };
-      return null;
+
+    updateSessionCount() {
+      const countElement = document.getElementById('today-popup-count');
+      if (!countElement) return;
+      countElement.textContent = `${this.state.popupShownThisSession}/${this.state.maxPopupsPerSession}`;
     },
-    showPopup(triggerReason) {
-      this.state.popupShownThisSession++;
-      this.state.lastPopupTime = Date.now();
-      this.updateSessionCount();
+
+    updateTriggerReason(triggerReason) {
+      const reasonElement = document.getElementById('trigger-reason');
+      if (!reasonElement) return;
+
+      let message = tr('popup_trigger_default', 'We noticed your interest in our products');
+      if (triggerReason === 'manual-click') {
+        message = tr('popup_trigger_manual_click', 'You clicked the consultation button');
+      }
+
+      reasonElement.innerHTML = `<span class="material-symbols-outlined">info</span><span>${message}</span>`;
+    },
+
+    showPopup(triggerReason, options = {}) {
+      const { manual = false } = options;
+      const overlay = document.getElementById('smart-popup-overlay');
+      if (!overlay || overlay.classList.contains('show')) return;
+
+      if (!manual) {
+        if (!this.isAutoPopupAllowed()) return;
+        this.state.popupShownThisSession++;
+        this.state.lastPopupTime = Date.now();
+        this.updateSessionCount();
+      } else {
+        this.state.lastPopupTime = Date.now();
+      }
+
       this.updateTriggerReason(triggerReason);
       applyPopupVisibility();
 
-      const overlay = document.getElementById('smart-popup-overlay');
-      if (overlay) {
-      // 滚动条补偿
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-        document.body.style.paddingRight = scrollbarWidth + 'px';
-        document.body.style.overflow = 'hidden';
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.paddingRight = scrollbarWidth + 'px';
+      document.body.style.overflow = 'hidden';
+      overlay.classList.add('show');
+    },
 
-        overlay.classList.add('show');
-        this.resetTrigger(triggerReason);
-      }
+    saveConversionSuppression() {
+      const until = Date.now() + 48 * 60 * 60 * 1000;
+      this.state.suppression.convertedUntil = until;
+      localStorage.setItem(this.state.storageKeys.convertedUntil, String(until));
     },
-    updateSessionCount() {
-      const countElement = document.getElementById('today-popup-count');
-      if (countElement) {
-        countElement.textContent = `${this.state.popupShownThisSession}/${this.state.maxPopupsPerSession}`;
-      }
-    },
-    updateTriggerReason(triggerReason) {
-      const reasonElement = document.getElementById('trigger-reason');
-      if (reasonElement) {
-        let message = tr('popup_trigger_default', 'We noticed your interest in our products');
-        if (triggerReason === 'initial-time') message = tr('popup_trigger_initial_time', 'You have stayed on this page for more than 20 seconds');
-        if (triggerReason === 'product-section') message = tr('popup_trigger_product_section', 'You stayed in the product section for more than 15 seconds');
-        if (triggerReason === 'non-link-click') message = tr('popup_trigger_non_link_click', 'You interacted with non-link content on this page');
-        if (triggerReason === 'non-hero-scroll') message = tr('popup_trigger_non_hero_scroll', 'You stayed in a non-hero area for more than 20 seconds');
-        reasonElement.innerHTML = `<span class="material-symbols-outlined">info</span><span>${message}</span>`;
-      }
-    },
-    resetTrigger(triggerReason) {
-      if (triggerReason === 'initial-time') this.state.conditions.initialLoadTime.triggered = false;
-      if (triggerReason === 'product-section') this.state.conditions.productSectionTime.triggered = false;
-      if (triggerReason === 'non-link-click') this.state.conditions.nonLinkClick.triggered = false;
-      if (triggerReason === 'non-hero-scroll') this.state.conditions.nonHeroScrollTime.triggered = false;
-    },
-    closePopup() {
+
+    closePopup(options = {}) {
+      const { dismissed = false, converted = false } = options;
       const overlay = document.getElementById('smart-popup-overlay');
       if (!overlay) return;
-    
+
+      // Use close time as cooldown anchor to avoid immediate re-open.
+      this.state.lastPopupTime = Date.now();
+
+      if (dismissed) {
+        this.state.autoPopupDisabledForSession = true;
+      }
+
+      if (converted) {
+        this.state.autoPopupDisabledForSession = true;
+        this.saveConversionSuppression();
+      }
+
       overlay.classList.add('closing');
       setTimeout(() => {
         overlay.classList.remove('show', 'closing');
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
       }, 200);
+    },
+
+    setupFriendlyCloseHandlers() {
+      if (this.state.flags.friendlyHandlersBound) return;
+      this.state.flags.friendlyHandlersBound = true;
+
+      const overlay = document.getElementById('smart-popup-overlay');
+      if (overlay) {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) {
+            // Overlay click is treated as soft close, not a valid dismissal.
+            this.closePopup();
+          }
+        });
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const popupOverlay = document.getElementById('smart-popup-overlay');
+        if (popupOverlay && popupOverlay.classList.contains('show')) {
+          // Esc is treated as soft close, not a valid dismissal.
+          this.closePopup();
+        }
+      });
     }
   };
 
@@ -1301,28 +1452,11 @@ import { IMAGE_ASSETS } from './image-assets.js';
   }
 
   function showSmartPopupManual() {
-    const overlay = document.getElementById('smart-popup-overlay');
-    if (!overlay) return;
-    // Manual trigger should always respond to explicit user action on mobile/desktop.
-    if (window.smartPopup) {
-      smartPopup.state.popupShownThisSession++;
-      smartPopup.state.lastPopupTime = Date.now();
-    }
-    const countElement = document.getElementById('today-popup-count');
-    if (countElement) countElement.textContent = `${smartPopup.state.popupShownThisSession}/${smartPopup.state.maxPopupsPerSession}`;
-    const reasonElement = document.getElementById('trigger-reason');
-    if (reasonElement) reasonElement.innerHTML = `<span class="material-symbols-outlined">info</span><span>${tr('popup_trigger_manual_click', 'You clicked the consultation button')}</span>`;
-    // 同样应用环境可见性
-    applyPopupVisibility();
-    overlay.classList.add('show');
-    // 在显示弹窗前，获取滚动条宽度并设置 padding
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-    document.body.style.paddingRight = scrollbarWidth + 'px';
-    document.body.style.overflow = 'hidden';
+    smartPopup.showPopup('manual-click', { manual: true });
   }
 
   function closeSmartPopup() {
-    smartPopup.closePopup();
+    smartPopup.closePopup({ dismissed: true });
   }
 
   // ============================================
@@ -1358,12 +1492,12 @@ import { IMAGE_ASSETS } from './image-assets.js';
       });
       showNotification(tr('notify_submit_success', 'Submitted successfully!'), 'success');
       form.reset();
-      setTimeout(closeSmartPopup, 500);
+      setTimeout(() => smartPopup.closePopup({ converted: true }), 500);
     } catch (error) {
       console.error('提交失败:', error);
       showNotification(tr('notify_submit_received', 'Submitted successfully! We have received your information.'), 'success');
       form.reset();
-      setTimeout(closeSmartPopup, 500);
+      setTimeout(() => smartPopup.closePopup({ converted: true }), 500);
     }
   }
 
