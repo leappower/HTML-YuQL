@@ -506,6 +506,17 @@ import { IMAGE_ASSETS } from './image-assets.js';
     scheduleRenderProducts();
   }
 
+  // 获取产品多语言文本的辅助函数（使用 product.i18nId 和字段名）
+  function getProductI18nField(product, field, fallback = '') {
+    const id = product && product.i18nId;
+    if (id) {
+      const key = `${id}_${field}`;
+      const translated = tr(key);
+      if (translated && translated !== key) return translated;
+    }
+    return fallback;
+  }
+
   function renderProducts() {
     const grid = document.getElementById('product-grid');
     if (!grid) return;
@@ -582,11 +593,25 @@ import { IMAGE_ASSETS } from './image-assets.js';
     }
 
     grid.innerHTML = pageProducts.map((p) => {
-      const highlights = (p.highlights || []).slice(0, 3).map((item) => `<span class="px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">${item}</span>`).join('');
+      // 获取产品多语言文本（优先用i18n key，降级到原字段）
+      const nameI18n = getProductI18nField(p, 'name', p.name);
+      const usageI18n = getProductI18nField(p, 'usage', p.usage);
+      const scenariosI18n = getProductI18nField(p, 'scenarios', p.scenarios);
+      const highlightsI18n = getProductI18nField(p, 'highlights', p.highlights ? (Array.isArray(p.highlights) ? p.highlights.join('; ') : String(p.highlights)) : '');
+      
+      // 处理highlights为标签数组
+      let highlightsItems = [];
+      if (highlightsI18n) {
+        // 将多语言highlights按分号或换行分割
+        highlightsItems = highlightsI18n.split(/[;\n]/).map(h => h.trim()).filter(Boolean).slice(0, 3);
+      } else if (Array.isArray(p.highlights) && p.highlights.length > 0) {
+        highlightsItems = p.highlights.slice(0, 3);
+      }
+      const highlights = highlightsItems.map((item) => `<span class="px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">${item}</span>`).join('');
+      
       const categoryLabel = tr('category_' + p.category, p.category);
-      const displayName = p.name || `${categoryLabel} ${p.model || ''}`.trim();
+      const displayName = nameI18n || `${categoryLabel} ${p.model || ''}`.trim();
       const badgeColorClass = p.badgeColor || 'bg-primary';
-      const scenarios = p.scenarios;
       const material = p.material;
       const minimumOrderQuantity = p.minimumOrderQuantity;
       const referencePrice = p.referencePrice;
@@ -597,8 +622,8 @@ import { IMAGE_ASSETS } from './image-assets.js';
       const imageRecognitionKey = p.imageRecognitionKey;
 
       const detailRows = [
-        [tr('product_label_usage', 'Usage'), p.usage],
-        [tr('product_label_scene', 'Application Scenario'), scenarios],
+        [tr('product_label_usage', 'Usage'), usageI18n],
+        [tr('product_label_scene', 'Application Scenario'), scenariosI18n],
         [tr('product_label_material', 'Material'), material],
         [tr('product_label_min_order_qty', 'Minimum Order Quantity'), minimumOrderQuantity],
       ].filter(([, value]) => value && String(value).trim());
@@ -646,7 +671,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
           </div>
         </div>
 
-        <div class="hidden sm:flex flex-wrap gap-1.5 mb-2 min-h-[1.25rem]">${highlights || `<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">${tr('product_label_scene', 'Application Scenario')}: ${scenarios || '-'}</span>`}</div>
+        <div class="hidden sm:flex flex-wrap gap-1.5 mb-2 min-h-[1.25rem]">${highlights || `<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">${tr('product_label_scene', 'Application Scenario')}: ${scenariosI18n || '-'}</span>`}</div>
 
         <div class="hidden sm:grid grid-cols-1 gap-0.5 text-[10px] text-slate-600 dark:text-slate-300 mb-2.5 border-t border-slate-100 dark:border-slate-800 pt-2">
           ${detailHtml}

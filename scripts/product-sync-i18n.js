@@ -1,0 +1,244 @@
+#!/usr/bin/env node
+
+/**
+ * 产品i18n三文件同步脚本
+ * 
+ * 功能：
+ * 1. 同时检测 producti18n.json、zh.json、zh-CN.json 三个文件
+ * 2. 找出所有产品相关的key（hash_field格式）
+ * 3. 补全这三个文件间的缺失key
+ * 4. 将补全后的数据映射到其他21个语言文件
+ * 
+ * 工作流程：
+ * Step 1: 加载三个源文件（zh.json、zh-CN.json、producti18n.json）
+ * Step 2: 提取产品key（hash_\w+格式）
+ * Step 3: 补全zh.json和zh-CN.json中的缺失key
+ * Step 4: 补全producti18n.json中的缺失key
+ * Step 5: 将产品翻译映射到其他21个语言文件
+ * 
+ * 使用方法：
+ *   node scripts/product-sync-i18n.js
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+const TRANSLATIONS_DIR = path.join(process.cwd(), 'src/assets/translations');
+const PRODUCT_I18N_PATH = path.join(process.cwd(), 'scripts/producti18n.json');
+
+// 产品key正则（hash_field格式）
+const PRODUCT_KEY_PATTERN = /^[0-9a-f]{8}_[a-z0-9_]+$/;
+
+// --source-only 模式：仅同步三个中文源文件，不写入其他语言（翻译前使用）
+const SOURCE_ONLY = process.argv.includes('--source-only');
+
+// 支持的所有语言
+const SUPPORTED_LANGS = [
+  'ar', 'de', 'en', 'es', 'fil', 'fr', 'he', 'id', 'it', 'ja', 'ko', 'ms', 'nl', 
+  'pl', 'pt', 'ru', 'th', 'tr', 'vi', 'zh', 'zh-CN', 'zh-TW'
+];
+
+/**
+ * 加载JSON文件
+ */
+function loadJSON(filePath) {
+  try {
+    if (!fs.existsSync(filePath)) {
+      return {};
+    }
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch (err) {
+    console.error(`❌ Error loading ${filePath}: ${err.message}`);
+    return {};
+  }
+}
+
+/**
+ * 保存JSON文件（key 排序后写入）
+ */
+function saveJSON(filePath, data) {
+  const sorted = {};
+  Object.keys(data).sort().forEach(key => { sorted[key] = data[key]; });
+  fs.writeFileSync(filePath, JSON.stringify(sorted, null, 2) + '\n', 'utf8');
+}
+
+/**
+ * 获取翻译文件路径
+ */
+function getTranslationPath(lang) {
+  return path.join(TRANSLATIONS_DIR, `${lang}.json`);
+}
+
+/**
+ * 提取产品 key（8位hex_field格式）
+ */
+function extractProductKeys(data) {
+  return Object.keys(data).filter(key => PRODUCT_KEY_PATTERN.test(key));
+}
+
+/**
+ * Step 1: 加载源文件
+ * producti18n.json 是平铺中文格式 { key: "中文值" }，是翻译原始数据
+ */
+function loadSourceFiles() {
+  console.log('📚 Loading source files...\n');
+
+  // producti18n.json: 平铺中文 { key: "中文值" }
+  const productI18nData = loadJSON(PRODUCT_I18N_PATH);
+  const zhData = loadJSON(getTranslationPath('zh'));
+  const zhCNData = loadJSON(getTranslationPath('zh-CN'));
+
+  const productKeys = new Set(extractProductKeys(productI18nData));
+  const zhKeys = new Set(extractProductKeys(zhData));
+  const zhCNKeys = new Set(extractProductKeys(zhCNData));
+
+  console.log(`  • producti18n.json (中文原始): ${productKeys.size} product keys`);
+  console.log(`  • zh.json: ${zhKeys.size} product keys`);
+  console.log(`  • zh-CN.json: ${zhCNKeys.size} product keys\n`);
+
+  return { productI18nData, zhData, zhCNData, productKeys, zhKeys, zhCNKeys };
+}
+
+/**
+ * Step 2: 差异化补全 producti18n.json ↔ zh.json ↔ zh-CN.json
+ * 三文件互为备份，合并所有中文产品 key
+ */
+function syncSourceFiles(sources) {
+  console.log('🔄 Step 2: Syncing producti18n.json ↔ zh.json ↔ zh-CN.json...\n');
+
+  const { productI18nData, zhData, zhCNData, productKeys, zhKeys, zhCNKeys } = sources;
+
+  // 三方合并所有产品 key
+  const allKeys = new Set([...productKeys, ...zhKeys, ...zhCNKeys]);
+  console.log(`  • Total unique product keys: ${allKeys.size}`);
+
+  let piAdded = 0, zhAdded = 0, zhCNAdded = 0;
+
+  for (const key of allKeys) {
+    // 中文值来源优先级：producti18n > zh-CN > zh
+    const zhVal = productI18nData[key] || zhCNData[key] || zhData[key] || '';
+
+    if (!productKeys.has(key)) { productI18nData[key] = zhVal; piAdded++; }
+    if (!zhKeys.has(key))      { zhData[key] = zhVal; zhAdded++; }
+    if (!zhCNKeys.has(key))    { zhCNData[key] = zhVal; zhCNAdded++; }
+  }
+
+  console.log(`  Summary: producti18n (+${piAdded}), zh.json (+${zhAdded}), zh-CN.json (+${zhCNAdded})\n`);
+
+  return { productI18nData, zhData, zhCNData, allKeys };
+}
+
+/**
+ * Preview: 翻译前打印各语言文件缺失的产品 key 数量（只读检查，不写入文件）
+ */
+function previewSync(allKeys, productI18nData) {
+  console.log('📋 Preview: Missing product keys per language (before sync):\n');
+
+  let totalMissing = 0;
+
+  for (const lang of SUPPORTED_LANGS) {
+    if (lang === 'zh' || lang === 'zh-CN') continue;
+
+    const langFile = loadJSON(getTranslationPath(lang));
+    const missingKeys = [...allKeys].filter(key => !langFile[key]);
+
+    if (missingKeys.length > 0) {
+      totalMissing += missingKeys.length;
+      const sample = missingKeys.slice(0, 3).map(k => `${k} = "${productI18nData[k] || ''}"`).join(', ');
+      const suffix = missingKeys.length > 3 ? ` ... +${missingKeys.length - 3} more` : '';
+      console.log(`  ⚠️  ${lang.padEnd(6)}: ${missingKeys.length} missing → ${sample}${suffix}`);
+    } else {
+      console.log(`  ✓  ${lang.padEnd(6)}: all product keys present`);
+    }
+  }
+
+  console.log(`\n  📊 Total missing entries across all languages: ${totalMissing}\n`);
+}
+
+/**
+ * Step 3: 将产品 key 同步到其他 21 种语言文件
+ * 优先使用各语言文件中已有的翻译，缺失的用中文占位
+ */
+function syncOtherLanguages(productI18nData, allKeys, zhCNData) {
+  console.log('🌐 Step 3: Syncing product keys to other 21 languages...\n');
+
+  let totalAdded = 0;
+
+  for (const lang of SUPPORTED_LANGS) {
+    if (lang === 'zh' || lang === 'zh-CN') continue;
+
+    const langFile = loadJSON(getTranslationPath(lang));
+    let added = 0;
+
+    for (const key of allKeys) {
+      if (!langFile[key]) {
+        // 缺失 key：用中文原文占位（等待后续 translate:products 翻译）
+        langFile[key] = productI18nData[key] || zhCNData[key] || '';
+        added++;
+      }
+    }
+
+    try {
+      saveJSON(getTranslationPath(lang), langFile);
+      if (added > 0) {
+        console.log(`  ✓ ${lang}: added ${added} product keys`);
+        totalAdded += added;
+      } else {
+        console.log(`  — ${lang}: no missing keys`);
+      }
+    } catch (err) {
+      console.error(`  ❌ Error saving ${lang}.json: ${err.message}`);
+    }
+  }
+
+  console.log(`\n  Total added across all languages: ${totalAdded}\n`);
+}
+
+/**
+ * Main
+ */
+async function main() {
+  const mode = SOURCE_ONLY ? ' [--source-only]' : ' [full]';
+  console.log(`🔍 Product i18n Sync Script${mode}\n`);
+  console.log('='.repeat(50) + '\n');
+
+  if (SOURCE_ONLY) {
+    console.log('ℹ️  Source-only mode: syncing producti18n ↔ zh ↔ zh-CN only (skipping other languages)\n');
+  }
+
+  try {
+    // Step 1: 加载源文件
+    const sources = loadSourceFiles();
+
+    // Step 2: 三文件差异化补全
+    const synced = syncSourceFiles(sources);
+
+    // 保存补全后的三个中文源文件
+    console.log('💾 Saving source files...\n');
+    saveJSON(PRODUCT_I18N_PATH, synced.productI18nData);
+    console.log('  ✓ producti18n.json saved');
+    saveJSON(getTranslationPath('zh'), synced.zhData);
+    console.log('  ✓ zh.json saved');
+    saveJSON(getTranslationPath('zh-CN'), synced.zhCNData);
+    console.log('  ✓ zh-CN.json saved');
+    console.log();
+
+    if (!SOURCE_ONLY) {
+      // 📋 Preview: 写入前打印各语言缺失 key 检查
+      previewSync(synced.allKeys, synced.productI18nData);
+
+      // Step 3: 同步其他 21 种语言（翻译后兜底，缺失的用中文占位）
+      syncOtherLanguages(synced.productI18nData, synced.allKeys, synced.zhCNData);
+    }
+
+    console.log('='.repeat(50));
+    console.log('\n✨ Sync complete!\n');
+
+  } catch (err) {
+    console.error(`\n❌ Error: ${err.message}`);
+    console.error(err.stack);
+    process.exit(1);
+  }
+}
+
+main();

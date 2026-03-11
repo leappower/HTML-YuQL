@@ -12,29 +12,32 @@
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: rgba(39, 27, 59, 0.3);
+  background: rgb(39, 27, 59, 0.3);
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(39, 27, 59, 0.5);
+  background: rgb(39, 27, 59, 0.5);
 }
 
 .ios-nav-btn {
   border-radius: 9999px;
-  border: 1px solid rgba(39, 27, 59, 0.16);
-  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgb(39, 27, 59, 0.16);
+  background: rgb(255, 255, 255, 0.86);
   backdrop-filter: blur(8px);
-  box-shadow: 0 10px 22px rgba(39, 27, 59, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 22px rgb(39, 27, 59, 0.14), inset 0 1px 0 rgb(255, 255, 255, 0.7);
   transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .ios-nav-btn:active:not(:disabled) {
   transform: scale(1.1);
-  box-shadow: 0 14px 28px rgba(39, 27, 59, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  box-shadow: 0 14px 28px rgb(39, 27, 59, 0.18), inset 0 1px 0 rgb(255, 255, 255, 0.7);
 }
 
 .ios-nav-btn.is-disabled,
@@ -44,9 +47,9 @@
 }
 
 .dark .ios-nav-btn {
-  border-color: rgba(148, 163, 184, 0.28);
-  background: rgba(15, 23, 42, 0.86);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border-color: rgb(148, 163, 184, 0.28);
+  background: rgb(15, 23, 42, 0.86);
+  box-shadow: 0 10px 22px rgb(0, 0, 0, 0.35), inset 0 1px 0 rgb(255, 255, 255, 0.06);
 }
 
 /* Fixed Header */
@@ -56,15 +59,16 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(247, 246, 247, 0.98);
+  background: rgb(247, 246, 247, 0.98);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(39, 27, 59, 0.1);
+  border-bottom: 1px solid rgb(39, 27, 59, 0.1);
   transition: all 0.3s ease;
 }
 
 .dark .fixed-header {
-  background: rgba(24, 21, 29, 0.98);
+  background: rgb(24, 21, 29, 0.98);
 }
+
 /* 导航链接激活状态样式 - 新增 */
 header nav a.active {
   color: #e84545; /* 使用accent颜色 */
@@ -88,6 +92,7 @@ header nav a.active::after {
 }
 
 /* Optimized Floating Sidebar - More Subtle */
+
 /* 增强的浮动侧边栏动画效果 */
 .floating-sidebar {
   position: fixed;
@@ -100,17 +105,18 @@ header nav a.active::after {
   align-items: center;
   gap: 8px;
   transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 4px 12px rgb(0, 0, 0, 0.1));
 }
 
 /* 悬停时的整体效果 */
 .floating-sidebar:hover {
   gap: 10px;
   transform: translateY(-50%);
-  filter: drop-shadow(0 8px 24px rgba(39, 27, 59, 0.25));
+  filter: drop-shadow(0 8px 24px rgb(39, 27, 59, 0.25));
 }
 
 /* Main contact buttons - primary prominent but not intrusive */
+
 /* 主联系按钮悬停效果增强 */
 .primary-contact-btn {
   width: 54px;
@@ -123,10 +129,10 @@ header nav a.active::after {
   font-size: 24px;
   transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
   position: relative;
-  box-shadow: 0 10px 22px rgba(39, 27, 59, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: 0 10px 22px rgb(39, 27, 59, 0.2), inset 0 1px 0 rgb(255, 255, 255, 0.45);
   cursor: pointer;
   opacity: 0.9;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid rgb(255, 255, 255, 0.42);
   backdrop-filter: blur(8px);
 }
 
@@ -136,55 +142,62 @@ header nav a.active::after {
 
 .primary-contact-btn:hover {
   transform: translateY(-1px) scale(1.08);
-  box-shadow: 0 14px 28px rgba(39, 27, 59, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 0 14px 28px rgb(39, 27, 59, 0.24), inset 0 1px 0 rgb(255, 255, 255, 0.5);
   opacity: 1;
   animation: none;
 }
 
-@keyframes buttonFloat {
+@keyframes button-float {
   0%, 100% {
     transform: scale(1.08) translateY(0);
   }
+
   50% {
     transform: scale(1.08) translateY(-2px);
   }
 }
+
 /* 升级版：增强跳动动画 */
-@keyframes attentionJump {
+@keyframes attention-jump {
   0%, 100% {
     transform: translateY(0) scale(1);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgb(0,0,0,0.2);
   }
+
   25% {
     transform: translateY(-12px) scale(1.08);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+    box-shadow: 0 12px 24px rgb(0,0,0,0.3);
   }
+
   50% {
     transform: translateY(0) scale(1);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+    box-shadow: 0 8px 16px rgb(0,0,0,0.25);
   }
+
   75% {
     transform: translateY(-6px) scale(1.04);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.28);
+    box-shadow: 0 10px 20px rgb(0,0,0,0.28);
   }
 }
 
 /* 高端发光效果 */
-@keyframes attentionGlow {
+@keyframes attention-glow {
   0%, 100% {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgb(0,0,0,0.2);
   }
+
   50% {
-    box-shadow: 0 0 20px rgba(232, 69, 69, 0.6), 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 0 20px rgb(232, 69, 69, 0.6), 0 8px 24px rgb(0,0,0,0.4);
   }
 }
 
 /* 导航栏咨询按钮的特殊跳动动画 */
-@keyframes headerButtonPulse {
+@keyframes header-button-pulse {
   0%, 100% {
     transform: scale(1);
     background-color: #271b3b;
   }
+
   50% {
     transform: scale(1.1);
     background-color: #3a2a52;
@@ -193,39 +206,38 @@ header nav a.active::after {
 
 /* 高亮弹跳效果 - 更明显的吸引效果 */
 .jump-active {
-  animation: attentionJump 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
+  animation: attention-jump 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
   z-index: 10 !important;
 }
 
 /* 导航栏按钮的特殊跳动 */
 #jump-btn-1.jump-active {
-  animation: headerButtonPulse 0.8s ease-in-out !important;
+  animation: header-button-pulse 0.8s ease-in-out !important;
   position: relative;
 }
 
 #jump-btn-1.jump-active::after {
   content: '';
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
+  inset: -2px;
   background: linear-gradient(45deg, #271b3b, #3a2a52, #e84545, #3a2a52, #271b3b);
   background-size: 200% 200%;
   border-radius: 0.5rem;
   z-index: -1;
-  animation: borderGlow 2s linear infinite;
+  animation: border-glow 2s linear infinite;
 }
 
-@keyframes borderGlow {
+@keyframes border-glow {
   0% {
     background-position: 0% 50%;
     opacity: 0.8;
   }
+
   50% {
     background-position: 100% 50%;
     opacity: 1;
   }
+
   100% {
     background-position: 0% 50%;
     opacity: 0.8;
@@ -236,51 +248,54 @@ header nav a.active::after {
 #jump-btn-2.jump-active,
 #jump-btn-3.jump-active,
 #jump-btn-4.jump-active {
-  animation: attentionJump 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), attentionGlow 0.8s ease-in-out !important;
+  animation: attention-jump 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), attention-glow 0.8s ease-in-out !important;
 }
 
 /* WhatsApp按钮特殊颜色跳动 */
 #jump-btn-2.jump-active {
   background: linear-gradient(45deg, #128C7E, #25D366, #34B7F1) !important;
-  animation: attentionJump 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), whatsappGlow 0.8s ease-in-out !important;
+  animation: attention-jump 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), whatsapp-glow 0.8s ease-in-out !important;
 }
 
-@keyframes whatsappGlow {
+@keyframes whatsapp-glow {
   0%, 100% {
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    box-shadow: 0 4px 12px rgb(37, 211, 102, 0.3);
   }
+
   50% {
-    box-shadow: 0 0 25px rgba(37, 211, 102, 0.8), 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 0 25px rgb(37, 211, 102, 0.8), 0 8px 24px rgb(0,0,0,0.4);
   }
 }
 
 /* LINE按钮特殊颜色跳动 */
 #jump-btn-3.jump-active {
-  background: linear-gradient(45deg, #009900, #00B900, #00D900) !important;
-  animation: attentionJump 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), lineGlow 0.8s ease-in-out !important;
+  background: linear-gradient(45deg, #090, #00B900, #00D900) !important;
+  animation: attention-jump 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), line-glow 0.8s ease-in-out !important;
 }
 
-@keyframes lineGlow {
+@keyframes line-glow {
   0%, 100% {
-    box-shadow: 0 4px 12px rgba(0, 185, 0, 0.3);
+    box-shadow: 0 4px 12px rgb(0, 185, 0, 0.3);
   }
+
   50% {
-    box-shadow: 0 0 25px rgba(0, 185, 0, 0.8), 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 0 25px rgb(0, 185, 0, 0.8), 0 8px 24px rgb(0,0,0,0.4);
   }
 }
 
 /* 电话按钮特殊颜色跳动 */
 #jump-btn-4.jump-active {
   background: linear-gradient(45deg, #2563eb, #3b82f6, #60a5fa) !important;
-  animation: attentionJump 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), phoneGlow 0.8s ease-in-out !important;
+  animation: attention-jump 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), phone-glow 0.8s ease-in-out !important;
 }
 
-@keyframes phoneGlow {
+@keyframes phone-glow {
   0%, 100% {
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgb(59, 130, 246, 0.3);
   }
+
   50% {
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.8), 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 0 25px rgb(59, 130, 246, 0.8), 0 8px 24px rgb(0,0,0,0.4);
   }
 }
 
@@ -314,7 +329,7 @@ header nav a.active::after {
 .contact-tooltip {
   position: absolute;
   right: 65px;
-  background: rgba(39, 27, 59, 0.95);
+  background: rgb(39, 27, 59, 0.95);
   color: white;
   padding: 6px 12px;
   border-radius: 6px;
@@ -335,12 +350,13 @@ header nav a.active::after {
   visibility: visible;
   right: 61px;
 }
+
 /* 次要联系按钮的工具提示样式 - 简化修复版 */
 .secondary-btn .contact-tooltip,
 .expand-btn .contact-tooltip {
     position: absolute;
     right: 65px;
-    background: rgba(39, 27, 59, 0.95);
+    background: rgb(39, 27, 59, 0.95);
     color: white;
     padding: 6px 12px;
     border-radius: 6px;
@@ -387,7 +403,7 @@ header nav a.active::after {
 }
 
 /* 确保工具提示不会溢出屏幕 */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .product-filter-rail {
     padding-top: 18px;
   }
@@ -403,7 +419,7 @@ header nav a.active::after {
         right: 60px;
         white-space: normal;
         max-width: 100px;
-        word-break: break-word;
+        overflow-wrap: break-word;
     }
 
     .secondary-btn:hover .contact-tooltip,
@@ -449,7 +465,7 @@ header nav a.active::after {
 .whatsapp-btn { background: #25D366; }
 .whatsapp-btn:hover { background: #128C7E; }
 .line-btn { background: #00B900; }
-.line-btn:hover { background: #009900; }
+.line-btn:hover { background: #090; }
 .phone-btn { background: #3b82f6; }
 .phone-btn:hover { background: #2563eb; }
 .email-btn { background: #ef4444; }
@@ -484,26 +500,25 @@ header nav a.active::after {
   color: white;
   font-size: 20px;
   transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
-  box-shadow: 0 10px 22px rgba(39, 27, 59, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: 0 10px 22px rgb(39, 27, 59, 0.2), inset 0 1px 0 rgb(255, 255, 255, 0.45);
   opacity: 0.8;
   cursor: pointer;
-  border: none;
   padding: 0;
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid rgb(255, 255, 255, 0.42);
   backdrop-filter: blur(8px);
 }
 
 .secondary-btn:hover {
   transform: translateY(-1px) scale(1.08);
   opacity: 1;
-  box-shadow: 0 14px 28px rgba(39, 27, 59, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 0 14px 28px rgb(39, 27, 59, 0.24), inset 0 1px 0 rgb(255, 255, 255, 0.5);
 }
 
-.telegram-btn { background: #0088cc; }
+.telegram-btn { background: #08c; }
 .facebook-btn { background: #1877F2; }
 .instagram-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-.twitter-btn { background: #000000; }
+.twitter-btn { background: #000; }
 .linkedin-btn { background: #0077b5; }
 .tiktok-btn { background: #000; }
 
@@ -521,18 +536,17 @@ header nav a.active::after {
   cursor: pointer;
   transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
   opacity: 0.8;
-  box-shadow: 0 10px 22px rgba(39, 27, 59, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.45);
-  border: none;
+  box-shadow: 0 10px 22px rgb(39, 27, 59, 0.2), inset 0 1px 0 rgb(255, 255, 255, 0.45);
   padding: 0;
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid rgb(255, 255, 255, 0.42);
   backdrop-filter: blur(8px);
 }
 
 .expand-btn:hover {
   transform: translateY(-1px) scale(1.08);
   opacity: 1;
-  box-shadow: 0 14px 28px rgba(39, 27, 59, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 0 14px 28px rgb(39, 27, 59, 0.24), inset 0 1px 0 rgb(255, 255, 255, 0.5);
 }
 
 .expand-btn .material-symbols-outlined {
@@ -547,17 +561,14 @@ header nav a.active::after {
 /* Enhanced Popup Styles */
 .popup-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.65);
+  inset: 0;
+  background: rgb(0, 0, 0, 0.65);
   z-index: 1001;
   display: none;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: fadeIn 0.3s ease-out;
+  animation: fade-in 0.3s ease-out;
 }
 
 .popup-overlay.show {
@@ -566,18 +577,20 @@ header nav a.active::after {
 
 /* Closing animation pointing to sidebar */
 .popup-overlay.closing {
-  animation: fadeOutAndPoint 0.6s ease-out forwards;
+  animation: fade-out-and-point 0.6s ease-out forwards;
 }
 
-@keyframes fadeOutAndPoint {
+@keyframes fade-out-and-point {
   0% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.5;
     transform: scale(0.95) translateX(20%);
   }
+
   100% {
     opacity: 0;
     transform: scale(0.9) translateX(50%);
@@ -587,6 +600,7 @@ header nav a.active::after {
 /* Sidebar indicator animation */
 .sidebar-indicator {
   position: fixed;
+
   /* Keep a safe gap from the right floating sidebar (16 + 54 + 24). */
   right: calc(16px + 54px + 24px);
   top: 50%;
@@ -605,10 +619,10 @@ header nav a.active::after {
 }
 
 .sidebar-indicator > div {
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgb(255, 255, 255, 0.5);
+  background: rgb(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
-  box-shadow: 0 16px 34px rgba(39, 27, 59, 0.2);
+  box-shadow: 0 16px 34px rgb(39, 27, 59, 0.2);
 }
 
 /* Keep the indicator avatar icon perfectly square across breakpoints. */
@@ -634,14 +648,16 @@ header nav a.active::after {
 }
 
 .dark .sidebar-indicator > div {
-  border-color: rgba(148, 163, 184, 0.3);
-  background: rgba(15, 23, 42, 0.88);
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+  border-color: rgb(148, 163, 184, 0.3);
+  background: rgb(15, 23, 42, 0.88);
+  box-shadow: 0 16px 34px rgb(0, 0, 0, 0.35);
 }
 
 .sidebar-indicator::after {
   content: '\203A';
+
   --indicator-arrow-size: 30px;
+
   position: absolute;
   right: calc(var(--indicator-arrow-size) / -2);
   top: 50%;
@@ -658,26 +674,27 @@ header nav a.active::after {
   background: linear-gradient(135deg, #f97316, #fb923c);
   border: 2px solid #fff;
   font-weight: 700;
-  box-shadow: 0 6px 14px rgba(249, 115, 22, 0.45);
-  animation: slideArrow 1s infinite;
+  box-shadow: 0 6px 14px rgb(249, 115, 22, 0.45);
+  animation: slide-arrow 1s infinite;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .sidebar-indicator {
     right: calc(12px + 48px + 16px);
   }
 }
 
-@keyframes slideArrow {
+@keyframes slide-arrow {
   0%, 100% { transform: translateY(-50%) translateX(0); }
   50% { transform: translateY(-50%) translateX(10px); }
 }
 
 /* 新增：元素轮流跳动动画 */
-@keyframes gentleJump {
+@keyframes gentle-jump {
   0%, 100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-5px);
   }
@@ -689,16 +706,17 @@ header nav a.active::after {
   transform: scale(1.15) translateZ(10px) !important;
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes slideUp {
+@keyframes slide-up {
   from {
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -712,7 +730,7 @@ header nav a.active::after {
 
 .product-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 40px rgb(0, 0, 0, 0.15);
 }
 
 .product-card .aspect-\[4\/3\] {
@@ -722,17 +740,15 @@ header nav a.active::after {
 /* iOS-like page switcher in product meta */
 .product-grid-meta {
   backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
 }
 
 .product-meta-nav {
   border-radius: 9999px;
   padding: 3px;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: rgb(255, 255, 255, 0.55);
+  border: 1px solid rgb(15, 23, 42, 0.08);
+  box-shadow: 0 8px 24px rgb(15, 23, 42, 0.12), inset 0 1px 0 rgb(255, 255, 255, 0.8);
   backdrop-filter: blur(16px) saturate(1.15);
-  -webkit-backdrop-filter: blur(16px) saturate(1.15);
 }
 
 .product-meta-nav-btn {
@@ -754,17 +770,17 @@ header nav a.active::after {
 }
 
 .product-meta-nav-btn:not(.is-disabled):hover {
-  background: rgba(39, 27, 59, 0.08);
+  background: rgb(39, 27, 59, 0.08);
 }
 
 .product-meta-nav-btn:not(.is-disabled):active {
   transform: scale(0.97);
-  background: rgba(39, 27, 59, 0.12);
+  background: rgb(39, 27, 59, 0.12);
 }
 
 .product-meta-nav-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(39, 27, 59, 0.2);
+  box-shadow: 0 0 0 2px rgb(39, 27, 59, 0.2);
 }
 
 .product-meta-nav-btn.is-disabled {
@@ -781,7 +797,7 @@ header nav a.active::after {
   border-radius: 9999px;
   font-size: 13px;
   line-height: 1;
-  background: rgba(39, 27, 59, 0.12);
+  background: rgb(39, 27, 59, 0.12);
   color: #271b3b;
 }
 
@@ -790,9 +806,9 @@ header nav a.active::after {
 }
 
 .dark .product-meta-nav {
-  background: rgba(15, 23, 42, 0.5);
-  border-color: rgba(148, 163, 184, 0.24);
-  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: rgb(15, 23, 42, 0.5);
+  border-color: rgb(148, 163, 184, 0.24);
+  box-shadow: 0 8px 24px rgb(2, 6, 23, 0.45), inset 0 1px 0 rgb(255, 255, 255, 0.08);
 }
 
 .dark .product-meta-nav-btn {
@@ -800,23 +816,23 @@ header nav a.active::after {
 }
 
 .dark .product-meta-nav-btn:not(.is-disabled):hover {
-  background: rgba(148, 163, 184, 0.18);
+  background: rgb(148, 163, 184, 0.18);
 }
 
 .dark .product-meta-nav-btn:not(.is-disabled):active {
-  background: rgba(148, 163, 184, 0.24);
+  background: rgb(148, 163, 184, 0.24);
 }
 
 .dark .product-meta-nav-btn:focus-visible {
-  box-shadow: 0 0 0 2px rgba(203, 213, 225, 0.3);
+  box-shadow: 0 0 0 2px rgb(203, 213, 225, 0.3);
 }
 
 .dark .product-meta-nav-icon {
-  background: rgba(148, 163, 184, 0.26);
+  background: rgb(148, 163, 184, 0.26);
   color: #f8fafc;
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
   /* ── Factory Features 两列紧凑 ── */
   #factory-features-grid > div {
     padding: 0.5rem;
@@ -924,10 +940,6 @@ header nav a.active::after {
     line-height: 1.3;
   }
 
-  .product-grid-mobile-shell {
-    position: relative;
-  }
-
   .product-grid-mobile-controls {
     position: absolute;
     top: 50%;
@@ -957,7 +969,7 @@ header nav a.active::after {
     padding: 0;
     pointer-events: auto;
     opacity: 0.52;
-    box-shadow: 0 8px 16px rgba(15, 23, 42, 0.18);
+    box-shadow: 0 8px 16px rgb(15, 23, 42, 0.18);
     transition: opacity 0.6s ease, transform 0.2s ease, box-shadow 0.2s ease;
   }
 
@@ -977,7 +989,7 @@ header nav a.active::after {
     box-shadow: none;
   }
 
-  .product-grid-mobile-controls.is-faded .product-side-nav-btn:not(.is-disabled):not(:disabled) {
+  .product-grid-mobile-controls.is-faded .product-side-nav-btn:not(.is-disabled, :disabled) {
     opacity: 0;
     pointer-events: none;
   }
@@ -990,8 +1002,7 @@ header nav a.active::after {
   .product-grid-mobile {
     display: flex;
     gap: 14px;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: auto hidden;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
@@ -1072,11 +1083,11 @@ header nav a.active::after {
 
 #product-filter-bar .filter-btn[data-active='true'] {
   background: #271b3b !important;
-  color: #ffffff !important;
+  color: #fff !important;
 }
 
 #product-filter-bar .filter-btn[data-active='false'] {
-  background: #ffffff;
+  background: #fff;
 }
 
 .dark #product-filter-bar .filter-btn[data-active='false'] {
@@ -1105,14 +1116,14 @@ header nav a.active::after {
   width: 280px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 40px rgb(0,0,0,0.2);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
   transition: all 0.3s ease;
   z-index: 200;
   overflow: hidden;
-  border: 1px solid rgba(39, 27, 59, 0.1);
+  border: 1px solid rgb(39, 27, 59, 0.1);
   display: none;
 }
 
@@ -1127,7 +1138,7 @@ header nav a.active::after {
 }
 
 .lang-dropdown > .p-2::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.4);
+  background: rgb(100, 116, 139, 0.4);
   border-radius: 9999px;
 }
 
@@ -1137,7 +1148,7 @@ header nav a.active::after {
 
 .dark .lang-dropdown {
   background: #18151d;
-  border-color: rgba(255,255,255,0.1);
+  border-color: rgb(255,255,255,0.1);
 }
 
 .lang-dropdown.show {
@@ -1152,21 +1163,21 @@ header nav a.active::after {
 }
 
 .lang-option:hover {
-  background: rgba(39, 27, 59, 0.05);
+  background: rgb(39, 27, 59, 0.05);
 }
 
 .dark .lang-option:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(255, 255, 255, 0.05);
 }
 
 /* Active language indicator */
 .lang-option.active {
-  background: rgba(39, 27, 59, 0.1);
+  background: rgb(39, 27, 59, 0.1);
   font-weight: 600;
 }
 
 .dark .lang-option.active {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(255, 255, 255, 0.1);
 }
 
 /* Certificate Cards */
@@ -1178,7 +1189,7 @@ header nav a.active::after {
 
 .certificate-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 40px rgb(0, 0, 0, 0.15);
 }
 
 /* 增强放大效果 */
@@ -1191,7 +1202,7 @@ header nav a.active::after {
 .certificate-card:hover img {
   transform: scale(2.5);
   filter: brightness(1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgb(0, 0, 0, 0.2);
 }
 
 /* Video Container */
@@ -1217,17 +1228,14 @@ header nav a.active::after {
 /* 智能弹窗样式 - 优化高度80%/90% 并确保居中 */
 #smart-popup-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.65);
+  inset: 0;
+  background: rgb(0, 0, 0, 0.65);
   z-index: 1004;
   display: none;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: fadeIn 0.3s ease-out;
+  animation: fade-in 0.3s ease-out;
 }
 
 #smart-popup-overlay.show {
@@ -1239,7 +1247,7 @@ header nav a.active::after {
 #smart-popup {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgb(0, 0, 0, 0.3);
   max-width: 500px;
   width: 100%;
   overflow: hidden;
@@ -1250,14 +1258,14 @@ header nav a.active::after {
 }
 
 /* 手机端最大高度 80% */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   #smart-popup {
     max-height: 80vh;
   }
 }
 
 /* 电脑端最大高度 90% */
-@media (min-width: 769px) {
+@media (width >= 769px) {
   #smart-popup {
     max-height: 90vh;
   }
@@ -1265,7 +1273,7 @@ header nav a.active::after {
 
 .dark #smart-popup {
   background: #18151d;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgb(255, 255, 255, 0.1);
 }
 
 .smart-popup-header {
@@ -1292,19 +1300,23 @@ header nav a.active::after {
 }
 
 /* 小屏幕进一步微调 */
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .smart-popup-header h3 {
     font-size: 1.1rem;
   }
+
   .smart-popup-header {
     padding: 14px;
   }
+
   .smart-popup-body {
     padding: 14px;
   }
+
   .smart-popup-body .space-y-4 > * + * {
     margin-top: 0.4rem;
   }
+
   .smart-popup-body p.text-center {
     margin-top: 0.5rem;
   }
@@ -1317,7 +1329,7 @@ header nav a.active::after {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(255, 255, 255, 0.2);
   color: white;
   display: flex;
   align-items: center;
@@ -1345,7 +1357,7 @@ header nav a.active::after {
   transition: all 0.3s ease;
   border: none;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgb(0,0,0,0.15);
 }
 
 #popup-overlay .bg-white button:hover {
@@ -1355,36 +1367,39 @@ header nav a.active::after {
 
 /* 优化弹窗关闭动画 - 简化版，消除抖动 */
 #smart-popup-overlay.closing {
-  animation: fadeOutOverlay 0.2s ease-out forwards;
+  animation: fade-out-overlay 0.2s ease-out forwards;
 }
 
 #smart-popup-overlay.closing #smart-popup {
   animation: none; /* 不移位，仅跟随父级淡出 */
 }
 
-@keyframes fadeOutOverlay {
-  0% { opacity: 1; }
-  100% { opacity: 0; visibility: hidden; }
-}
+@keyframes fade-out-overlay {
+  0% {
+    opacity: 1;
+  }
 
-/* 为弹窗添加 will-change 提升性能 */
-#smart-popup {
-  will-change: opacity, transform;
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 /* 弹窗背景淡出动画 */
 .popup-overlay.closing,
 #smart-popup-overlay.closing {
-  animation: fadeOutOverlay 0.6s ease-out forwards;
+  animation: fade-out-overlay 0.6s ease-out forwards;
 }
 
-@keyframes fadeOutOverlay {
+@keyframes fade-out-overlay {
   0% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.7;
   }
+
   100% {
     opacity: 0;
     visibility: hidden;
@@ -1392,59 +1407,65 @@ header nav a.active::after {
 }
 
 /* 导航栏高亮动画 */
-@keyframes sidebarHighlight {
+@keyframes sidebar-highlight {
   0% {
-    box-shadow: 0 0 0 0 rgba(39, 27, 59, 0.7);
+    box-shadow: 0 0 0 0 rgb(39, 27, 59, 0.7);
   }
+
   70% {
-    box-shadow: 0 0 0 10px rgba(39, 27, 59, 0);
+    box-shadow: 0 0 0 10px rgb(39, 27, 59, 0);
   }
+
   100% {
-    box-shadow: 0 0 0 0 rgba(39, 27, 59, 0);
+    box-shadow: 0 0 0 0 rgb(39, 27, 59, 0);
   }
 }
 
 .floating-sidebar.highlight {
-  animation: sidebarHighlight 1.5s ease-out;
+  animation: sidebar-highlight 1.5s ease-out;
 }
 
 /* 导航栏现代动画效果 */
 .floating-sidebar.modern-animate {
-  animation: modernPulse 3s ease-in-out;
+  animation: modern-pulse 3s ease-in-out;
 }
 
-@keyframes modernPulse {
+@keyframes modern-pulse {
   0%, 100% {
     transform: translateY(-50%) scale(1);
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 4px 12px rgb(0, 0, 0, 0.1));
   }
+
   25% {
     transform: translateY(-50%) scale(1.05);
-    filter: drop-shadow(0 8px 24px rgba(39, 27, 59, 0.25));
+    filter: drop-shadow(0 8px 24px rgb(39, 27, 59, 0.25));
   }
+
   50% {
     transform: translateY(-50%) scale(1.02);
-    filter: drop-shadow(0 6px 18px rgba(39, 27, 59, 0.2));
+    filter: drop-shadow(0 6px 18px rgb(39, 27, 59, 0.2));
   }
+
   75% {
     transform: translateY(-50%) scale(1.05);
-    filter: drop-shadow(0 8px 24px rgba(39, 27, 59, 0.25));
+    filter: drop-shadow(0 8px 24px rgb(39, 27, 59, 0.25));
   }
 }
 
 /* 按钮脉动效果 */
 .primary-contact-btn.pulse {
-  animation: buttonPulse 1s ease-in-out;
+  animation: button-pulse 1s ease-in-out;
 }
 
-@keyframes buttonPulse {
+@keyframes button-pulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgb(0,0,0,0.2);
   }
+
   50% {
     transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    box-shadow: 0 6px 20px rgb(0,0,0,0.35);
   }
 }
 
@@ -1455,9 +1476,9 @@ header nav a.active::after {
   inset: -2px;
   border-radius: 50%;
   background: linear-gradient(45deg,
-    rgba(255,255,255,0.8),
-    rgba(255,255,255,0.2),
-    rgba(255,255,255,0.8));
+    rgb(255,255,255,0.8),
+    rgb(255,255,255,0.2),
+    rgb(255,255,255,0.8));
   z-index: -1;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -1468,10 +1489,11 @@ header nav a.active::after {
   animation: borderRotate 2s linear infinite;
 }
 
-@keyframes borderRotate {
+@keyframes border-rotate {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -1484,13 +1506,13 @@ header nav a.active::after {
 }
 
 .smart-popup-close:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgb(255, 255, 255, 0.3);
   transform: scale(1.1);
 }
 
 .smart-popup-trigger-reason {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgb(255, 255, 255, 0.8);
   margin-top: 8px;
   display: flex;
   align-items: center;
@@ -1507,7 +1529,7 @@ header nav a.active::after {
   align-items: center;
   gap: 4px;
   padding: 2px 8px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgb(255, 255, 255, 0.15);
   border-radius: 12px;
   font-size: 0.7rem;
   margin-left: 8px;
@@ -1518,7 +1540,7 @@ header nav a.active::after {
   position: absolute;
   bottom: 16px;
   right: 16px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(255, 255, 255, 0.2);
   color: white;
   font-size: 0.75rem;
   padding: 2px 8px;
@@ -1540,15 +1562,14 @@ header nav a.active::after {
   justify-content: center;
   font-size: 24px;
   transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
-  box-shadow: 0 10px 22px rgba(39, 27, 59, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: 0 10px 22px rgb(39, 27, 59, 0.2), inset 0 1px 0 rgb(255, 255, 255, 0.45);
   cursor: pointer;
-  border: none;
   padding: 0;
   flex-shrink: 0;
   z-index: 1000;
   opacity: 0.8;
   visibility: visible;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid rgb(255, 255, 255, 0.42);
   backdrop-filter: blur(8px);
 }
 
@@ -1561,7 +1582,7 @@ header nav a.active::after {
 .back-to-top-btn:hover {
   transform: translateY(-1px) scale(1.08);
   opacity: 1;
-  box-shadow: 0 14px 28px rgba(39, 27, 59, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 0 14px 28px rgb(39, 27, 59, 0.24), inset 0 1px 0 rgb(255, 255, 255, 0.5);
 }
 
 #jump-btn-3-line-text,
@@ -1577,7 +1598,7 @@ header nav a.active::after {
 .back-to-top-tooltip {
   position: absolute;
   right: 65px;
-  background: rgba(39, 27, 59, 0.95);
+  background: rgb(39, 27, 59, 0.95);
   color: white;
   padding: 6px 12px;
   border-radius: 6px;
@@ -1600,24 +1621,13 @@ header nav a.active::after {
 
 /* 动画效果 */
 .back-to-top-btn.pulse {
-  animation: buttonPulse 1s ease-in-out;
-}
-
-@keyframes buttonPulse {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  }
-  50% {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-  }
+  animation: button-pulse 1s ease-in-out;
 }
 
 /* ============================================
    Responsive hardening (tablet/mobile)
    ============================================ */
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .floating-sidebar {
     right: 12px;
     gap: 7px;
@@ -1632,8 +1642,8 @@ header nav a.active::after {
   .footer-products,
   .footer-support,
   .footer-company-links {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgb(255, 255, 255, 0.08);
+    border: 1px solid rgb(255, 255, 255, 0.16);
     border-radius: 12px;
     padding: 14px;
     height: 100%;
@@ -1669,7 +1679,7 @@ header nav a.active::after {
   }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .fixed-header {
     padding-left: 12px;
     padding-right: 12px;
@@ -1755,15 +1765,13 @@ header nav a.active::after {
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: auto hidden;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     padding: 2px 2px 8px;
     margin-bottom: 18px;
     mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
   }
 
   #product-filter-bar::-webkit-scrollbar {
@@ -1780,9 +1788,9 @@ header nav a.active::after {
     line-height: 1;
     white-space: nowrap;
     scroll-snap-align: start;
-    border: 1px solid rgba(39, 27, 59, 0.14);
+    border: 1px solid rgb(39, 27, 59, 0.14);
     border-radius: 9999px;
-    box-shadow: 0 1px 2px rgba(39, 27, 59, 0.06);
+    box-shadow: 0 1px 2px rgb(39, 27, 59, 0.06);
   }
 
   .product-filter-swipe-hint {
@@ -1797,8 +1805,8 @@ header nav a.active::after {
     justify-content: flex-end;
     gap: 3px;
     padding-right: 4px;
-    color: rgba(39, 27, 59, 0.72);
-    background: linear-gradient(to left, rgba(247, 248, 252, 0.96) 56%, rgba(247, 248, 252, 0));
+    color: rgb(39, 27, 59, 0.72);
+    background: linear-gradient(to left, rgb(247, 248, 252, 0.96) 56%, rgb(247, 248, 252, 0));
     pointer-events: auto;
     cursor: pointer;
     transition: opacity 0.25s ease, transform 0.25s ease;
@@ -1818,7 +1826,6 @@ header nav a.active::after {
     text-transform: uppercase;
     background: linear-gradient(90deg, #271b3b 0%, #e84545 40%, #3a2a52 60%, #271b3b 100%);
     background-size: 250% 100%;
-    -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
@@ -1827,7 +1834,7 @@ header nav a.active::after {
 
   .product-filter-swipe-hint .hint-arrow {
     font-size: 10px;
-    color: rgba(39, 27, 59, 0.72);
+    color: rgb(39, 27, 59, 0.72);
     line-height: 1;
   }
 
@@ -1836,14 +1843,13 @@ header nav a.active::after {
   }
 
   .dark .product-filter-swipe-hint {
-    color: rgba(255, 255, 255, 0.8);
-    background: linear-gradient(to left, rgba(30, 28, 40, 0.92) 58%, rgba(30, 28, 40, 0));
+    color: rgb(255, 255, 255, 0.8);
+    background: linear-gradient(to left, rgb(30, 28, 40, 0.92) 58%, rgb(30, 28, 40, 0));
   }
 
   .dark .product-filter-swipe-hint .hint-text {
-    background: linear-gradient(90deg, rgba(255,255,255,0.92) 0%, #d4aaff 40%, rgba(255,255,255,0.95) 60%, rgba(255,255,255,0.92) 100%);
+    background: linear-gradient(90deg, rgb(255,255,255,0.92) 0%, #d4aaff 40%, rgb(255,255,255,0.95) 60%, rgb(255,255,255,0.92) 100%);
     background-size: 250% 100%;
-    -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
@@ -1851,7 +1857,7 @@ header nav a.active::after {
   }
 
   .dark .product-filter-swipe-hint .hint-arrow {
-    color: rgba(255, 255, 255, 0.75);
+    color: rgb(255, 255, 255, 0.75);
   }
 
   .footer-main-grid {
@@ -1872,8 +1878,8 @@ header nav a.active::after {
   .footer-products,
   .footer-support,
   .footer-company-links {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgb(255, 255, 255, 0.08);
+    border: 1px solid rgb(255, 255, 255, 0.16);
     border-radius: 12px;
     padding: 12px;
   }
@@ -1895,28 +1901,30 @@ header nav a.active::after {
   }
 }
 
-@keyframes swipeHintPulse {
+@keyframes swipe-hint-pulse {
   0%,
   100% {
     transform: translateX(0) scale(1);
     opacity: 0.7;
   }
+
   50% {
     transform: translateX(3px) scale(1.03);
     opacity: 1;
   }
 }
 
-@keyframes swipeHintTextShimmer {
+@keyframes swipe-hint-text-shimmer {
   0% {
     background-position: 100% 0;
   }
+
   100% {
     background-position: -150% 0;
   }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .product-grid-mobile-controls {
     padding: 0 2px;
   }
@@ -1980,6 +1988,7 @@ header nav a.active::after {
 
   .sidebar-indicator::after {
     --indicator-arrow-size: 26px;
+
     width: 26px;
     height: 26px;
     font-size: 18px;
@@ -1995,7 +2004,6 @@ header nav a.active::after {
     gap: 8px;
     padding: 2px 2px 8px;
     mask-image: none;
-    -webkit-mask-image: none;
   }
 
   #product-filter-bar .filter-btn {
@@ -2037,7 +2045,7 @@ header nav a.active::after {
   }
 }
 
-@media (max-width: 360px) {
+@media (width <= 360px) {
   .fixed-header h2[data-i18n="company_name"] {
     max-width: 34vw;
     font-size: 0.82rem;
@@ -2069,6 +2077,7 @@ header nav a.active::after {
 
   .sidebar-indicator::after {
     --indicator-arrow-size: 22px;
+
     font-size: 15px;
     right: calc(var(--indicator-arrow-size) / -2);
   }

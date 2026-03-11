@@ -2,6 +2,7 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const path = require('path');
+const crypto = require('crypto');
 
 const PRODUCT_LIST_PATH = path.join(process.cwd(), 'src/assets/product-list.js');
 const PRODUCT_TABLE_PATH = path.join(process.cwd(), 'src/assets/product-data-table.js');
@@ -103,7 +104,191 @@ const ALIAS = {
   '最小起订量': 'minimumOrderQuantity',
   minimumOrderQuantity: 'minimumOrderQuantity',
   '库存数量': 'stockQuantity',
-  stockQuantity: 'stockQuantity'
+  stockQuantity: 'stockQuantity',
+  
+  // 多语言字段别名 (name_en, name_zh-CN, highlights_en, etc.)
+  '产品名称_AR': 'name_ar',
+  '产品名称_DE': 'name_de',
+  '产品名称_EN': 'name_en',
+  '产品名称_ES': 'name_es',
+  '产品名称_FIL': 'name_fil',
+  '产品名称_FR': 'name_fr',
+  '产品名称_HE': 'name_he',
+  '产品名称_ID': 'name_id',
+  '产品名称_IT': 'name_it',
+  '产品名称_JA': 'name_ja',
+  '产品名称_KO': 'name_ko',
+  '产品名称_MS': 'name_ms',
+  '产品名称_NL': 'name_nl',
+  '产品名称_PL': 'name_pl',
+  '产品名称_PT': 'name_pt',
+  '产品名称_RU': 'name_ru',
+  '产品名称_TH': 'name_th',
+  '产品名称_TR': 'name_tr',
+  '产品名称_VI': 'name_vi',
+  '产品名称_ZH': 'name_zh',
+  '产品名称_ZH_CN': 'name_zh-CN',
+  '产品名称_ZH_TW': 'name_zh-TW',
+  name_ar: 'name_ar',
+  name_de: 'name_de',
+  name_en: 'name_en',
+  name_es: 'name_es',
+  name_fil: 'name_fil',
+  name_fr: 'name_fr',
+  name_he: 'name_he',
+  name_id: 'name_id',
+  name_it: 'name_it',
+  name_ja: 'name_ja',
+  name_ko: 'name_ko',
+  name_ms: 'name_ms',
+  name_nl: 'name_nl',
+  name_pl: 'name_pl',
+  name_pt: 'name_pt',
+  name_ru: 'name_ru',
+  name_th: 'name_th',
+  name_tr: 'name_tr',
+  name_vi: 'name_vi',
+  name_zh: 'name_zh',
+  'name_zh-CN': 'name_zh-CN',
+  'name_zh-TW': 'name_zh-TW',
+  
+  // 卖点多语言
+  '卖点_AR': 'highlights_ar',
+  '卖点_DE': 'highlights_de',
+  '卖点_EN': 'highlights_en',
+  '卖点_ES': 'highlights_es',
+  '卖点_FIL': 'highlights_fil',
+  '卖点_FR': 'highlights_fr',
+  '卖点_HE': 'highlights_he',
+  '卖点_ID': 'highlights_id',
+  '卖点_IT': 'highlights_it',
+  '卖点_JA': 'highlights_ja',
+  '卖点_KO': 'highlights_ko',
+  '卖点_MS': 'highlights_ms',
+  '卖点_NL': 'highlights_nl',
+  '卖点_PL': 'highlights_pl',
+  '卖点_PT': 'highlights_pt',
+  '卖点_RU': 'highlights_ru',
+  '卖点_TH': 'highlights_th',
+  '卖点_TR': 'highlights_tr',
+  '卖点_VI': 'highlights_vi',
+  '卖点_ZH': 'highlights_zh',
+  '卖点_ZH_CN': 'highlights_zh-CN',
+  '卖点_ZH_TW': 'highlights_zh-TW',
+  highlights_ar: 'highlights_ar',
+  highlights_de: 'highlights_de',
+  highlights_en: 'highlights_en',
+  highlights_es: 'highlights_es',
+  highlights_fil: 'highlights_fil',
+  highlights_fr: 'highlights_fr',
+  highlights_he: 'highlights_he',
+  highlights_id: 'highlights_id',
+  highlights_it: 'highlights_it',
+  highlights_ja: 'highlights_ja',
+  highlights_ko: 'highlights_ko',
+  highlights_ms: 'highlights_ms',
+  highlights_nl: 'highlights_nl',
+  highlights_pl: 'highlights_pl',
+  highlights_pt: 'highlights_pt',
+  highlights_ru: 'highlights_ru',
+  highlights_th: 'highlights_th',
+  highlights_tr: 'highlights_tr',
+  highlights_vi: 'highlights_vi',
+  highlights_zh: 'highlights_zh',
+  'highlights_zh-CN': 'highlights_zh-CN',
+  'highlights_zh-TW': 'highlights_zh-TW',
+  
+  // 应用场景多语言
+  '应用场景_AR': 'scenarios_ar',
+  '应用场景_DE': 'scenarios_de',
+  '应用场景_EN': 'scenarios_en',
+  '应用场景_ES': 'scenarios_es',
+  '应用场景_FIL': 'scenarios_fil',
+  '应用场景_FR': 'scenarios_fr',
+  '应用场景_HE': 'scenarios_he',
+  '应用场景_ID': 'scenarios_id',
+  '应用场景_IT': 'scenarios_it',
+  '应用场景_JA': 'scenarios_ja',
+  '应用场景_KO': 'scenarios_ko',
+  '应用场景_MS': 'scenarios_ms',
+  '应用场景_NL': 'scenarios_nl',
+  '应用场景_PL': 'scenarios_pl',
+  '应用场景_PT': 'scenarios_pt',
+  '应用场景_RU': 'scenarios_ru',
+  '应用场景_TH': 'scenarios_th',
+  '应用场景_TR': 'scenarios_tr',
+  '应用场景_VI': 'scenarios_vi',
+  '应用场景_ZH': 'scenarios_zh',
+  '应用场景_ZH_CN': 'scenarios_zh-CN',
+  '应用场景_ZH_TW': 'scenarios_zh-TW',
+  scenarios_ar: 'scenarios_ar',
+  scenarios_de: 'scenarios_de',
+  scenarios_en: 'scenarios_en',
+  scenarios_es: 'scenarios_es',
+  scenarios_fil: 'scenarios_fil',
+  scenarios_fr: 'scenarios_fr',
+  scenarios_he: 'scenarios_he',
+  scenarios_id: 'scenarios_id',
+  scenarios_it: 'scenarios_it',
+  scenarios_ja: 'scenarios_ja',
+  scenarios_ko: 'scenarios_ko',
+  scenarios_ms: 'scenarios_ms',
+  scenarios_nl: 'scenarios_nl',
+  scenarios_pl: 'scenarios_pl',
+  scenarios_pt: 'scenarios_pt',
+  scenarios_ru: 'scenarios_ru',
+  scenarios_th: 'scenarios_th',
+  scenarios_tr: 'scenarios_tr',
+  scenarios_vi: 'scenarios_vi',
+  scenarios_zh: 'scenarios_zh',
+  'scenarios_zh-CN': 'scenarios_zh-CN',
+  'scenarios_zh-TW': 'scenarios_zh-TW',
+  
+  // 用法多语言
+  '用法_AR': 'usage_ar',
+  '用法_DE': 'usage_de',
+  '用法_EN': 'usage_en',
+  '用法_ES': 'usage_es',
+  '用法_FIL': 'usage_fil',
+  '用法_FR': 'usage_fr',
+  '用法_HE': 'usage_he',
+  '用法_ID': 'usage_id',
+  '用法_IT': 'usage_it',
+  '用法_JA': 'usage_ja',
+  '用法_KO': 'usage_ko',
+  '用法_MS': 'usage_ms',
+  '用法_NL': 'usage_nl',
+  '用法_PL': 'usage_pl',
+  '用法_PT': 'usage_pt',
+  '用法_RU': 'usage_ru',
+  '用法_TH': 'usage_th',
+  '用法_TR': 'usage_tr',
+  '用法_VI': 'usage_vi',
+  '用法_ZH': 'usage_zh',
+  '用法_ZH_CN': 'usage_zh-CN',
+  '用法_ZH_TW': 'usage_zh-TW',
+  usage_ar: 'usage_ar',
+  usage_de: 'usage_de',
+  usage_en: 'usage_en',
+  usage_es: 'usage_es',
+  usage_fil: 'usage_fil',
+  usage_fr: 'usage_fr',
+  usage_he: 'usage_he',
+  usage_id: 'usage_id',
+  usage_it: 'usage_it',
+  usage_ja: 'usage_ja',
+  usage_ko: 'usage_ko',
+  usage_ms: 'usage_ms',
+  usage_nl: 'usage_nl',
+  usage_pl: 'usage_pl',
+  usage_pt: 'usage_pt',
+  usage_ru: 'usage_ru',
+  usage_th: 'usage_th',
+  usage_tr: 'usage_tr',
+  usage_vi: 'usage_vi',
+  usage_zh: 'usage_zh',
+  'usage_zh-CN': 'usage_zh-CN',
+  'usage_zh-TW': 'usage_zh-TW'
 };
 
 const PRODUCT_FIELD_KEYS = [
@@ -419,17 +604,6 @@ function fetchRowsFromXlsx(xlsxPath) {
   return { rawRows, sheetTitle: sheetName };
 }
 
-function splitHighlights(text) {
-  const s = String(text || '').trim();
-  if (!s) return [];
-  const normalized = s
-    .replace(/<br\s*\/?>/gi, ';');
-  const parts = normalized.split(/[;；]/);
-  return parts
-    .map((p) => p.trim().replace(/^['"\s]+|['"\s]+$/g, ''))
-    .filter(Boolean);
-}
-
 function toNullableString(value) {
   if (value == null) return null;
   const text = String(value).trim();
@@ -452,7 +626,35 @@ function toBooleanOrDefault(value, defaultValue = true) {
 function compactRow(rawRow) {
   const normalized = {};
   for (const [key, value] of Object.entries(rawRow || {})) {
-    const normalizedKey = ALIAS[key] || key;
+    const rawKey = String(key || '').trim();
+
+    // 支持形如 "字段_LANG" 或 "字段 LANG" 的多语言列名映射。
+    // 例如："产品名称_EN" -> "name_en"（如果 ALIAS 中包含产品名称 -> name 的映射）
+    let normalizedKey = rawKey;
+    const langMatch = rawKey.match(/^(.+?)[_\s]([A-Za-z0-9-]+)$/);
+    if (langMatch) {
+      const baseRaw = langMatch[1].trim();
+      const langPart = langMatch[2].trim();
+      // 规范化语言码：保持 language 小写，region（如 CN/TW）大写，使用 '-' 连接
+      const langNorm = (function(lp) {
+        const replaced = String(lp || '').replace('_', '-');
+        const parts = replaced.split('-');
+        if (parts.length === 1) return parts[0].toLowerCase();
+        return parts[0].toLowerCase() + '-' + String(parts[1] || '').toUpperCase();
+      })(langPart);
+
+      // 先尝试直接从 ALIAS 映射中文/别名到字段名
+      const baseMapped = ALIAS[baseRaw] || ALIAS[baseRaw.toLowerCase()] || ALIAS[baseRaw.toUpperCase()];
+      if (baseMapped) {
+        normalizedKey = `${baseMapped}_${langNorm}`;
+      } else {
+        // 如果没有找到 alias，则保留原始 base 并附加语言后缀
+        normalizedKey = `${baseRaw}_${langNorm}`;
+      }
+    } else {
+      normalizedKey = ALIAS[rawKey] || rawKey;
+    }
+
     normalized[normalizedKey] = value == null ? '' : String(value).trim();
   }
   return normalized;
@@ -460,6 +662,9 @@ function compactRow(rawRow) {
 
 function parseRowsToSeries(rawRows) {
   const seriesMap = new Map();
+  const SUPPORTED_LANGS = ['ar', 'de', 'en', 'es', 'fil', 'fr', 'he', 'id', 'it', 'ja', 'ko', 'ms', 'nl', 'pl', 'pt', 'ru', 'th', 'tr', 'vi', 'zh', 'zh-CN', 'zh-TW'];
+
+  
 
   for (const row of rawRows || []) {
     const n = compactRow(row);
@@ -478,11 +683,62 @@ function parseRowsToSeries(rawRows) {
     product.category = category;
     product.subCategory = toNullableString(n.subCategory);
     product.model = toNullableString(n.model);
-    product.name = toNullableString(n.name);
-    const highlights = splitHighlights(n.highlights || '');
-    product.highlights = highlights.length > 0 ? highlights : null;
-    product.scenarios = toNullableString(n.scenarios);
-    product.usage = toNullableString(n.usage);
+    
+    // 提取多语言字段：对 PRODUCT_FIELD_KEYS 中的每个字段，生成 `${field}I18n` 对象（若有多语言列）
+    for (const f of PRODUCT_FIELD_KEYS) {
+      product[`${f}I18n`] = {};
+    }
+
+    // 若表格只提供基础中文列（例如 name/highlights），默认写入 zh-CN 源文案。
+    for (const f of PRODUCT_FIELD_KEYS) {
+      const baseVal = toNullableString(n[f]);
+      if (baseVal) {
+        product[`${f}I18n`]['zh-CN'] = baseVal;
+      }
+    }
+
+    for (const lang of SUPPORTED_LANGS) {
+      for (const f of PRODUCT_FIELD_KEYS) {
+        const val = toNullableString(n[`${f}_${lang}`]);
+        if (val) product[`${f}I18n`][lang] = val;
+      }
+    }
+
+    // 生成 i18nId（每个产品唯一），前端将使用 i18nId.field 的方式查找翻译
+    product.i18nId = (function(cat, sub, mod) {
+      const baseParts = [
+        String(cat || '').trim().replace(/\s+/g, '_'),
+        String(sub || '').trim().replace(/\s+/g, '_'),
+        String(mod || '').trim().replace(/\s+/g, '_')
+      ].filter(Boolean);
+      const base = baseParts.join('_').toLowerCase();
+      const hash = base ? crypto.createHash('sha1').update(base, 'utf8').digest('hex').slice(0, 8) : 'unknown';
+      return hash;
+    })(category, product.subCategory, product.model);
+
+    // 将各 fieldI18n 整理到单一子结构 product.i18n 中，便于区分与后续处理
+    product.i18n = product.i18n || {};
+    for (const f of PRODUCT_FIELD_KEYS) {
+      const key = `${f}I18n`;
+      const map = product[key];
+      if (map && typeof map === 'object' && Object.keys(map).length > 0) {
+        product.i18n[f] = map;
+      }
+      // 清理临时 fieldI18n 属性
+      delete product[key];
+    }
+
+    // 将 i18nId 同步到子对象以便后续读取
+    product.i18n.id = product.i18nId;
+
+    // 清空原单语言字段（不再存储文本，用 i18nId + i18n 对象替代）
+    // 保留 `model` 和 `subCategory` 原始值，以便后续使用或核对
+    for (const f of PRODUCT_FIELD_KEYS) {
+      if (f === 'category' || f === 'model' || f === 'subCategory') continue;
+      product[f] = null;
+    }
+
+    // 其他字段继续处理（非i18n字段）
     product.power = toNullableString(n.power);
     product.throughput = toNullableString(n.throughput);
     product.averageTime = toNullableString(n.averageTime);
@@ -564,14 +820,31 @@ function productIdentityKey(product) {
   const category = String(product?.category || '').trim();
   const subCategory = String(product?.subCategory || '').trim();
   const model = String(product?.model || '').trim();
-  return `${category}::${subCategory}::${model}`;
+  const nameFallback = String(
+    product?.name ||
+    product?.i18n?.name?.['zh-CN'] ||
+    product?.i18n?.name?.zh ||
+    product?.i18n?.name?.['zh_CN'] ||
+    ''
+  ).trim();
+  const identity = model || nameFallback;
+  return `${category}::${subCategory}::${identity}`;
 }
 
 function hasValidProductIdentity(product) {
   return Boolean(
     String(product?.category || '').trim() &&
-    String(product?.subCategory || '').trim() &&
-    String(product?.model || '').trim()
+    (
+      String(product?.subCategory || '').trim() ||
+      String(product?.model || '').trim() ||
+      String(
+        product?.name ||
+        product?.i18n?.name?.['zh-CN'] ||
+        product?.i18n?.name?.zh ||
+        product?.i18n?.name?.['zh_CN'] ||
+        ''
+      ).trim()
+    )
   );
 }
 
@@ -606,10 +879,9 @@ function mergeSeriesAppend(existingSeries, incomingSeries) {
     });
 
     for (const product of incoming.products || []) {
-      if (!hasValidProductIdentity(product)) continue;
-      const pid = productIdentityKey(product);
+      const pid = hasValidProductIdentity(product) ? productIdentityKey(product) : null;
 
-      if (indexMap.has(pid)) {
+      if (pid && indexMap.has(pid)) {
         const idx = indexMap.get(pid);
         const before = target.products[idx];
         const after = { ...before, ...product };
@@ -618,8 +890,9 @@ function mergeSeriesAppend(existingSeries, incomingSeries) {
           updatedCount += 1;
         }
       } else {
+        // Append incoming product even if it lacks a full identity
         target.products.push(product);
-        indexMap.set(pid, target.products.length - 1);
+        if (pid) indexMap.set(pid, target.products.length - 1);
         appendedCount += 1;
       }
     }
@@ -827,7 +1100,7 @@ function startDailyFeishuSyncScheduler() {
 function parseCliArgs(argv = process.argv.slice(2)) {
   const shared = loadSharedFeishuConfig();
   const args = {
-    source: 'xlsx',
+    source: 'feishu',
     xlsxPath: 'scripts/products-table.xlsx',
     outPath: 'src/assets/product-data-table.js',
     feishuAppId: process.env.FEISHU_APP_ID || shared.app_id || '',
@@ -906,6 +1179,7 @@ async function generateProductDataTable(args = parseCliArgs()) {
     throw new Error(`Invalid --source value: ${args.source}`);
   }
 
+  // 直接按照最新规则生成产品数据表：不做向后兼容的合并/追加操作
   const incomingSeries = parseRowsToSeries(rawRows);
   const qualityReport = validateAndCleanSeries(incomingSeries, {
     dropIncomplete: true,
@@ -913,15 +1187,45 @@ async function generateProductDataTable(args = parseCliArgs()) {
   });
   printQualityWarnings(`cli:${args.source}`, qualityReport);
 
-  const existingSeries = readProductDataTableSeries(outPath);
-  const merged = mergeSeriesAppend(existingSeries, qualityReport.series);
-  writeJs(merged.series, outPath, sourceLabel);
+  // 清理并规范化输出：删除遗留 *Key 字段，清空单语言字段，由 translations 提供多语言文本
+  function cleanSeriesForOutput(seriesList) {
+    return (seriesList || []).map((series) => ({
+      category: series.category,
+      products: (series.products || []).map((prod) => {
+        const p = Object.assign({}, prod);
 
-  console.log(`rows=${rawRows.length}`);
-  console.log(`series=${merged.series.map((s) => s.category).join(',')}`);
-  console.log(`appended=${merged.appendedCount}`);
-  console.log(`updated=${merged.updatedCount}`);
-  console.log(`written=${outPath}`);
+        // 删除所有以 Key 结尾的遗留字段（例如 nameKey、highlightsKey）
+        for (const k of Object.keys(p)) {
+          if (k.endsWith('Key')) delete p[k];
+        }
+
+        // 对于需要 i18n 的字段，确保原单语言字段被清空（由 translations 提供）
+        for (const f of ['name', 'highlights', 'scenarios', 'usage']) {
+          if (Object.prototype.hasOwnProperty.call(p, f)) p[f] = null;
+        }
+
+        // 明确保留原始标识字段与分类
+        p.model = prod.model;
+        p.subCategory = prod.subCategory;
+        p.category = series.category;
+
+        // 确保 product.i18n 存在，且包含 i18nId（已经在 parseRowsToSeries 中生成）
+        if (!p.i18n || typeof p.i18n !== 'object') p.i18n = {};
+        if (!p.i18n.id && p.i18nId) p.i18n.id = p.i18nId;
+
+        return p;
+      })
+    }));
+  }
+
+  const cleanedSeries = cleanSeriesForOutput(qualityReport.series);
+  writeJs(cleanedSeries, outPath, sourceLabel);
+
+  console.log('rows=' + rawRows.length);
+  console.log('series=' + cleanedSeries.map((s) => s.category).join(','));
+  console.log('appended=0');
+  console.log('updated=0');
+  console.log('written=' + outPath);
 }
 
 const feishuProTables = {
