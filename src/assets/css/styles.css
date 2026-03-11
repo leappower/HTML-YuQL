@@ -97,14 +97,14 @@ header nav a.active::after {
   z-index: 999;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
 }
 
 /* 悬停时的整体效果 */
 .floating-sidebar:hover {
-  gap: 8px;
+  gap: 10px;
   transform: translateY(-50%) scale(1.02);
   filter: drop-shadow(0 8px 24px rgba(39, 27, 59, 0.25));
 }
@@ -312,7 +312,7 @@ header nav a.active::after {
 /* Contact tooltip on hover */
 .contact-tooltip {
   position: absolute;
-  right: 60px;
+  right: 65px;
   background: rgba(39, 27, 59, 0.95);
   color: white;
   padding: 6px 12px;
@@ -330,7 +330,7 @@ header nav a.active::after {
 .primary-contact-btn:hover .contact-tooltip {
   opacity: 1;
   visibility: visible;
-  right: 56px;
+  right: 61px;
 }
 /* 次要联系按钮的工具提示样式 - 简化修复版 */
 .secondary-btn {
@@ -339,7 +339,7 @@ header nav a.active::after {
 
 .secondary-btn .contact-tooltip {
     position: absolute;
-    right: 50px;
+    right: 65px;
     background: rgba(39, 27, 59, 0.95);
     color: white;
     padding: 6px 12px;
@@ -360,7 +360,7 @@ header nav a.active::after {
     opacity: 1;
     visibility: visible;
     transform: translateY(-50%) translateX(0);
-    right: 46px;
+    right: 61px;
 }
 
 /* 确保工具提示不会溢出屏幕 */
@@ -370,14 +370,14 @@ header nav a.active::after {
   }
 
     .secondary-btn .contact-tooltip {
-        right: 45px;
+        right: 60px;
         white-space: normal;
         max-width: 100px;
         word-break: break-word;
     }
 
     .secondary-btn:hover .contact-tooltip {
-        right: 40px;
+        right: 55px;
     }
 }
 
@@ -389,7 +389,7 @@ header nav a.active::after {
 /* 无论按钮在什么位置，提示都能显示 */
 .expand-btn .contact-tooltip {
   position: absolute;
-  right: 50px;
+  right: 65px;
   background: rgba(39, 27, 59, 0.95);
   color: white;
   padding: 6px 12px;
@@ -410,35 +410,37 @@ header nav a.active::after {
   opacity: 1;
   visibility: visible;
   transform: translateX(0) translateY(-50%);
-  right: 46px;
+  right: 61px;
 }
 
 /* 确保展开和收起状态都能正常显示 */
 .expand-btn.expanded .contact-tooltip,
 .expand-btn:not(.expanded) .contact-tooltip {
-    right: 50px;
+    right: 65px;
 }
 
 .expand-btn.expanded:hover .contact-tooltip,
 .expand-btn:not(.expanded):hover .contact-tooltip {
-    right: 46px;
+    right: 61px;
 }
 
 /* 防止按钮位置变化导致提示消失 */
 .floating-sidebar .expand-btn .contact-tooltip {
-    position: fixed;
+    position: absolute;
+    right: 65px;
     transform: translateX(20px) translateY(-50%);
 }
 
 .floating-sidebar .expand-btn:hover .contact-tooltip {
     transform: translateX(0) translateY(-50%);
+    right: 61px;
 }
 
 /* 确保工具提示不会溢出屏幕 */
 @media (max-width: 768px) {
     .secondary-btn .contact-tooltip,
     .expand-btn .contact-tooltip {
-        right: 45px;
+        right: 60px;
         white-space: normal;
         max-width: 100px;
         word-break: break-word;
@@ -446,14 +448,14 @@ header nav a.active::after {
 
     .secondary-btn:hover .contact-tooltip,
     .expand-btn:hover .contact-tooltip {
-        right: 40px;
+        right: 55px;
     }
 }
 
 .primary-contact-btn:hover .contact-tooltip {
   opacity: 1;
   visibility: visible;
-  right: 56px;
+  right: 61px;
 }
 
 /* Primary contact button colors */
@@ -470,7 +472,7 @@ header nav a.active::after {
 .secondary-contacts {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
   max-height: 0;
   overflow: visible;
   transition: max-height 0.4s ease, opacity 0.3s ease;
@@ -485,8 +487,8 @@ header nav a.active::after {
 
 /* 次要联系人按钮增强 */
 .secondary-btn {
-  width: 44px;
-  height: 44px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -498,12 +500,15 @@ header nav a.active::after {
   opacity: 0.8;
   cursor: pointer;
   backface-visibility: hidden;
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
 }
 
 .secondary-btn:hover {
-  transform: scale(1.1) translateZ(5px);
+  transform: scale(1.15);
   opacity: 1;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
 }
 
 .telegram-btn { background: #0088cc; }
@@ -515,8 +520,8 @@ header nav a.active::after {
 
 /* Expand button */
 .expand-btn {
-  width: 44px;
-  height: 44px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   background: linear-gradient(135deg, #271b3b, #3a2a52);
   color: white;
@@ -527,10 +532,13 @@ header nav a.active::after {
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   opacity: 0.8;
   box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
 }
 
 .expand-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
   opacity: 1;
   box-shadow: 0 6px 16px rgba(0,0,0,0.3);
 }
@@ -1493,47 +1501,42 @@ header nav a.active::after {
 
 /* 回到顶部按钮 */
 .back-to-top-btn {
-  position: relative;
-  right: 0px;
-  bottom: -100px;
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #271b3b, #3a2a52);
+  background: linear-gradient(135deg, #4a3565, #5d4878);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
   cursor: pointer;
   border: none;
-  outline: none;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(20px);
+  padding: 0;
+  flex-shrink: 0;
   z-index: 1000;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
+  opacity: 0.8;
+  visibility: visible;
 }
 
-.back-to-top-btn.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+.back-to-top-btn.hide {
+  visibility: hidden;
+  height: 0;
+  transition: visibility 0.4s, height 0.4s;
 }
 
 .back-to-top-btn:hover {
-  background: linear-gradient(135deg, #3a2a52, #271b3b);
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  transform: scale(1.15);
+  opacity: 1;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
 }
 
 /* 提示文字 */
 .back-to-top-tooltip {
   position: absolute;
-  right: 60px;
+  right: 65px;
   background: rgba(39, 27, 59, 0.95);
   color: white;
   padding: 6px 12px;
@@ -1550,7 +1553,7 @@ header nav a.active::after {
 .back-to-top-btn:hover .back-to-top-tooltip {
   opacity: 1;
   visibility: visible;
-  right: 56px;
+  right: 61px;
 }
 
 /* 动画效果 */

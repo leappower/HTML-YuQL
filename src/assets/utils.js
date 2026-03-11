@@ -79,25 +79,35 @@ import { IMAGE_ASSETS } from './image-assets.js';
   function setupBackToTopButton() {
     const backToTopBtn = document.getElementById('back-to-top');
     if (!backToTopBtn) return;
-    window.addEventListener('scroll', function() {
-      if (window.pageYOffset > 300) {
-        backToTopBtn.classList.add('show');
+
+    // 初始隐藏按钮
+    backToTopBtn.classList.add('hide');
+
+    const checkScrollPosition = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollableHeight = documentHeight - windowHeight;
+      
+      // 手机端（< 768px）显示阈值为30%，桌面端为50%
+      const isMobile = window.innerWidth < 768;
+      const threshold = isMobile ? 0.3 : 0.5;
+      const scrollThreshold = scrollableHeight * threshold;
+
+      if (window.pageYOffset > scrollThreshold) {
+        backToTopBtn.classList.remove('hide');
       } else {
-        backToTopBtn.classList.remove('show');
+        backToTopBtn.classList.add('hide');
       }
-    });
+    };
+
+    window.addEventListener('scroll', checkScrollPosition, { passive: true });
+    window.addEventListener('resize', checkScrollPosition, { passive: true });
     backToTopBtn.addEventListener('click', function(e) {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      this.classList.add('pulse');
-      setTimeout(() => this.classList.remove('pulse'), 1000);
     });
-    setTimeout(() => {
-      if (window.pageYOffset > 300) {
-        backToTopBtn.classList.add('show', 'pulse');
-        setTimeout(() => backToTopBtn.classList.remove('pulse'), 1000);
-      }
-    }, 8000);
+
+    checkScrollPosition();
   }
 
   document.getElementById('language-dropdown')?.addEventListener('click', function(event) {
@@ -112,6 +122,9 @@ import { IMAGE_ASSETS } from './image-assets.js';
     if (typeof window.setupLanguageSystem === 'function') {
       window.setupLanguageSystem();
     }
+
+    // 初始化回到顶部按钮
+    setupBackToTopButton();
 
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('header nav a[href^="#"]');
@@ -804,12 +817,15 @@ import { IMAGE_ASSETS } from './image-assets.js';
   // ============================================
   let secondaryExpanded = false;
 
-  function toggleSecondaryContacts() {
-    secondaryExpanded = !secondaryExpanded;
+  function setSecondaryContactsExpanded(expanded) {
     const secondary = document.getElementById('secondary-contacts');
     const btn = document.getElementById('expand-btn');
-    const btnIcon = document.getElementById('expand-btn-icon');
+    if (!secondary || !btn) return;
+
+    secondaryExpanded = !!expanded;
+    const btnIcon = document.getElementById('expand-btn-icon') || document.getElementById('expand-btn-material-symbols-outlined-text');
     const tooltip = btn.querySelector('.contact-tooltip');
+
     if (secondaryExpanded) {
       secondary.classList.add('expanded');
       if (btnIcon) btnIcon.textContent = 'expand_less';
@@ -821,9 +837,29 @@ import { IMAGE_ASSETS } from './image-assets.js';
       if (tooltip) tooltip.setAttribute('data-i18n', 'sidebar_expand');
       btn.classList.remove('expanded');
     }
+
     if (window.translationManager && typeof window.translationManager.applyTranslations === 'function') {
       window.translationManager.applyTranslations();
     }
+  }
+
+  function toggleSecondaryContacts() {
+    setSecondaryContactsExpanded(!secondaryExpanded);
+  }
+
+  function setupSecondaryContactsAutoCollapse() {
+    document.addEventListener('click', (event) => {
+      if (!secondaryExpanded) return;
+      const sidebar = document.getElementById('floating-sidebar');
+      if (!sidebar) return;
+      if (sidebar.contains(event.target)) return;
+      setSecondaryContactsExpanded(false);
+    });
+
+    window.addEventListener('scroll', () => {
+      if (!secondaryExpanded) return;
+      setSecondaryContactsExpanded(false);
+    }, { passive: true });
   }
 
   function showIndicator() {
@@ -1401,6 +1437,7 @@ ${tr('mailto_label_resolution', 'Resolution')}: ${window.screen.width}x${window.
     setTimeout(setupJumpingAnimation, 1000);
     setTimeout(showIndicator, 2500);
     setupMobileMenuAutoClose();
+    setupSecondaryContactsAutoCollapse();
   });
 
   let jumpAnimationSystem = null;

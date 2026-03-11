@@ -47,16 +47,33 @@ class BackToTopModule {
     const backToTopBtn = document.getElementById('back-to-top');
     if (!backToTopBtn) return;
 
-    const handleScroll = () => {
-      backToTopBtn.style.display = (window.pageYOffset > 300) ? 'block' : 'none';
+    // 初始隐藏按钮
+    backToTopBtn.classList.add('hide');
+
+    const checkScrollPosition = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollableHeight = documentHeight - windowHeight;
+      
+      // 手机端（< 768px）显示阈值为40%，桌面端为60%
+      const isMobile = window.innerWidth < 768;
+      const threshold = isMobile ? 0.4 : 0.6;
+      const scrollThreshold = scrollableHeight * threshold;
+
+      if (window.pageYOffset > scrollThreshold) {
+        backToTopBtn.classList.remove('hide');
+      } else {
+        backToTopBtn.classList.add('hide');
+      }
     };
 
-    const handleClick = () => {
+    window.addEventListener('scroll', checkScrollPosition, { passive: true });
+    window.addEventListener('resize', checkScrollPosition, { passive: true });
+    backToTopBtn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    });
 
-    window.addEventListener('scroll', handleScroll);
-    backToTopBtn.addEventListener('click', handleClick);
+    checkScrollPosition();
   }
 }
 
