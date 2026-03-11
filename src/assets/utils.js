@@ -266,10 +266,158 @@ import { IMAGE_ASSETS } from './image-assets.js';
     renderProducts();
   });
 
+  window.addEventListener('languageChanged', () => {
+    const defaultFilter = renderProductFilters();
+    if (!currentFilter) {
+      currentFilter = defaultFilter;
+    }
+    updateProductFilterButtonState(currentFilter || defaultFilter);
+    renderProducts();
+    if (window.translationManager && typeof window.translationManager.applyTranslations === 'function') {
+      window.translationManager.applyTranslations();
+    }
+  });
+
   let currentPage = 1;
-  const itemsPerPage = 6;
   let currentFilter = '';
   let productFilterSwipeHintBound = false;
+
+  function getItemsPerPage() {
+    return window.matchMedia('(max-width: 640px)').matches ? 3 : 6;
+  }
+
+  function isMobileProductCarousel() {
+    return window.matchMedia('(max-width: 640px)').matches;
+  }
+
+  function getMobileProductStepWidth() {
+    const grid = document.getElementById('product-grid');
+    if (!grid) return 280;
+
+    const firstCard = grid.querySelector('.product-card');
+    if (!firstCard) return Math.max(240, Math.floor(grid.clientWidth * 0.82));
+
+    const cardStyles = window.getComputedStyle(firstCard);
+    const cardWidth = firstCard.getBoundingClientRect().width;
+    const cardMarginRight = parseFloat(cardStyles.marginRight || '0') || 0;
+    return Math.max(220, Math.round(cardWidth + cardMarginRight + 14));
+  }
+
+  function updateMobileProductNavState() {
+    if (!isMobileProductCarousel()) return;
+
+    const grid = document.getElementById('product-grid');
+    const prevBtn = document.getElementById('product-mobile-prev');
+    const nextBtn = document.getElementById('product-mobile-next');
+
+    if (!grid || !prevBtn || !nextBtn) return;
+
+    const maxScrollLeft = Math.max(0, grid.scrollWidth - grid.clientWidth);
+    const canScroll = maxScrollLeft > 8;
+    const atStart = grid.scrollLeft <= 8;
+    const atEnd = grid.scrollLeft >= maxScrollLeft - 8;
+
+    prevBtn.disabled = !canScroll || atStart;
+    nextBtn.disabled = !canScroll || atEnd;
+    prevBtn.classList.toggle('is-disabled', prevBtn.disabled);
+    nextBtn.classList.toggle('is-disabled', nextBtn.disabled);
+  }
+
+  function ensureProductGridShell(grid) {
+    let shell = document.getElementById('product-grid-shell');
+    if (shell) return shell;
+
+    shell = document.createElement('div');
+    shell.id = 'product-grid-shell';
+    shell.className = 'product-grid-mobile-shell';
+    grid.parentNode.insertBefore(shell, grid);
+    shell.appendChild(grid);
+    return shell;
+  }
+
+  let _mobileCtrlFadeTimer = null;
+  let _mobileCtrlTouchHandler = null;
+
+  function resetMobileCtrlFadeTimer() {
+    const controls = document.getElementById('product-grid-mobile-controls');
+    if (!controls || controls.classList.contains('is-hidden')) return;
+    controls.classList.remove('is-faded');
+    if (_mobileCtrlFadeTimer) {
+      clearTimeout(_mobileCtrlFadeTimer);
+    }
+    _mobileCtrlFadeTimer = setTimeout(() => {
+      const c = document.getElementById('product-grid-mobile-controls');
+      if (c) c.classList.add('is-faded');
+    }, 3000);
+  }
+
+  function renderMobileProductSideControls(showControls, disableControls = false) {
+    const grid = document.getElementById('product-grid');
+    if (!grid) return;
+
+    const shell = ensureProductGridShell(grid);
+    let controls = document.getElementById('product-grid-mobile-controls');
+    if (!controls) {
+      controls = document.createElement('div');
+      controls.id = 'product-grid-mobile-controls';
+      controls.className = 'product-grid-mobile-controls is-hidden';
+      shell.appendChild(controls);
+    }
+
+    if (!showControls) {
+      if (_mobileCtrlFadeTimer) { clearTimeout(_mobileCtrlFadeTimer); _mobileCtrlFadeTimer = null; }
+      controls.classList.add('is-hidden');
+      controls.classList.remove('is-faded');
+      controls.innerHTML = '';
+      return;
+    }
+
+    controls.classList.remove('is-hidden', 'is-faded');
+    controls.innerHTML = `
+      <button
+        type="button"
+        id="product-mobile-prev"
+        onclick="scrollMobileProducts(-1)"
+        class="product-side-nav-btn product-side-nav-btn-prev ios-nav-btn ${disableControls ? 'is-disabled' : ''}"
+        ${disableControls ? 'disabled' : ''}
+        aria-label="${tr('product_prev_page', 'Previous page')}">
+        <span class="material-symbols-outlined" aria-hidden="true">keyboard_arrow_left</span>
+      </button>
+      <button
+        type="button"
+        id="product-mobile-next"
+        onclick="scrollMobileProducts(1)"
+        class="product-side-nav-btn product-side-nav-btn-next ios-nav-btn ${disableControls ? 'is-disabled' : ''}"
+        ${disableControls ? 'disabled' : ''}
+        aria-label="${tr('product_next_page', 'Next page')}">
+        <span class="material-symbols-outlined" aria-hidden="true">keyboard_arrow_right</span>
+      </button>
+    `;
+    resetMobileCtrlFadeTimer();
+  }
+
+  function scrollMobileProducts(direction) {
+    if (!isMobileProductCarousel()) {
+      goToPage(currentPage + direction);
+      return;
+    }
+
+    const grid = document.getElementById('product-grid');
+    if (!grid) return;
+
+    const stepWidth = getMobileProductStepWidth();
+    grid.scrollBy({ left: direction * stepWidth, behavior: 'smooth' });
+    window.setTimeout(updateMobileProductNavState, 220);
+  }
+
+  let lastItemsPerPage = getItemsPerPage();
+  window.addEventListener('resize', () => {
+    const nextItemsPerPage = getItemsPerPage();
+    if (nextItemsPerPage !== lastItemsPerPage) {
+      lastItemsPerPage = nextItemsPerPage;
+      renderProducts();
+    }
+  });
 
   function updateProductFilterSwipeHint() {
     const filterBar = document.getElementById('product-filter-bar');
@@ -326,68 +474,261 @@ import { IMAGE_ASSETS } from './image-assets.js';
     renderProducts();
   }
 
+  function scoreFeaturedProduct(product) {
+    let score = 0;
+    if (product.badgeKey) score += 4;
+    if ((product.highlights || []).length > 0) score += Math.min((product.highlights || []).length, 3);
+    if (product.status && String(product.status).includes('在售')) score += 2;
+    if (product.price && String(product.price).trim() && String(product.price).trim() !== '-') score += 1;
+    if (product.model) score += 1;
+    return score;
+  }
+
+  function pinFeaturedBySeries(list) {
+    const groups = new Map();
+    const categoryOrder = [];
+
+    list.forEach((item) => {
+      if (!groups.has(item.category)) {
+        groups.set(item.category, []);
+        categoryOrder.push(item.category);
+      }
+      groups.get(item.category).push(item);
+    });
+
+    const ordered = [];
+    categoryOrder.forEach((category) => {
+      const groupItems = groups.get(category) || [];
+      if (groupItems.length === 0) return;
+
+      let featuredIndex = 0;
+      let bestScore = -Infinity;
+      groupItems.forEach((product, index) => {
+        const score = scoreFeaturedProduct(product);
+        if (score > bestScore) {
+          bestScore = score;
+          featuredIndex = index;
+        }
+      });
+
+      const featured = { ...groupItems[featuredIndex], __featured: true };
+      ordered.push(featured);
+
+      groupItems.forEach((product, index) => {
+        if (index !== featuredIndex) {
+          ordered.push({ ...product, __featured: false });
+        }
+      });
+    });
+
+    return ordered;
+  }
+
   function renderProducts() {
     const grid = document.getElementById('product-grid');
+    if (!grid) return;
+
+    let meta = document.getElementById('product-grid-meta');
+    if (!meta) {
+      meta = document.createElement('div');
+      meta.id = 'product-grid-meta';
+      meta.className = 'mb-4 rounded-xl border border-primary/10 bg-white/80 px-3 py-2 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300 product-grid-meta';
+      grid.parentNode.insertBefore(meta, grid);
+    }
+
     const allProducts = getProducts();
-    const filtered = currentFilter ? allProducts.filter(p => p.category === currentFilter) : allProducts;
-    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    const filtered = currentFilter ? allProducts.filter((p) => p.category === currentFilter) : allProducts;
+    const orderedProducts = pinFeaturedBySeries(filtered);
+    const mobileCarousel = isMobileProductCarousel();
+    const itemsPerPage = mobileCarousel ? Math.max(1, orderedProducts.length) : getItemsPerPage();
+    const totalPages = Math.max(1, Math.ceil(orderedProducts.length / itemsPerPage));
+
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
     const start = (currentPage - 1) * itemsPerPage;
-    const pageProducts = filtered.slice(start, start + itemsPerPage);
+    const pageProducts = orderedProducts.slice(start, start + itemsPerPage);
+
+    const from = orderedProducts.length === 0 ? 0 : start + 1;
+    const to = orderedProducts.length === 0 ? 0 : Math.min(start + pageProducts.length, orderedProducts.length);
+    const prevDisabled = currentPage <= 1;
+    const nextDisabled = currentPage >= totalPages;
+    const featuredCurrentSeries = currentFilter ? orderedProducts.find((p) => p.__featured) : null;
+
+    meta.innerHTML = `
+      <div class="lg:flex lg:items-center lg:justify-between lg:gap-4">
+      <div class="flex w-full items-center justify-between gap-3 overflow-x-auto whitespace-nowrap px-1 pb-1 sm:justify-center sm:px-0 sm:pb-0 lg:flex-1 lg:justify-start lg:pb-0">
+        <span class="shrink-0">${tr('product_label_series', 'Series')}: <strong>${currentFilter ? tr('category_' + currentFilter, currentFilter) : tr('all', 'All')}</strong></span>
+        <span class="shrink-0">${tr('product_label_page', 'Page')}: <strong>${currentPage}/${totalPages}</strong></span>
+        <span class="hidden shrink-0 sm:inline">${tr('product_label_results', 'Results')}: <strong>${from}-${to}</strong> / ${orderedProducts.length}</span>
+        ${featuredCurrentSeries ? `<span class="shrink-0">${tr('product_featured', 'Featured')}: <strong>${featuredCurrentSeries.model || featuredCurrentSeries.name || '-'}</strong></span>` : ''}
+      </div>
+      <div class="mt-2 hidden w-full grid-cols-2 gap-2 product-meta-nav sm:mt-1 sm:flex sm:w-auto sm:grid-cols-none sm:gap-2 sm:justify-end lg:mt-0 lg:ml-4 lg:shrink-0">
+        <button
+          type="button"
+          onclick="goToPage(${currentPage - 1})"
+          class="product-meta-nav-btn ios-nav-btn w-full justify-start ${prevDisabled ? 'is-disabled' : ''} sm:w-auto sm:justify-center"
+          ${prevDisabled ? 'disabled' : ''}
+          aria-label="${tr('product_prev_page', 'Previous page')}">
+          <span class="product-meta-nav-icon material-symbols-outlined" aria-hidden="true">keyboard_arrow_left</span>
+          <span class="product-meta-nav-label">${tr('product_prev_page', 'Previous')}</span>
+        </button>
+        <button
+          type="button"
+          onclick="goToPage(${currentPage + 1})"
+          class="product-meta-nav-btn ios-nav-btn w-full justify-end ${nextDisabled ? 'is-disabled' : ''} sm:w-auto sm:justify-center"
+          ${nextDisabled ? 'disabled' : ''}
+          aria-label="${tr('product_next_page', 'Next page')}">
+          <span class="product-meta-nav-label">${tr('product_next_page', 'Next')}</span>
+          <span class="product-meta-nav-icon material-symbols-outlined" aria-hidden="true">keyboard_arrow_right</span>
+        </button>
+      </div>
+      </div>
+    `;
+
+    if (orderedProducts.length === 0) {
+      grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8';
+      renderMobileProductSideControls(false);
+      grid.innerHTML = `
+        <div class="col-span-full rounded-2xl border border-dashed border-primary/30 bg-white/70 dark:bg-slate-900/60 p-10 text-center">
+          <span class="material-symbols-outlined text-4xl text-primary/70">inventory_2</span>
+          <p class="mt-3 text-base font-bold text-primary dark:text-slate-100">${tr('product_empty_title', 'No matching products found')}</p>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">${tr('product_empty_desc', 'Try another series filter or contact us for custom recommendation.')}</p>
+        </div>
+      `;
+      renderPagination(1);
+      return;
+    }
 
     grid.innerHTML = pageProducts.map((p) => {
       const highlights = (p.highlights || []).slice(0, 3).map((item) => `<span class="px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">${item}</span>`).join('');
       const specs = p.detailParams || {};
+      const categoryLabel = tr('category_' + p.category, p.category);
+      const displayName = p.name || `${categoryLabel} ${p.model || ''}`.trim();
+      const badgeColorClass = p.badgeColor || 'bg-primary';
+
+      const detailRows = [
+        [tr('product_label_usage', 'Usage'), p.usage],
+        [tr('product_label_scene', 'Application Scenario'), p.scene],
+        [tr('product_label_material', 'Material'), specs.material],
+        [tr('product_label_min_order_qty', 'Minimum Order Quantity'), p.minOrderQty],
+        [tr('product_label_launch_date', 'Launch Date'), p.launchDate],
+      ].filter(([, value]) => value && String(value).trim());
+
+      const detailHtml = detailRows.length > 0
+        ? detailRows.slice(0, 2).map(([label, value]) => `<div><strong>${label}:</strong> ${value}</div>`).join('')
+        : `<div><strong>${tr('product_label_usage', 'Usage')}:</strong> ${tr('product_not_specified', 'To be confirmed')}</div>`;
+
       return `
-    <div class="product-card bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/5 group" data-category="${p.category}">
-      <div class="aspect-[4/3] overflow-hidden relative">
-        <img src="${p.productImage || resolveImage(p.imageKey)}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-        ${p.badgeKey ? `<span class="absolute top-3 left-3 ${p.badgeColor} text-white px-3 py-1 rounded-full text-xs font-bold">${tr(p.badgeKey, p.badgeKey)}</span>` : ''}
-        ${p.status ? `<span class="absolute top-3 right-3 bg-slate-900/75 text-white px-2 py-1 rounded text-xs">${p.status}</span>` : ''}
+    <article class="product-card h-full flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/10 group" data-category="${p.category}">
+      <div class="relative h-[200px] sm:h-[220px] lg:h-[250px] w-full overflow-hidden bg-slate-50 dark:bg-slate-800/60">
+        <img src="${p.productImage || resolveImage(p.imageKey)}" alt="${displayName}" loading="lazy" decoding="async" class="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-500">
+
+        ${p.badgeKey ? `<span class="absolute top-2 left-2 ${badgeColorClass} text-white px-2 py-0.5 rounded-full text-[10px] font-bold shadow">${tr(p.badgeKey, p.badgeKey)}</span>` : ''}
+        ${p.status ? `<span class="absolute top-2 right-2 bg-slate-900/80 text-white px-2 py-0.5 rounded-full text-[10px]">${p.status}</span>` : ''}
       </div>
-      <div class="p-4 lg:p-6">
-        <h3 class="text-lg font-bold text-primary dark:text-white mb-1">${p.name}</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">${tr('product_label_model', 'Model')}: ${p.model || '-'}</p>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">${tr('product_label_brand', 'Brand')}: ${p.brand || '-'}</p>
-        <span class="text-xs font-medium text-primary uppercase">${tr('category_' + p.category, p.category)}</span>
 
-        <div class="flex flex-wrap gap-2 my-4">${highlights}</div>
-
-        <div class="space-y-2 text-xs text-slate-600 dark:text-slate-300 my-4">
-          <div><strong>${tr('product_label_launch_date', 'Launch Date')}:</strong> ${p.launchDate || '-'}</div>
-          <div><strong>${tr('product_label_shipping_lead_time', 'Shipping Lead Time')}:</strong> ${p.shippingLeadTime || '-'}</div>
-          <div><strong>${tr('product_label_min_order_qty', 'Minimum Order Quantity')}:</strong> ${p.minOrderQty || '-'}</div>
-          <div><strong>${tr('product_label_price', 'Price')}:</strong> ${p.price || '-'}</div>
-          <div><strong>${tr('product_label_scene', 'Application Scenario')}:</strong> ${p.scene || '-'}</div>
-          <div><strong>${tr('product_label_usage', 'Usage')}:</strong> ${p.usage || '-'}</div>
-          <div><strong>${tr('product_label_material', 'Material')}:</strong> ${specs.material || '-'}</div>
-          <div><strong>${tr('product_label_voltage_frequency', 'Voltage/Frequency')}:</strong> ${specs.voltage || '-'} / ${specs.frequency || '-'}</div>
-          <div><strong>${tr('product_label_capacity_throughput', 'Capacity/Throughput')}:</strong> ${specs.capacity || '-'} / ${specs.throughput || '-'}</div>
-          <div><strong>${tr('product_label_avg_cook_time', 'Average Cooking Time')}:</strong> ${specs.avgCookTime || '-'}</div>
+      <div class="p-3 sm:p-3.5 flex flex-col">
+        <div class="flex items-start justify-between gap-2 mb-2">
+          <div class="min-w-0">
+            ${p.__featured ? `<div class="mb-1"><span class="inline-flex rounded-full bg-amber-400/95 px-2 py-0.5 text-[10px] font-bold text-slate-900 shadow-sm">${tr('product_featured', 'Featured')}</span></div>` : ''}
+            <h3 class="text-base sm:text-[15px] lg:text-base font-extrabold text-slate-900 dark:text-slate-100 leading-snug break-words whitespace-normal">${displayName}</h3>
+          </div>
+          <div class="shrink-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2 py-1 text-right">
+            <p class="text-[10px] text-slate-500 dark:text-slate-400">${tr('product_label_model', 'Model')}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 leading-none">${p.model || '-'}</p>
+          </div>
         </div>
 
-        <div class="flex items-center justify-between">
-          <button onclick="showSmartPopupManual()" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">request_page</span>
+        <div class="grid grid-cols-2 gap-1.5 text-[10px] sm:text-[11px] mb-2.5">
+          <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
+            <p class="text-slate-500 dark:text-slate-400">${tr('product_label_price', 'Price')}</p>
+            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${p.price || '-'}</p>
+          </div>
+          <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
+            <p class="text-slate-500 dark:text-slate-400">${tr('product_label_shipping_lead_time', 'Shipping Lead Time')}</p>
+            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${p.shippingLeadTime || '-'}</p>
+          </div>
+          <div class="hidden rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5 sm:block">
+            <p class="text-slate-500 dark:text-slate-400">${tr('product_label_capacity_throughput', 'Capacity/Throughput')}</p>
+            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${specs.capacity || specs.throughput || '-'}</p>
+          </div>
+          <div class="hidden rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5 sm:block">
+            <p class="text-slate-500 dark:text-slate-400">${tr('product_label_voltage_frequency', 'Voltage/Frequency')}</p>
+            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${specs.voltage || specs.frequency ? `${specs.voltage || '-'} / ${specs.frequency || '-'}` : '-'}</p>
+          </div>
+        </div>
+
+        <div class="hidden sm:flex flex-wrap gap-1.5 mb-2 min-h-[1.25rem]">${highlights || `<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">${tr('product_label_scene', 'Application Scenario')}: ${p.scene || '-'}</span>`}</div>
+
+        <div class="hidden sm:grid grid-cols-1 gap-0.5 text-[10px] text-slate-600 dark:text-slate-300 mb-2.5 border-t border-slate-100 dark:border-slate-800 pt-2">
+          ${detailHtml}
+        </div>
+
+        <div class="mt-auto grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <button onclick="showSmartPopupManual()" class="inline-flex h-full min-h-[40px] w-full items-center justify-center gap-1 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
+            <span class="material-symbols-outlined text-xs">tune</span>
+            ${tr('product_optional_specs', 'Optional')}
+          </button>
+          <button onclick="showSmartPopupManual()" class="inline-flex h-full min-h-[40px] w-full items-center justify-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-white hover:bg-primary/90 transition-colors">
+            <span class="material-symbols-outlined text-xs">request_page</span>
             ${tr('product_request', 'Request Quote')}
           </button>
         </div>
       </div>
-    </div>
+    </article>
   `;
     }).join('');
+
+    if (mobileCarousel) {
+      grid.className = 'product-grid-mobile mb-8';
+      renderMobileProductSideControls(true, orderedProducts.length <= 1);
+      grid.removeEventListener('scroll', updateMobileProductNavState);
+      grid.removeEventListener('scroll', resetMobileCtrlFadeTimer);
+      grid.addEventListener('scroll', updateMobileProductNavState, { passive: true });
+      grid.addEventListener('scroll', resetMobileCtrlFadeTimer, { passive: true });
+      window.setTimeout(updateMobileProductNavState, 30);
+      if (_mobileCtrlTouchHandler) {
+        const shell = document.getElementById('product-grid-shell');
+        if (shell) shell.removeEventListener('touchstart', _mobileCtrlTouchHandler);
+        _mobileCtrlTouchHandler = null;
+      }
+    } else {
+      grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8';
+      renderMobileProductSideControls(false);
+      grid.removeEventListener('scroll', updateMobileProductNavState);
+      if (_mobileCtrlTouchHandler) {
+        const shell = document.getElementById('product-grid-shell');
+        if (shell) shell.removeEventListener('touchstart', _mobileCtrlTouchHandler);
+        _mobileCtrlTouchHandler = null;
+      }
+    }
 
     renderPagination(totalPages);
   }
 
   function renderPagination(totalPages) {
     const pagination = document.getElementById('pagination');
+    if (isMobileProductCarousel()) {
+      pagination.innerHTML = '';
+      return;
+    }
+
     if (totalPages <= 1) {
       pagination.innerHTML = '';
       return;
     }
+
+    const itemsPerPage = getItemsPerPage();
+    const from = (currentPage - 1) * itemsPerPage + 1;
+    const to = Math.min(currentPage * itemsPerPage, (currentFilter ? getProducts().filter((p) => p.category === currentFilter) : getProducts()).length);
+
     let html = '';
-    html += `<button onclick="goToPage(${currentPage - 1})" class="pagination-btn px-3 py-2 rounded-lg text-sm ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}" ${currentPage === 1 ? 'disabled' : ''}>
+    html += `<div class="w-full mb-2 text-center text-xs text-slate-500 dark:text-slate-400">${tr('product_pagination_summary', 'Showing')} ${from}-${to} ${tr('product_pagination_of', 'of')} ${currentFilter ? getProducts().filter((p) => p.category === currentFilter).length : getProducts().length} · ${tr('product_label_page', 'Page')} ${currentPage}/${totalPages}</div>`;
+    html += `<button onclick="goToPage(${currentPage - 1})" class="pagination-btn inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}" ${currentPage === 1 ? 'disabled' : ''}>
     <span class="material-symbols-outlined text-lg">chevron_left</span>
+    <span>${tr('product_prev_page', 'Previous')}</span>
   </button>`;
     for (let i = 1; i <= totalPages; i++) {
       if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
@@ -396,15 +737,21 @@ import { IMAGE_ASSETS } from './image-assets.js';
         html += '<span class="px-2">...</span>';
       }
     }
-    html += `<button onclick="goToPage(${currentPage + 1})" class="pagination-btn px-3 py-2 rounded-lg text-sm ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}" ${currentPage === totalPages ? 'disabled' : ''}>
+    html += `<button onclick="goToPage(${currentPage + 1})" class="pagination-btn inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}" ${currentPage === totalPages ? 'disabled' : ''}>
+    <span>${tr('product_next_page', 'Next')}</span>
     <span class="material-symbols-outlined text-lg">chevron_right</span>
   </button>`;
     pagination.innerHTML = html;
   }
 
   function goToPage(page) {
+    if (isMobileProductCarousel()) {
+      return;
+    }
+
     const allProducts = getProducts();
     const filtered = currentFilter ? allProducts.filter(p => p.category === currentFilter) : allProducts;
+    const itemsPerPage = getItemsPerPage();
     const totalPages = Math.ceil(filtered.length / itemsPerPage);
     if (page >= 1 && page <= totalPages) {
       currentPage = page;
@@ -1078,6 +1425,7 @@ ${tr('mailto_label_resolution', 'Resolution')}: ${window.screen.width}x${window.
     renderProducts,
     renderPagination,
     goToPage,
+    scrollMobileProducts,
     loadUserState,
     saveUserState,
     trackScrollDepth,
