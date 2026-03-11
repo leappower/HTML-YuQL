@@ -183,6 +183,45 @@ function hasTableData(seriesList) {
   return (seriesList || []).some((series) => Array.isArray(series.products) && series.products.length > 0);
 }
 
+function productIdentityKey(product, fallbackCategory) {
+  const category = toNullableString(product?.category) || toNullableString(fallbackCategory) || '';
+  const subCategory = toNullableString(product?.subCategory) || '';
+  const model = toNullableString(product?.model) || '';
+  return `${category}::${subCategory}::${model}`;
+}
+
+function mergeSeriesByIdentity(seriesList) {
+  const grouped = new Map();
+
+  for (const series of seriesList || []) {
+    const category = toNullableString(series?.category);
+    if (!category) continue;
+
+    if (!grouped.has(category)) {
+      grouped.set(category, { category, products: [], indexMap: new Map() });
+    }
+
+    const target = grouped.get(category);
+    for (const product of series.products || []) {
+      const pid = productIdentityKey(product, category);
+      const hasIdentity = Boolean(pid !== `${category}::::` && pid !== '::::');
+
+      if (hasIdentity && target.indexMap.has(pid)) {
+        const idx = target.indexMap.get(pid);
+        target.products[idx] = { ...target.products[idx], ...product };
+        continue;
+      }
+
+      target.products.push(product);
+      if (hasIdentity) {
+        target.indexMap.set(pid, target.products.length - 1);
+      }
+    }
+  }
+
+  return Array.from(grouped.values()).map(({ category, products }) => ({ category, products }));
+}
+
 export function assembleProductSeries(options = {}) {
   const runtimeEnv = options.runtimeEnv || detectRuntimeEnv();
   const isDevelopment = runtimeEnv !== 'production';
@@ -192,7 +231,8 @@ export function assembleProductSeries(options = {}) {
     ? GENERATED_PRODUCT_SERIES
     : (isDevelopment ? MOCK_PRODUCT_SERIES : []);
 
-  return withImageUrl([...baseSeries, ...APPENDED_PRODUCT_SERIES_NORMALIZED]);
+  const combined = [...baseSeries, ...APPENDED_PRODUCT_SERIES_NORMALIZED];
+  return withImageUrl(mergeSeriesByIdentity(combined));
 }
 
 export const PRODUCT_SERIES = assembleProductSeries();

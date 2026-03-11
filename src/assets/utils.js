@@ -34,22 +34,22 @@ import { IMAGE_ASSETS } from './image-assets.js';
       series.products
         .filter(isProductActive)
         .map((product) => {
-        const category = series.category;
-        const imageKey = product.imageRecognitionKey || `product_${category}`;
-        const imageUrl = product.imageUrl || resolveImage(imageKey);
-        return {
-          ...PRODUCT_DEFAULTS,
-          id: nextId++,
-          category,
-          filterKey: category,
-          imageRecognitionKey: imageKey,
-          imageKey,
-          productImageKey: imageKey,
-          imageUrl,
-          productImage: imageUrl,
-          ...product
-        };
-      })
+          const category = series.category;
+          const imageKey = product.imageRecognitionKey || `product_${category}`;
+          const imageUrl = product.imageUrl || resolveImage(imageKey);
+          return {
+            ...PRODUCT_DEFAULTS,
+            id: nextId++,
+            category,
+            filterKey: category,
+            imageRecognitionKey: imageKey,
+            imageKey,
+            productImageKey: imageKey,
+            imageUrl,
+            productImage: imageUrl,
+            ...product
+          };
+        })
     );
   }
 
@@ -286,7 +286,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
       utils.applyImageAssets();
     }
     currentFilter = renderProductFilters();
-    renderProducts();
+    scheduleRenderProducts();
   });
 
   window.addEventListener('languageChanged', () => {
@@ -295,7 +295,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
       currentFilter = defaultFilter;
     }
     updateProductFilterButtonState(currentFilter || defaultFilter);
-    renderProducts();
+    scheduleRenderProducts();
     if (window.translationManager && typeof window.translationManager.applyTranslations === 'function') {
       window.translationManager.applyTranslations();
     }
@@ -304,6 +304,15 @@ import { IMAGE_ASSETS } from './image-assets.js';
   let currentPage = 1;
   let currentFilter = '';
   let productFilterSwipeHintBound = false;
+  let productRenderRafId = 0;
+
+  function scheduleRenderProducts() {
+    if (productRenderRafId) return;
+    productRenderRafId = window.requestAnimationFrame(() => {
+      productRenderRafId = 0;
+      renderProducts();
+    });
+  }
 
   function getItemsPerPage() {
     return window.matchMedia('(max-width: 640px)').matches ? 3 : 6;
@@ -438,7 +447,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
     const nextItemsPerPage = getItemsPerPage();
     if (nextItemsPerPage !== lastItemsPerPage) {
       lastItemsPerPage = nextItemsPerPage;
-      renderProducts();
+      scheduleRenderProducts();
     }
   });
 
@@ -494,7 +503,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
     currentFilter = filter;
     currentPage = 1;
     updateProductFilterButtonState(filter);
-    renderProducts();
+    scheduleRenderProducts();
   }
 
   function renderProducts() {
@@ -732,7 +741,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
     const totalPages = Math.ceil(filtered.length / itemsPerPage);
     if (page >= 1 && page <= totalPages) {
       currentPage = page;
-      renderProducts();
+      scheduleRenderProducts();
       document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
     }
   }
