@@ -21,7 +21,6 @@ const { prepareForTranslation, postprocessText } = require('./product-translatio
 
 const TRANSLATIONS_DIR = path.join(process.cwd(), 'src/assets/translations');
 const PRODUCT_TABLE_PATH = path.join(process.cwd(), 'src/assets/product-data-table.js');
-const PRODUCT_I18N_PATH = path.join(process.cwd(), 'scripts/producti18n.json');
 
 /**
  * 支持的语言和对应的Google Translate语言代码
@@ -298,24 +297,6 @@ function extractChineseProductData() {
   } catch (err) {
     console.error(`❌ Error reading product table: ${err.message}`);
     return [];
-  }
-}
-
-/**
- * 加载现有的 producti18n.json 文件
- */
-function loadProductI18n() {
-  if (!fs.existsSync(PRODUCT_I18N_PATH)) {
-    console.warn(`⚠️  Product i18n file not found: ${PRODUCT_I18N_PATH}, will create new one`);
-    return {};
-  }
-
-  try {
-    const content = fs.readFileSync(PRODUCT_I18N_PATH, 'utf-8');
-    return JSON.parse(content);
-  } catch (err) {
-    console.error(`❌ Error loading product i18n: ${err.message}`);
-    return {};
   }
 }
 

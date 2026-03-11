@@ -319,22 +319,6 @@ function normalizeProductI18n(rawData) {
   return normalized;
 }
 
-function countEntriesByLang(mapByLang) {
-  let total = 0;
-  for (const entries of Object.values(mapByLang || {})) {
-    total += Object.keys(entries || {}).length;
-  }
-  return total;
-}
-
-function printEntries(prefix, mapByLang) {
-  for (const [lang, entries] of Object.entries(mapByLang || {})) {
-    for (const [key, value] of Object.entries(entries || {})) {
-      console.log(`${prefix}[${lang}] ${key} = ${value}`);
-    }
-  }
-}
-
 /**
  * 从产品表中读取数据并转换为多语言格式
  * 
