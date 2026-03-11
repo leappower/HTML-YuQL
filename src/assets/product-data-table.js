@@ -9,12 +9,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "J40",
         "name": "全自动智能行星搅拌滚筒炒菜机安卓触控版",
         "highlights": [
-          "行星搅拌",
-          "自动投料",
-          "安卓触控"
+          "行星搅拌', '自动投料', '安卓触控"
         ],
         "scenarios": "餐饮门店高频炒菜、团餐中央厨房、连锁餐饮标准化出品",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等高频菜品，最大炒菜分量2kg/次，支持安卓系统菜谱管理",
         "power": "8-12kW",
         "throughput": "2kg/次",
         "averageTime": "4-8分钟",
@@ -43,7 +41,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -51,12 +51,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G26D1A",
         "name": "简易台式电磁滚筒炒菜机无级调速小容量版",
         "highlights": [
-          "无级调速",
-          "不粘涂层",
-          "小容量"
+          "无级调速', '不粘涂层', '小容量"
         ],
         "scenarios": "餐饮门店小型炒菜、轻食厨房、小吃店小炒",
-        "usage": null,
+        "usage": "适用于小分量小炒，滚筒容量1L-6.4L/次，转速可调0-40r/min，不粘涂层易清洗",
         "power": "5kW",
         "throughput": "1L-6.4L/次",
         "averageTime": "3-5分钟",
@@ -85,7 +83,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -93,12 +93,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G26D1R",
         "name": "简易台式燃气滚筒炒菜机双燃料三档仰角版",
         "highlights": [
-          "无级调速",
-          "双燃料可选",
-          "三档仰角"
+          "无级调速', '双燃料可选', '三档仰角"
         ],
         "scenarios": "餐饮门店小型炒菜、轻食厨房、燃气优势地区",
-        "usage": null,
+        "usage": "适用于小分量炒制，滚筒容量1L-6.4L/次，支持液化气/天然气，三档仰角方便出料",
         "power": "100W电+燃气",
         "throughput": "1L-6.4L/次",
         "averageTime": "3-5分钟",
@@ -127,7 +125,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -135,12 +135,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G26DAA",
         "name": "简易立式电磁滚筒炒菜机省空间无级调速版",
         "highlights": [
-          "立式省空间",
-          "无级调速",
-          "不粘涂层"
+          "立式省空间', '无级调速', '不粘涂层"
         ],
         "scenarios": "餐饮门店中小型炒菜、空间受限厨房、后厨紧凑型",
-        "usage": null,
+        "usage": "适用于小分量炒制，滚筒容量1L-6.4L/次，立式布局节省空间，无级调速精准控温",
         "power": "220V",
         "throughput": "1L-6.4L/次",
         "averageTime": "3-5分钟",
@@ -169,7 +167,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -177,12 +177,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G26DAR",
         "name": "简易立式燃气滚筒炒菜机省空间双燃料版",
         "highlights": [
-          "立式省空间",
-          "双燃料可选",
-          "三档仰角"
+          "立式省空间', '双燃料可选', '三档仰角"
         ],
         "scenarios": "餐饮门店中小型炒菜、空间受限厨房、燃气优势地区",
-        "usage": null,
+        "usage": "适用于小分量炒制，滚筒容量1L-6.4L/次，立式布局节省空间，支持液化气/天然气",
         "power": "100W电+燃气",
         "throughput": "1L-6.4L/次",
         "averageTime": "3-5分钟",
@@ -211,7 +209,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -219,12 +219,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G30D1T",
         "name": "智能台式燃气滚筒炒菜机机器学习语音提示版",
         "highlights": [
-          "机器学习",
-          "语音提示",
-          "一键自动"
+          "机器学习', '语音提示', '一键自动"
         ],
         "scenarios": "餐饮门店中型智能炒菜、连锁餐饮标准化、快餐店",
-        "usage": null,
+        "usage": "适用于中等分量炒制，滚筒容量1.5L-9.3L/次，支持智能操控和语音提示，机器学习优化菜谱",
         "power": "100W电+15kW燃气",
         "throughput": "1.5L-9.3L/次",
         "averageTime": "4-6分钟",
@@ -253,7 +251,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -261,12 +261,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G30D1A",
         "name": "简易台式电磁滚筒炒菜机大容量不粘涂层版",
         "highlights": [
-          "大容量滚筒",
-          "不粘涂层",
-          "简易操作"
+          "大容量滚筒', '不粘涂层', '简易操作"
         ],
         "scenarios": "餐饮门店中型炒菜、快餐店、小食店",
-        "usage": null,
+        "usage": "适用于中等分量炒制，滚筒容量1.5L-9.3L/次，简易操作易上手，不粘涂层易清洗",
         "power": "5kW",
         "throughput": "1.5L-9.3L/次",
         "averageTime": "4-6分钟",
@@ -295,7 +293,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -303,12 +303,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G30DAA",
         "name": "简易立式电磁滚筒炒菜机省空间大容量版",
         "highlights": [
-          "立式省空间",
-          "大容量滚筒",
-          "三档仰角"
+          "立式省空间', '大容量滚筒', '三档仰角"
         ],
         "scenarios": "餐饮门店中型炒菜、空间受限厨房、后厨紧凑型",
-        "usage": null,
+        "usage": "适用于中等分量炒制，滚筒容量1.5L-9.3L/次，立式布局节省空间，三档仰角方便出料",
         "power": "5kW",
         "throughput": "1.5L-9.3L/次",
         "averageTime": "4-6分钟",
@@ -337,7 +335,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -345,12 +345,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G30DAR",
         "name": "简易立式燃气滚筒炒菜机省空间双燃料版",
         "highlights": [
-          "立式省空间",
-          "双燃料可选",
-          "三档仰角"
+          "立式省空间', '双燃料可选', '三档仰角"
         ],
         "scenarios": "餐饮门店中型炒菜、空间受限厨房、燃气优势地区",
-        "usage": null,
+        "usage": "适用于中等分量炒制，滚筒容量1.5L-9.3L/次，立式布局节省空间，支持液化气/天然气",
         "power": "100W电+燃气",
         "throughput": "1.5L-9.3L/次",
         "averageTime": "4-6分钟",
@@ -379,7 +377,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -387,12 +387,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G30DAG",
         "name": "智能立式电磁滚筒炒菜机智能触屏机器学习版",
         "highlights": [
-          "智能触屏",
-          "机器学习",
-          "语音提示"
+          "智能触屏', '机器学习', '语音提示"
         ],
         "scenarios": "餐饮门店中型智能炒菜、连锁餐饮标准化、后厨紧凑型",
-        "usage": null,
+        "usage": "适用于中等分量炒制，滚筒容量1.5L-9.3L/次，智能功能丰富，立式布局节省空间",
         "power": "5kW",
         "throughput": "1.5L-9.3L/次",
         "averageTime": "4-6分钟",
@@ -421,7 +419,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -429,12 +429,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G36D1A",
         "name": "简易台式电磁滚筒炒菜机超大容量无级调速版",
         "highlights": [
-          "超大容量",
-          "无级调速",
-          "不粘涂层"
+          "超大容量', '无级调速', '不粘涂层"
         ],
         "scenarios": "餐饮门店大型炒菜、团餐厨房、中型食堂",
-        "usage": null,
+        "usage": "适用于大分量炒制，滚筒容量3L-17L/次，转速可调0-40r/min，不粘涂层易清洗",
         "power": "8kW",
         "throughput": "3L-17L/次",
         "averageTime": "5-8分钟",
@@ -463,7 +461,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -471,12 +471,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G36D1R",
         "name": "简易台式燃气滚筒炒菜机超大容量双燃料版",
         "highlights": [
-          "超大容量",
-          "双燃料可选",
-          "三档仰角"
+          "超大容量', '双燃料可选', '三档仰角"
         ],
         "scenarios": "餐饮门店大型炒菜、团餐厨房、燃气优势地区",
-        "usage": null,
+        "usage": "适用于大分量炒制，滚筒容量3L-17L/次，支持液化气/天然气，三档仰角方便出料",
         "power": "100W电+燃气",
         "throughput": "3L-17L/次",
         "averageTime": "5-8分钟",
@@ -505,7 +503,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -513,12 +513,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G36DAA",
         "name": "简易立式电磁滚筒炒菜机省空间超大容量版",
         "highlights": [
-          "立式省空间",
-          "超大容量",
-          "不粘涂层"
+          "立式省空间', '超大容量', '不粘涂层"
         ],
         "scenarios": "餐饮门店大型炒菜、空间受限厨房、中型食堂",
-        "usage": null,
+        "usage": "适用于大分量炒制，滚筒容量3L-17L/次，立式布局节省空间，不粘涂层易清洗",
         "power": "8kW",
         "throughput": "3L-17L/次",
         "averageTime": "5-8分钟",
@@ -547,7 +545,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -555,12 +555,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G36DAR",
         "name": "简易立式燃气滚筒炒菜机省空间双燃料版",
         "highlights": [
-          "立式省空间",
-          "双燃料可选",
-          "三档仰角"
+          "立式省空间', '双燃料可选', '三档仰角"
         ],
         "scenarios": "餐饮门店大型炒菜、空间受限厨房、燃气优势地区",
-        "usage": null,
+        "usage": "适用于大分量炒制，滚筒容量3L-17L/次，立式布局节省空间，支持液化气/天然气",
         "power": "100W电+燃气",
         "throughput": "3L-17L/次",
         "averageTime": "5-8分钟",
@@ -589,7 +587,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -597,12 +597,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G50AAC",
         "name": "智能团餐电磁滚筒炒菜机41L大容量机器学习版",
         "highlights": [
-          "大容量41L",
-          "机器学习",
-          "语音提示"
+          "大容量41L', '机器学习', '语音提示"
         ],
         "scenarios": "团餐场景、中央厨房、大型食堂、工厂食堂、学校食堂",
-        "usage": null,
+        "usage": "适用于批量出餐，滚筒容量14L-41L/次，支持智能自动烹饪，机器学习优化菜谱",
         "power": "15kW",
         "throughput": "14L-41L/次",
         "averageTime": "5-8分钟",
@@ -631,7 +629,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -639,12 +639,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G50GAT",
         "name": "简易团餐燃气滚筒炒菜机41L大容量定时功能版",
         "highlights": [
-          "大容量41L",
-          "定时功能",
-          "双燃料可选"
+          "大容量41L', '定时功能', '双燃料可选"
         ],
         "scenarios": "团餐场景、中央厨房、大型食堂、燃气优势地区",
-        "usage": null,
+        "usage": "适用于批量出餐，滚筒容量14L-41L/次，支持液化气/天然气，定时功能精准控时",
         "power": "220V电+燃气",
         "throughput": "14L-41L/次",
         "averageTime": "5-8分钟",
@@ -673,7 +671,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -681,12 +681,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G50AAB",
         "name": "简易团餐电磁滚筒炒菜机41L大容量半自动版",
         "highlights": [
-          "大容量41L",
-          "半自动操作",
-          "电动仰角"
+          "大容量41L', '半自动操作', '电动仰角"
         ],
         "scenarios": "团餐场景、中央厨房、大型食堂、预算有限场景",
-        "usage": null,
+        "usage": "适用于批量出餐，滚筒容量14L-41L/次，半自动操作，电动仰角方便出料",
         "power": "15kW",
         "throughput": "14L-41L/次",
         "averageTime": "5-8分钟",
@@ -715,7 +713,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -723,12 +723,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G60EAC",
         "name": "智能团餐电磁滚筒炒菜机60L超大容量机器学习版",
         "highlights": [
-          "超大容量60L",
-          "机器学习",
-          "自动调料"
+          "超大容量60L', '机器学习', '自动调料"
         ],
         "scenarios": "大型团餐、中央厨房、工厂食堂、大型企业食堂、学校食堂",
-        "usage": null,
+        "usage": "适用于超大批量出餐，滚筒容量40L-60L/次，高效批量出餐，机器学习优化菜谱",
         "power": "30kW",
         "throughput": "40L-60L/次",
         "averageTime": "6-10分钟",
@@ -757,7 +755,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -765,12 +765,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G60EAS",
         "name": "智能团餐燃气滚筒炒菜机60L超大容量机器学习版",
         "highlights": [
-          "超大容量60L",
-          "机器学习",
-          "自动调料"
+          "超大容量60L', '机器学习', '自动调料"
         ],
         "scenarios": "大型团餐、中央厨房、工厂食堂、燃气优势地区",
-        "usage": null,
+        "usage": "适用于超大批量出餐，滚筒容量40L-60L/次，高效批量出餐，机器学习优化菜谱",
         "power": "30kW电+燃气",
         "throughput": "40L-60L/次",
         "averageTime": "6-10分钟",
@@ -799,7 +797,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -807,12 +807,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G70EAC",
         "name": "智能团餐电磁滚筒炒菜机100L超大容量机器学习版",
         "highlights": [
-          "超大容量100L",
-          "机器学习",
-          "自动调料"
+          "超大容量100L', '机器学习', '自动调料"
         ],
         "scenarios": "超大型团餐、中央厨房、大型企业食堂、学校食堂、医院食堂",
-        "usage": null,
+        "usage": "适用于超大批量出餐，滚筒容量40L-100L/次，超大批量出餐，机器学习优化菜谱",
         "power": "30kW",
         "throughput": "40L-100L/次",
         "averageTime": "8-15分钟",
@@ -841,7 +839,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -849,12 +849,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G70EAS",
         "name": "智能团餐燃气滚筒炒菜机100L超大容量机器学习版",
         "highlights": [
-          "超大容量100L",
-          "机器学习",
-          "自动调料"
+          "超大容量100L', '机器学习', '自动调料"
         ],
         "scenarios": "超大型团餐、中央厨房、大型企业食堂、燃气优势地区",
-        "usage": null,
+        "usage": "适用于超大批量出餐，滚筒容量40L-100L/次，超大批量出餐，机器学习优化菜谱",
         "power": "29W电+燃气",
         "throughput": "40L-100L/次",
         "averageTime": "8-15分钟",
@@ -883,7 +881,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -891,12 +891,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "F32F1C",
         "name": "32CM翻盖式电动炒菜机电动翻盖触摸屏版",
         "highlights": [
-          "电动翻盖",
-          "触摸屏操作",
-          "小容量"
+          "电动翻盖', '触摸屏操作', '小容量"
         ],
         "scenarios": "小型餐饮、家用炒菜、轻食厨房、早餐店、小吃店",
-        "usage": null,
+        "usage": "适用于小分量炒制，炒锅容量5L/次，电动翻盖设计，触摸屏操作便捷",
         "power": "3.5kW",
         "throughput": "5L/次",
         "averageTime": "3-5分钟",
@@ -925,7 +923,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "滚筒炒菜机",
@@ -933,12 +933,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "J40CBA5",
         "name": "行星搅拌炒菜机多锅操作日历定时版",
         "highlights": [
-          "行星搅拌",
-          "多锅操作",
-          "日历定时"
+          "行星搅拌', '多锅操作', '日历定时"
         ],
         "scenarios": "大型餐饮、团餐炒菜、中央厨房、连锁餐饮、企业食堂",
-        "usage": null,
+        "usage": "适用于多锅同时操作，炒锅容量8L*5/次，行星搅拌，日历定时功能",
         "power": "55kW",
         "throughput": "8L*5/次",
         "averageTime": "5-10分钟",
@@ -967,7 +965,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   },
@@ -980,12 +980,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "M6DBD",
         "name": "六眼智能升降煮面炉全自动触屏菜谱编辑版",
         "highlights": [
-          "六眼操作",
-          "全自动触屏",
-          "菜谱编辑"
+          "六眼操作', '全自动触屏', '菜谱编辑"
         ],
         "scenarios": "餐饮门店煮面、粉类、高效出餐、面馆、米粉店、河粉店",
-        "usage": null,
+        "usage": "六眼同时操作，水箱容积31L+2，全自动触摸屏控制，菜谱编辑功能",
         "power": "12kW",
         "throughput": "31L+2",
         "averageTime": "3-5分钟",
@@ -1014,7 +1012,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "煮面炉",
@@ -1022,12 +1022,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "M6DAD",
         "name": "六眼单缸智能升降煮面炉智能升降四菜谱版",
         "highlights": [
-          "六眼单缸",
-          "智能升降",
-          "四菜谱直选"
+          "六眼单缸', '智能升降', '四菜谱直选"
         ],
         "scenarios": "餐饮门店煮面、粉类、高效出餐、面馆、米粉店、河粉店",
-        "usage": null,
+        "usage": "六眼单缸操作，水箱有效容量65L，智能升降功能，四菜谱直选",
         "power": "12kW",
         "throughput": "65L",
         "averageTime": "3-5分钟",
@@ -1056,7 +1054,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "煮面炉",
@@ -1064,12 +1064,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "M6RAD",
         "name": "六眼燃气智能煮面炉燃气加热自动补水恒温版",
         "highlights": [
-          "六眼燃气",
-          "自动补水",
-          "恒温节能"
+          "六眼燃气', '自动补水', '恒温节能"
         ],
         "scenarios": "餐饮门店煮面、粉类、高效出餐、燃气优势地区、面馆",
-        "usage": null,
+        "usage": "六眼燃气加热，水箱容量65L，恒温节能功能，自动补水",
         "power": "100W电+燃气",
         "throughput": "65L",
         "averageTime": "3-5分钟",
@@ -1098,7 +1096,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "煮面炉",
@@ -1106,12 +1106,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "M3DAD",
         "name": "三眼智能升降煮面炉智能升降自动补水版",
         "highlights": [
-          "三眼操作",
-          "智能升降",
-          "自动补水"
+          "三眼操作', '智能升降', '自动补水"
         ],
         "scenarios": "餐饮门店煮面、粉类、中等规模出餐、小型面馆、米粉店",
-        "usage": null,
+        "usage": "三眼同时操作，智能升降功能，自动补水，适合中小规模",
         "power": "6kW",
         "throughput": "-",
         "averageTime": "3-5分钟",
@@ -1140,7 +1138,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "煮面炉",
@@ -1148,12 +1148,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "T21B",
         "name": "自动加汤组合炉全自动触屏自动加汤节能版",
         "highlights": [
-          "自动加汤",
-          "全自动触屏",
-          "节能功能"
+          "自动加汤', '全自动触屏', '节能功能"
         ],
         "scenarios": "餐饮门店煮面、粉类、一站式出餐、面馆、米粉店、河粉店",
-        "usage": null,
+        "usage": "煮面/粉类+自动加汤，一站式出餐解决方案，全自动触屏操作",
         "power": "3.5kW",
         "throughput": "-",
         "averageTime": "3-5分钟",
@@ -1182,7 +1180,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "煮面炉",
@@ -1190,12 +1190,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "M4DAD+2",
         "name": "4+2组合智能升降煮面炉组合眼智能升降版",
         "highlights": [
-          "4+2组合",
-          "智能升降",
-          "多样化出餐"
+          "4+2组合', '智能升降', '多样化出餐"
         ],
         "scenarios": "餐饮门店煮面、粉类、多样化出餐、中型面馆、米粉店",
-        "usage": null,
+        "usage": "4+2组合眼操作，适配多样化出餐需求，智能升降功能",
         "power": "8kW+7kW",
         "throughput": "-",
         "averageTime": "3-5分钟",
@@ -1224,7 +1222,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "煮面炉",
@@ -1232,12 +1232,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "M4DAD+1",
         "name": "4+1组合智能升降煮面炉组合眼多菜谱版",
         "highlights": [
-          "4+1组合",
-          "多饭谱储存",
-          "双阶段"
+          "4+1组合', '多饭谱储存', '双阶段"
         ],
         "scenarios": "餐饮门店煮面、粉类、多样化出餐、中型面馆、米粉店",
-        "usage": null,
+        "usage": "4+1组合眼操作，烹饪模式滚+满双阶段，多饭谱储存",
         "power": "380V",
         "throughput": "-",
         "averageTime": "3-5分钟",
@@ -1266,7 +1264,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   },
@@ -1279,12 +1279,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "Z8FCB",
         "name": "智能蒸饭机7寸触屏泡煮蒸饭双阶段版",
         "highlights": [
-          "7寸触屏",
-          "泡煮蒸饭",
-          "双阶段"
+          "7寸触屏', '泡煮蒸饭', '双阶段"
         ],
         "scenarios": "餐饮/团餐蒸饭、批量蒸制、食堂、酒店、快餐店",
-        "usage": null,
+        "usage": "适配批量蒸制需求，泡煮+蒸饭双阶段烹饪，7寸触屏操作",
         "power": "12kW/8kW",
         "throughput": "-",
         "averageTime": "20-40分钟",
@@ -1313,7 +1311,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "蒸饭机",
@@ -1321,12 +1321,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "Z6FDB",
         "name": "小型智能蒸饭机小型紧凑多菜谱双阶段版",
         "highlights": [
-          "小型紧凑",
-          "多饭谱储存",
-          "双阶段"
+          "小型紧凑', '多饭谱储存', '双阶段"
         ],
         "scenarios": "小型餐饮/团餐蒸饭、中小批量蒸制、小型食堂、快餐店",
-        "usage": null,
+        "usage": "适配中小批量蒸制需求，多饭谱储存功能，双阶段烹饪",
         "power": "6kW",
         "throughput": "-",
         "averageTime": "20-40分钟",
@@ -1355,7 +1353,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   },
@@ -1368,12 +1368,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "B1RAC",
         "name": "台式智能燃气煲仔炉单炉头触摸屏机器学习版",
         "highlights": [
-          "单炉头",
-          "触摸屏操作",
-          "机器学习"
+          "单炉头', '触摸屏操作', '机器学习"
         ],
         "scenarios": "小型餐饮制作煲仔饭、小分量制作、小型餐厅、煲仔饭专营店",
-        "usage": null,
+        "usage": "1炉头操作，适用于小分量制作，智能操控，触摸屏操作",
         "power": "50W",
         "throughput": "1炉头",
         "averageTime": "10-15分钟",
@@ -1402,7 +1400,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "煲仔炉",
@@ -1410,12 +1410,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "B4RTD",
         "name": "台式智能燃气煲仔炉四炉头触摸屏菜谱版",
         "highlights": [
-          "四炉头",
-          "触摸屏操作",
-          "菜谱功能"
+          "四炉头', '触摸屏操作', '菜谱功能"
         ],
         "scenarios": "餐饮门店制作煲仔饭、批量制作、中型餐厅、煲仔饭专营店",
-        "usage": null,
+        "usage": "4炉头同时操作，适配批量制作，触摸屏控制，菜谱功能",
         "power": "150W",
         "throughput": "4炉头",
         "averageTime": "10-15分钟",
@@ -1444,7 +1442,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "煲仔炉",
@@ -1452,12 +1452,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "B6RBD",
         "name": "立式智能燃气煲仔炉六炉头触摸屏机器学习版",
         "highlights": [
-          "六炉头",
-          "触摸屏操作",
-          "机器学习"
+          "六炉头', '触摸屏操作', '机器学习"
         ],
         "scenarios": "中型餐饮制作煲仔饭、批量制作、大型餐厅、连锁餐饮",
-        "usage": null,
+        "usage": "6炉头同时操作，批量制作，立式设计，智能操控",
         "power": "170W",
         "throughput": "6炉头",
         "averageTime": "10-15分钟",
@@ -1486,7 +1484,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "煲仔炉",
@@ -1494,12 +1494,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "B8RBD",
         "name": "立式智能燃气煲仔炉八炉头触摸屏机器学习版",
         "highlights": [
-          "八炉头",
-          "触摸屏操作",
-          "机器学习"
+          "八炉头', '触摸屏操作', '机器学习"
         ],
         "scenarios": "大型餐饮/团餐制作煲仔饭、超大批量制作、大型食堂、中央厨房",
-        "usage": null,
+        "usage": "8炉头同时操作，超大批量制作，立式设计，智能操控",
         "power": "220V",
         "throughput": "8炉头",
         "averageTime": "10-15分钟",
@@ -1528,7 +1526,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   },
@@ -1541,12 +1541,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "Y12D1C",
         "name": "台式智能升降单缸油炸炉单缸12L全自动触屏版",
         "highlights": [
-          "单缸12L",
-          "全自动触屏",
-          "菜谱功能"
+          "单缸12L', '全自动触屏', '菜谱功能"
         ],
         "scenarios": "小型餐饮油炸食品、小批量油炸、小吃店、快餐店、早餐店",
-        "usage": null,
+        "usage": "单缸油容积12L/次，适用于小批量油炸，智能控制，全自动触屏",
         "power": "2.8kW",
         "throughput": "12L",
         "averageTime": "3-5分钟",
@@ -1575,7 +1573,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "油炸炉",
@@ -1583,12 +1583,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "Y12D2C",
         "name": "台式智能升降双缸油炸炉双缸18L全自动触屏版",
         "highlights": [
-          "双缸18L",
-          "全自动触屏",
-          "多品类同时"
+          "双缸18L', '全自动触屏', '多品类同时"
         ],
         "scenarios": "餐饮门店油炸食品、多品类同时油炸、中型餐厅、快餐店",
-        "usage": null,
+        "usage": "双缸油容积18L*2/次，适配多品类同时油炸，智能控制",
         "power": "4.5kW*2",
         "throughput": "18L*2",
         "averageTime": "3-5分钟",
@@ -1617,7 +1615,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "油炸炉",
@@ -1625,12 +1625,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "Y24C1C",
         "name": "立式智能升降单缸双筛油炸炉单缸双筛27L电磁版",
         "highlights": [
-          "单缸双筛27L",
-          "电磁加热",
-          "批量油炸"
+          "单缸双筛27L', '电磁加热', '批量油炸"
         ],
         "scenarios": "餐饮门店油炸食品、批量油炸、中型餐厅、连锁餐饮",
-        "usage": null,
+        "usage": "单缸双筛油容积27L/次，适配批量油炸，电磁加热，智能控制",
         "power": "12kW",
         "throughput": "27L",
         "averageTime": "5-8分钟",
@@ -1659,7 +1657,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "油炸炉",
@@ -1667,12 +1667,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "Y50D1C",
         "name": "立式智能升降单缸三筛油炸炉单缸三筛30L油水分离版",
         "highlights": [
-          "单缸三筛30L",
-          "油水分离",
-          "批量油炸"
+          "单缸三筛30L', '油水分离', '批量油炸"
         ],
         "scenarios": "餐饮门店油炸食品、批量油炸更健康、中型餐厅、连锁餐饮",
-        "usage": null,
+        "usage": "单缸三筛油容积30L/次，油水分离功能，批量油炸更健康",
         "power": "12kW",
         "throughput": "30L",
         "averageTime": "5-8分钟",
@@ -1701,7 +1699,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "油炸炉",
@@ -1709,12 +1709,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "Y40D2C",
         "name": "立式智能升降双缸双筛油炸炉双缸双筛25L油水分离版",
         "highlights": [
-          "双缸双筛25L",
-          "油水分离",
-          "多品类批量"
+          "双缸双筛25L', '油水分离', '多品类批量"
         ],
         "scenarios": "餐饮门店油炸食品、多品类批量油炸、中型餐厅、连锁餐饮",
-        "usage": null,
+        "usage": "双缸双筛油容积25L*2/次，油水分离功能，多品类批量油炸",
         "power": "12kW",
         "throughput": "25L*2",
         "averageTime": "5-8分钟",
@@ -1743,7 +1741,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "油炸炉",
@@ -1751,12 +1751,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "J100BAB",
         "name": "智能升降油炸炉超大容量电磁加热机器学习版",
         "highlights": [
-          "超大容量",
-          "电磁加热",
-          "机器学习"
+          "超大容量', '电磁加热', '机器学习"
         ],
         "scenarios": "大型餐饮/团餐油炸食品、超大批量油炸、大型食堂、中央厨房",
-        "usage": null,
+        "usage": "大规格锅体适配超大批量油炸，电磁加热，智能操控，机器学习",
         "power": "30kW",
         "throughput": "1000x370mm",
         "averageTime": "8-15分钟",
@@ -1785,7 +1783,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "油炸炉",
@@ -1793,12 +1793,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "LZ80D1B",
         "name": "智能升降卤煮炉智能升降触摸屏批量卤制版",
         "highlights": [
-          "智能升降",
-          "触摸屏操作",
-          "批量卤制"
+          "智能升降', '触摸屏操作', '批量卤制"
         ],
         "scenarios": "餐饮门店卤煮食品、批量卤制需求、卤味店、熟食店",
-        "usage": null,
+        "usage": "适配批量卤制需求，智能升降功能，触摸屏控制，批量卤制",
         "power": "8kW",
         "throughput": "60kg",
         "averageTime": "30-60分钟",
@@ -1827,7 +1825,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   },
@@ -1840,12 +1840,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "JZ2CA",
         "name": "智能煎扒炉触摸屏双头加热小批量版",
         "highlights": [
-          "触摸屏操作",
-          "双头加热",
-          "小批量煎扒"
+          "触摸屏操作', '双头加热', '小批量煎扒"
         ],
         "scenarios": "小型餐饮煎扒类食品制作、小批量煎扒、牛排馆、煎饼店",
-        "usage": null,
+        "usage": "适用于小批量煎扒，双头加热，触摸屏操作，精准控温",
         "power": "2kW*2",
         "throughput": "-",
         "averageTime": "3-5分钟",
@@ -1874,7 +1872,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "特色烹饪设备",
@@ -1882,12 +1882,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "GT2D1B",
         "name": "双头锅贴机双头操作批量产出钢转速度版",
         "highlights": [
-          "双头操作",
-          "批量产出",
-          "钢转速度"
+          "双头操作', '批量产出', '钢转速度"
         ],
         "scenarios": "餐饮门店制作锅贴、批量产出、锅贴专营店、小吃店",
-        "usage": null,
+        "usage": "双头同时操作，适配批量产出，钢转速度可调，高效生产",
         "power": "2kW",
         "throughput": "-",
         "averageTime": "1-5分钟",
@@ -1916,7 +1914,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "特色烹饪设备",
@@ -1924,12 +1924,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "G30E1A",
         "name": "豉油鸡滚筒机触摸屏定时批量卤制煎制版",
         "highlights": [
-          "触摸屏操作",
-          "定时功能",
-          "批量卤制"
+          "触摸屏操作', '定时功能', '批量卤制"
         ],
         "scenarios": "餐饮门店制作豉油鸡、批量卤制/煎制、粤菜餐厅、熟食店",
-        "usage": null,
+        "usage": "适配批量卤制/煎制，触摸屏控制，定时功能，批量生产",
         "power": "9kW",
         "throughput": "-",
         "averageTime": "10-20分钟",
@@ -1958,7 +1956,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   },
@@ -1971,12 +1971,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-XC80",
         "name": "多功能自动搅拌炒锅炖烩机行星搅拌双功能版",
         "highlights": [
-          "行星搅拌",
-          "多维翻炒",
-          "双功能"
+          "行星搅拌', '多维翻炒', '双功能"
         ],
         "scenarios": "院校企业食堂、中央厨房团膳、食品厂、大型食堂",
-        "usage": null,
+        "usage": "适用于煸炒烹饪10-20kg菜量，焖炖烹饪50-150kg菜量，行星搅拌",
         "power": "20-25kW",
         "throughput": "133-200L",
         "averageTime": "15-30分钟",
@@ -2005,7 +2003,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2013,12 +2013,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-QXC80",
         "name": "多功能全自动搅拌炒锅炖烩机语音菜单自动喷料版",
         "highlights": [
-          "语音菜单",
-          "自动喷料",
-          "行星搅拌"
+          "语音菜单', '自动喷料', '行星搅拌"
         ],
         "scenarios": "院校企业食堂、中央厨房团膳、食品厂、大型食堂",
-        "usage": null,
+        "usage": "适用于煸炒烹饪10-20kg菜量，焖炖烹饪50-150kg菜量，语音菜单",
         "power": "20-25kW",
         "throughput": "133-200L",
         "averageTime": "15-30分钟",
@@ -2047,7 +2045,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2055,12 +2055,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-XC100",
         "name": "多功能自动搅拌炒锅炖烩机行星搅拌大容量版",
         "highlights": [
-          "行星搅拌",
-          "多维翻炒",
-          "大容量"
+          "行星搅拌', '多维翻炒', '大容量"
         ],
         "scenarios": "院校企业食堂、中央厨房团膳、食品厂、大型食堂",
-        "usage": null,
+        "usage": "适用于煸炒烹饪20-50kg菜量，焖炖烹饪100-200kg菜量，大容量",
         "power": "30-40kW",
         "throughput": "260-370L",
         "averageTime": "20-40分钟",
@@ -2089,7 +2087,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2097,12 +2097,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-QXC100",
         "name": "多功能全自动搅拌炒锅炖烩机语音菜单大容量版",
         "highlights": [
-          "语音菜单",
-          "自动喷料",
-          "大容量"
+          "语音菜单', '自动喷料', '大容量"
         ],
         "scenarios": "院校企业食堂、中央厨房团膳、食品厂、大型食堂",
-        "usage": null,
+        "usage": "适用于煸炒烹饪20-50kg菜量，焖炖烹饪100-200kg菜量，语音菜单",
         "power": "30-40kW",
         "throughput": "260-370L",
         "averageTime": "20-40分钟",
@@ -2131,7 +2129,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2139,12 +2139,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-XC120",
         "name": "多功能自动搅拌炒锅炖烩机行星搅拌超大容量版",
         "highlights": [
-          "行星搅拌",
-          "超大容量",
-          "多维翻炒"
+          "行星搅拌', '超大容量', '多维翻炒"
         ],
         "scenarios": "院校企业食堂、中央厨房团膳、食品厂、大型食堂",
-        "usage": null,
+        "usage": "适用于煸炒烹饪50-100kg菜量，焖炖烹饪200-400kg菜量，超大容量",
         "power": "45-60kW",
         "throughput": "450-600L",
         "averageTime": "30-60分钟",
@@ -2173,7 +2171,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2181,12 +2181,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-QXC120",
         "name": "多功能全自动搅拌炒锅炖烩机语音菜单超大容量版",
         "highlights": [
-          "语音菜单",
-          "自动喷料",
-          "超大容量"
+          "语音菜单', '自动喷料', '超大容量"
         ],
         "scenarios": "院校企业食堂、中央厨房团膳、食品厂、大型食堂",
-        "usage": null,
+        "usage": "适用于煸炒烹饪50-100kg菜量，焖炖烹饪200-400kg菜量，语音菜单",
         "power": "45-60kW",
         "throughput": "450-600L",
         "averageTime": "30-60分钟",
@@ -2215,7 +2213,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2223,12 +2223,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-PZJ80",
         "name": "多功能自动漂烫焯水油炸机多维搅拌三功能版",
         "highlights": [
-          "多维搅拌",
-          "电控翻锅",
-          "三功能"
+          "多维搅拌', '电控翻锅', '三功能"
         ],
         "scenarios": "院校企业食堂、大型酒楼宴席、中央厨房、食品厂",
-        "usage": null,
+        "usage": "适用于肉制品、蔬菜等焯水/漂烫/去农残，以及食品油炸，多维搅拌",
         "power": "30kW",
         "throughput": "200L",
         "averageTime": "5-15分钟",
@@ -2257,7 +2255,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2265,12 +2265,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-PZJ100",
         "name": "多功能自动漂烫焯水油炸机多维搅拌三功能版",
         "highlights": [
-          "多维搅拌",
-          "电控翻锅",
-          "三功能"
+          "多维搅拌', '电控翻锅', '三功能"
         ],
         "scenarios": "院校企业食堂、大型酒楼宴席、中央厨房、食品厂",
-        "usage": null,
+        "usage": "适用于肉制品、蔬菜等焯水/漂烫/去农残，以及食品油炸，多维搅拌",
         "power": "40kW",
         "throughput": "300L",
         "averageTime": "5-15分钟",
@@ -2299,7 +2297,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2307,12 +2307,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-PZJ120",
         "name": "多功能自动漂烫焯水油炸机多维搅拌三功能版",
         "highlights": [
-          "多维搅拌",
-          "电控翻锅",
-          "三功能"
+          "多维搅拌', '电控翻锅', '三功能"
         ],
         "scenarios": "院校企业食堂、大型酒楼宴席、中央厨房、食品厂",
-        "usage": null,
+        "usage": "适用于肉制品、蔬菜等焯水/漂烫/去农残，以及食品油炸，多维搅拌",
         "power": "60kW",
         "throughput": "500L",
         "averageTime": "5-15分钟",
@@ -2341,7 +2339,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2349,12 +2349,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-PZJ200",
         "name": "多功能方形自动漂烫焯水卤煮油炸机方形四功能版",
         "highlights": [
-          "方形设计",
-          "四功能",
-          "电控翻锅"
+          "方形设计', '四功能', '电控翻锅"
         ],
         "scenarios": "院校企业食堂、大型酒楼宴席、中央厨房、食品厂",
-        "usage": null,
+        "usage": "适用于肉制品、蔬菜等焯水/漂烫/去农残，以及食品油炸，方形设计",
         "power": "30kW",
         "throughput": "200L",
         "averageTime": "5-15分钟",
@@ -2383,7 +2381,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2391,12 +2391,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-PZJ300",
         "name": "多功能方形自动漂烫焯水卤煮油炸机方形四功能版",
         "highlights": [
-          "方形设计",
-          "四功能",
-          "电控翻锅"
+          "方形设计', '四功能', '电控翻锅"
         ],
         "scenarios": "院校企业食堂、大型酒楼宴席、中央厨房、食品厂",
-        "usage": null,
+        "usage": "适用于肉制品、蔬菜等焯水/漂烫/去农残，以及食品油炸，方形设计",
         "power": "40kW",
         "throughput": "300L",
         "averageTime": "5-15分钟",
@@ -2425,7 +2423,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2433,12 +2433,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-PZJ400",
         "name": "多功能方形自动漂烫焯水卤煮油炸机方形四功能版",
         "highlights": [
-          "方形设计",
-          "四功能",
-          "电控翻锅"
+          "方形设计', '四功能', '电控翻锅"
         ],
         "scenarios": "院校企业食堂、大型酒楼宴席、中央厨房、食品厂",
-        "usage": null,
+        "usage": "适用于肉制品、蔬菜等焯水/漂烫/去农残，以及食品油炸，方形设计",
         "power": "50kW",
         "throughput": "400L",
         "averageTime": "5-15分钟",
@@ -2467,7 +2465,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "团餐烹饪设备",
@@ -2475,12 +2475,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-BXC800",
         "name": "半自动旋转电磁大炒锅多维搅拌刮底刮边版",
         "highlights": [
-          "多维搅拌",
-          "刮底刮边",
-          "多档火力"
+          "多维搅拌', '刮底刮边', '多档火力"
         ],
         "scenarios": "院校企业食堂、酒楼宴席、餐饮外卖、中型食堂",
-        "usage": null,
+        "usage": "适用于炒菜/炖菜/油炸/焯水/漂烫等烹饪，半自动操作，刮底刮边",
         "power": "20kW",
         "throughput": "50L",
         "averageTime": "5-15分钟",
@@ -2509,7 +2507,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   },
@@ -2522,12 +2522,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TBS30",
         "name": "台式上搅拌平底锅炒菜机行星搅拌8菜谱版",
         "highlights": [
-          "行星搅拌",
-          "刮底刮边",
-          "8组菜谱"
+          "行星搅拌', '刮底刮边', '8组菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次200-1000g，行星搅拌",
         "power": "3.5/5kW",
         "throughput": "200-1000g",
         "averageTime": "3-5分钟",
@@ -2556,7 +2554,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "小食快餐设备",
@@ -2564,12 +2564,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TBQ30",
         "name": "台式上搅拌平底锅炒菜机语音提示800菜谱版",
         "highlights": [
-          "语音提示",
-          "800菜谱",
-          "智能学习"
+          "语音提示', '800菜谱', '智能学习"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次200-1000g，语音提示",
         "power": "3.5/5kW",
         "throughput": "200-1000g",
         "averageTime": "3-5分钟",
@@ -2598,7 +2596,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "小食快餐设备",
@@ -2606,12 +2606,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TQBQ30",
         "name": "台式上搅拌平底锅炒菜机语音提示自动加料800菜谱版",
         "highlights": [
-          "语音提示",
-          "自动加料",
-          "800菜谱"
+          "语音提示', '自动加料', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次200-1000g，自动加料",
         "power": "3.5/5kW",
         "throughput": "200-1000g",
         "averageTime": "3-5分钟",
@@ -2640,7 +2638,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "小食快餐设备",
@@ -2648,12 +2648,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-4BQ30",
         "name": "柜式上搅拌平底锅炒菜机四锅操作语音提示800菜谱版",
         "highlights": [
-          "四锅操作",
-          "语音提示",
-          "800菜谱"
+          "四锅操作', '语音提示', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次200-1000g，四锅操作",
         "power": "14-20kW",
         "throughput": "200-1000g",
         "averageTime": "3-5分钟",
@@ -2682,7 +2680,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "小食快餐设备",
@@ -2690,12 +2690,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-4QBQ30",
         "name": "柜式上搅拌平底锅炒菜机四锅操作语音提示自动加料版",
         "highlights": [
-          "四锅操作",
-          "语音提示",
-          "自动加料"
+          "四锅操作', '语音提示', '自动加料"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次200-1000g，自动加料",
         "power": "14-20kW",
         "throughput": "200-1000g",
         "averageTime": "3-5分钟",
@@ -2724,7 +2722,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "小食快餐设备",
@@ -2732,12 +2732,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TBS40",
         "name": "台式上搅拌弧底锅炒菜机弧底设计无涂层铁锅版",
         "highlights": [
-          "弧底设计",
-          "无涂层铁锅",
-          "行星搅拌"
+          "弧底设计', '无涂层铁锅', '行星搅拌"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次200-1000g，弧底设计",
         "power": "5kW",
         "throughput": "8L",
         "averageTime": "3-5分钟",
@@ -2766,7 +2764,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "小食快餐设备",
@@ -2774,12 +2774,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TBS50",
         "name": "台式上搅拌弧底锅炒菜机弧底设计无涂层铁锅大容量版",
         "highlights": [
-          "弧底设计",
-          "无涂层铁锅",
-          "大容量"
+          "弧底设计', '无涂层铁锅', '大容量"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次200-1000g，大容量",
         "power": "5kW",
         "throughput": "16L",
         "averageTime": "3-5分钟",
@@ -2808,7 +2806,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "小食快餐设备",
@@ -2816,12 +2816,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TZS40",
         "name": "台式转锅搅拌炒菜机炒饭机锅体旋转卧式翻炒版",
         "highlights": [
-          "锅体旋转",
-          "卧式翻炒",
-          "正反转"
+          "锅体旋转', '卧式翻炒', '正反转"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、炒饭专营店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次300-1500g，锅体旋转",
         "power": "5kW",
         "throughput": "8L",
         "averageTime": "3-5分钟",
@@ -2850,7 +2848,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   },
@@ -2863,12 +2863,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TGS30",
         "name": "台式300智能电磁炒菜机手动球釜型锅360度翻炒版",
         "highlights": [
-          "球釜型锅",
-          "360°翻炒",
-          "8菜谱记忆"
+          "球釜型锅', '360°翻炒', '8菜谱记忆"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次0.5-2.5kg，球釜型锅",
         "power": "5kW",
         "throughput": "4-6L",
         "averageTime": "3-5分钟",
@@ -2897,7 +2895,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -2905,12 +2905,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TGD30",
         "name": "台式300智能电磁炒菜机电动球釜型锅电动翻锅版",
         "highlights": [
-          "球釜型锅",
-          "电动翻锅",
-          "360°翻炒"
+          "球釜型锅', '电动翻锅', '360°翻炒"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次0.5-2.5kg，电动翻锅",
         "power": "5kW",
         "throughput": "4-6L",
         "averageTime": "3-5分钟",
@@ -2939,7 +2937,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -2947,12 +2947,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GD30",
         "name": "落地式300智能电磁炒菜机电动球釜型锅落地设计版",
         "highlights": [
-          "球釜型锅",
-          "电动翻锅",
-          "落地设计"
+          "球釜型锅', '电动翻锅', '落地设计"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次0.5-2.5kg，落地设计",
         "power": "5kW",
         "throughput": "4-6L",
         "averageTime": "3-5分钟",
@@ -2981,7 +2979,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -2989,12 +2989,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TGD36",
         "name": "台式360智能电磁炒菜机电动球釜型锅大容量版",
         "highlights": [
-          "球釜型锅",
-          "电动翻锅",
-          "大容量"
+          "球釜型锅', '电动翻锅', '大容量"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，大容量",
         "power": "5kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3023,7 +3021,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -3031,12 +3031,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GD36",
         "name": "落地式360智能电磁炒菜机电动球釜型锅落地设计版",
         "highlights": [
-          "球釜型锅",
-          "电动翻锅",
-          "落地设计"
+          "球釜型锅', '电动翻锅', '落地设计"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，落地设计",
         "power": "5kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3065,7 +3063,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -3073,12 +3073,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TGD36/9",
         "name": "台式360智能电磁炒菜机电动球釜型锅适合爆炒版",
         "highlights": [
-          "球釜型锅",
-          "电动翻锅",
-          "适合爆炒"
+          "球釜型锅', '电动翻锅', '适合爆炒"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，特别适合爆炒",
         "power": "9kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3107,7 +3105,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -3115,12 +3115,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GD36/9",
         "name": "落地式360智能电磁炒菜机电动球釜型锅适合爆炒版",
         "highlights": [
-          "球釜型锅",
-          "电动翻锅",
-          "适合爆炒"
+          "球釜型锅', '电动翻锅', '适合爆炒"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，特别适合爆炒",
         "power": "9kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3149,7 +3147,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -3157,12 +3157,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TGQ30J",
         "name": "台式300智能电磁炒菜机触屏8007寸触屏语音提示版",
         "highlights": [
-          "7寸触屏",
-          "800菜谱",
-          "语音提示"
+          "7寸触屏', '800菜谱', '语音提示"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次0.5-2.5kg，7寸触屏",
         "power": "5kW",
         "throughput": "4-6L",
         "averageTime": "3-5分钟",
@@ -3191,7 +3189,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -3199,12 +3199,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ30J",
         "name": "落地式300智能电磁炒菜机触屏8007寸触屏语音提示版",
         "highlights": [
-          "7寸触屏",
-          "800菜谱",
-          "语音提示"
+          "7寸触屏', '800菜谱', '语音提示"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次0.5-2.5kg，7寸触屏",
         "power": "5kW",
         "throughput": "4-6L",
         "averageTime": "3-5分钟",
@@ -3233,7 +3231,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -3241,12 +3241,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TGQ36J",
         "name": "台式360智能电磁炒菜机触屏8007寸触屏语音提示版",
         "highlights": [
-          "7寸触屏",
-          "800菜谱",
-          "语音提示"
+          "7寸触屏', '800菜谱', '语音提示"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，7寸触屏",
         "power": "5kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3275,7 +3273,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -3283,12 +3283,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TGQ36J/9",
         "name": "台式360智能电磁炒菜机触屏8007寸触屏语音提示版",
         "highlights": [
-          "7寸触屏",
-          "800菜谱",
-          "语音提示"
+          "7寸触屏', '800菜谱', '语音提示"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，7寸触屏",
         "power": "9kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3317,7 +3315,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -3325,12 +3325,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ36J/9",
         "name": "落地式360智能电磁炒菜机触屏8007寸触屏语音提示版",
         "highlights": [
-          "7寸触屏",
-          "800菜谱",
-          "语音提示"
+          "7寸触屏', '800菜谱', '语音提示"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，7寸触屏",
         "power": "9kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3359,7 +3357,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "电磁炒菜机",
@@ -3367,12 +3367,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TGQ40J",
         "name": "台式400智能电磁炒菜机触屏7寸触屏语音提示版",
         "highlights": [
-          "7寸触屏",
-          "800菜谱",
-          "语音提示"
+          "7寸触屏', '800菜谱', '语音提示"
         ],
         "scenarios": "餐饮连锁、外卖、酒店酒楼、中型餐厅",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，7寸触屏",
         "power": "8-10kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3401,7 +3399,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   },
@@ -3414,12 +3414,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TGQ30",
         "name": "台式300智能电磁炒菜机触屏喷料7寸触屏自动喷料版",
         "highlights": [
-          "7寸触屏",
-          "自动喷料",
-          "800菜谱"
+          "7寸触屏', '自动喷料', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次0.5-2.5kg，自动喷料",
         "power": "5kW",
         "throughput": "4-6L",
         "averageTime": "3-5分钟",
@@ -3448,7 +3446,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "自动投料炒菜机",
@@ -3456,12 +3456,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ30",
         "name": "落地式300智能电磁炒菜机触屏喷料7寸触屏自动喷料版",
         "highlights": [
-          "7寸触屏",
-          "自动喷料",
-          "800菜谱"
+          "7寸触屏', '自动喷料', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次0.5-2.5kg，自动喷料",
         "power": "5kW",
         "throughput": "4-6L",
         "averageTime": "3-5分钟",
@@ -3490,7 +3488,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "自动投料炒菜机",
@@ -3498,12 +3498,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ36",
         "name": "落地式300智能电磁炒菜机触屏喷料7寸触屏自动喷料版",
         "highlights": [
-          "7寸触屏",
-          "自动喷料",
-          "800菜谱"
+          "7寸触屏', '自动喷料', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，自动喷料",
         "power": "9kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3532,7 +3530,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "自动投料炒菜机",
@@ -3540,12 +3540,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ30T",
         "name": "300智能电磁炒菜机自动投料喷料自动投料800菜谱版",
         "highlights": [
-          "自动投料",
-          "自动喷料",
-          "800菜谱"
+          "自动投料', '自动喷料', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次0.5-2.0kg，自动投料",
         "power": "5kW",
         "throughput": "4-6L",
         "averageTime": "3-5分钟",
@@ -3574,7 +3572,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "自动投料炒菜机",
@@ -3582,12 +3582,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ35T",
         "name": "350智能电磁炒菜机自动投料喷料自动投料800菜谱版",
         "highlights": [
-          "自动投料",
-          "自动喷料",
-          "800菜谱"
+          "自动投料', '自动喷料', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、小吃店",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，自动投料",
         "power": "9kW",
         "throughput": "6-12L",
         "averageTime": "4-6分钟",
@@ -3616,7 +3614,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "自动投料炒菜机",
@@ -3624,12 +3624,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-BQ40T",
         "name": "落地式上搅拌全自动小炒炒菜机行星搅拌自动投料爆炒版",
         "highlights": [
-          "行星搅拌",
-          "自动投料",
-          "爆炒专用"
+          "行星搅拌', '自动投料', '爆炒专用"
         ],
         "scenarios": "餐饮连锁、外卖、小食店、快餐店、湘菜盖码饭",
-        "usage": null,
+        "usage": "爆炒专用，特别适合湘菜盖码饭类菜品，单次0.5-2.0kg，行星搅拌",
         "power": "9kW",
         "throughput": "16L",
         "averageTime": "3-5分钟",
@@ -3658,7 +3656,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "自动投料炒菜机",
@@ -3666,12 +3666,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-TGQ40",
         "name": "台式400智能电磁炒菜机触屏喷料7寸触屏自动喷料版",
         "highlights": [
-          "7寸触屏",
-          "自动喷料",
-          "800菜谱"
+          "7寸触屏', '自动喷料', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、酒店酒楼、中型餐厅",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，自动喷料",
         "power": "8-10kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3700,7 +3698,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "自动投料炒菜机",
@@ -3708,12 +3708,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ40",
         "name": "单边座地式400电磁炒菜机触屏摆臂喷料7寸触屏摆臂喷料版",
         "highlights": [
-          "7寸触屏",
-          "摆臂喷料",
-          "800菜谱"
+          "7寸触屏', '摆臂喷料', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、酒店酒楼、中型餐厅",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次1-5kg，摆臂喷料",
         "power": "8-10kW",
         "throughput": "12L",
         "averageTime": "4-6分钟",
@@ -3742,7 +3740,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   },
@@ -3755,12 +3755,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GB50",
         "name": "座地式500电磁炒菜机触屏电动7寸触屏电动翻锅版",
         "highlights": [
-          "7寸触屏",
-          "电动翻锅",
-          "多档火力"
+          "7寸触屏', '电动翻锅', '多档火力"
         ],
         "scenarios": "餐饮连锁、外卖、酒店酒楼、中型餐厅、连锁餐饮",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次3-10kg，电动翻锅",
         "power": "15-20kW",
         "throughput": "3-10kg",
         "averageTime": "5-8分钟",
@@ -3789,7 +3787,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -3797,12 +3797,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GC50",
         "name": "座地式500电磁炒菜机语音菜单7寸触屏语音菜单版",
         "highlights": [
-          "7寸触屏",
-          "语音菜单",
-          "800菜谱"
+          "7寸触屏', '语音菜单', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、酒店酒楼、中型餐厅、连锁餐饮",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次3-10kg，语音菜单",
         "power": "15-20kW",
         "throughput": "3-10kg",
         "averageTime": "5-8分钟",
@@ -3831,7 +3829,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -3839,12 +3839,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ50",
         "name": "座地式500电磁炒菜机触屏摆臂喷料7寸触屏摆臂喷料版",
         "highlights": [
-          "7寸触屏",
-          "摆臂喷料",
-          "800菜谱"
+          "7寸触屏', '摆臂喷料', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、酒店酒楼、中型餐厅、连锁餐饮",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次3-10kg，摆臂喷料",
         "power": "15-20kW",
         "throughput": "3-10kg",
         "averageTime": "5-8分钟",
@@ -3873,7 +3871,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -3881,12 +3881,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GB60",
         "name": "座地式600电磁炒菜机触屏电动7寸触屏电动翻锅版",
         "highlights": [
-          "7寸触屏",
-          "电动翻锅",
-          "多档火力"
+          "7寸触屏', '电动翻锅', '多档火力"
         ],
         "scenarios": "餐饮连锁、外卖、酒店酒楼、中型餐厅、连锁餐饮",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次5-20kg，电动翻锅",
         "power": "25kW",
         "throughput": "10-20kg",
         "averageTime": "5-10分钟",
@@ -3915,7 +3913,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -3923,12 +3923,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GC60",
         "name": "座地式600电磁炒菜机语音菜单10寸触屏语音菜单版",
         "highlights": [
-          "10寸触屏",
-          "语音菜单",
-          "800菜谱"
+          "10寸触屏', '语音菜单', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、酒店酒楼、中型餐厅、连锁餐饮",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次5-20kg，语音菜单",
         "power": "25kW",
         "throughput": "10-20kg",
         "averageTime": "5-10分钟",
@@ -3957,7 +3955,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -3965,12 +3965,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ60",
         "name": "座地式600电磁炒菜机语音菜单自动喷料10寸触屏自动喷料版",
         "highlights": [
-          "10寸触屏",
-          "自动喷料",
-          "800菜谱"
+          "10寸触屏', '自动喷料', '800菜谱"
         ],
         "scenarios": "餐饮连锁、外卖、酒店酒楼、中型餐厅、连锁餐饮",
-        "usage": null,
+        "usage": "适用于自动烹饪炒菜、炒饭、炒粉、炒面等，单次5-20kg，自动喷料",
         "power": "25kW",
         "throughput": "5-20kg",
         "averageTime": "5-10分钟",
@@ -3999,7 +3997,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -4007,12 +4007,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GB70",
         "name": "座地式700电磁炒菜机触屏电动7寸触屏电动翻锅版",
         "highlights": [
-          "7寸触屏",
-          "电动翻锅",
-          "多档火力"
+          "7寸触屏', '电动翻锅', '多档火力"
         ],
         "scenarios": "院校机关食堂、中央厨房团膳、大型食堂、企业食堂",
-        "usage": null,
+        "usage": "适用于自动煸炒烹饪炒菜、炒饭、炒粉、炒面等，单次15-30kg，电动翻锅",
         "power": "30kW",
         "throughput": "15-30kg",
         "averageTime": "8-12分钟",
@@ -4041,7 +4039,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -4049,12 +4049,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GC70",
         "name": "座地式700电磁炒菜机语音菜单10寸触屏语音菜单版",
         "highlights": [
-          "10寸触屏",
-          "语音菜单",
-          "800菜谱"
+          "10寸触屏', '语音菜单', '800菜谱"
         ],
         "scenarios": "院校机关食堂、中央厨房团膳、大型食堂、企业食堂",
-        "usage": null,
+        "usage": "适用于自动煸炒烹饪炒菜、炒饭、炒粉、炒面等，单次15-30kg，语音菜单",
         "power": "30kW",
         "throughput": "15-30kg",
         "averageTime": "8-12分钟",
@@ -4083,7 +4081,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -4091,12 +4091,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ70",
         "name": "座地式700电磁炒菜机语音菜单自动喷料10寸触屏自动喷料版",
         "highlights": [
-          "10寸触屏",
-          "自动喷料",
-          "800菜谱"
+          "10寸触屏', '自动喷料', '800菜谱"
         ],
         "scenarios": "院校机关食堂、中央厨房团膳、大型食堂、企业食堂",
-        "usage": null,
+        "usage": "适用于自动煸炒烹饪炒菜、炒饭、炒粉、炒面等，单次15-30kg，自动喷料",
         "power": "30kW",
         "throughput": "15-30kg",
         "averageTime": "8-12分钟",
@@ -4125,7 +4123,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -4133,12 +4133,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GB80",
         "name": "座地式800电磁炒菜机触屏电动7寸触屏电动翻锅版",
         "highlights": [
-          "7寸触屏",
-          "电动翻锅",
-          "多档火力"
+          "7寸触屏', '电动翻锅', '多档火力"
         ],
         "scenarios": "院校机关食堂、中央厨房团膳、大型食堂、企业食堂",
-        "usage": null,
+        "usage": "适用于自动煸炒烹饪炒菜、炒饭、炒粉、炒面等，单次20-50kg，电动翻锅",
         "power": "35kW",
         "throughput": "20-50kg",
         "averageTime": "8-15分钟",
@@ -4167,7 +4165,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -4175,12 +4175,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GC80",
         "name": "座地式800电磁炒菜机语音菜单10寸触屏语音菜单版",
         "highlights": [
-          "10寸触屏",
-          "语音菜单",
-          "800菜谱"
+          "10寸触屏', '语音菜单', '800菜谱"
         ],
         "scenarios": "院校机关食堂、中央厨房团膳、大型食堂、企业食堂",
-        "usage": null,
+        "usage": "适用于自动煸炒烹饪炒菜、炒饭、炒粉、炒面等，单次20-50kg，语音菜单",
         "power": "35kW",
         "throughput": "20-50kg",
         "averageTime": "8-15分钟",
@@ -4209,7 +4207,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -4217,12 +4217,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ80",
         "name": "座地式800电磁炒菜机语音菜单自动喷料10寸触屏自动喷料版",
         "highlights": [
-          "10寸触屏",
-          "自动喷料",
-          "800菜谱"
+          "10寸触屏', '自动喷料', '800菜谱"
         ],
         "scenarios": "院校机关食堂、中央厨房团膳、大型食堂、企业食堂",
-        "usage": null,
+        "usage": "适用于自动煸炒烹饪炒菜、炒饭、炒粉、炒面等，单次20-50kg，自动喷料",
         "power": "35kW",
         "throughput": "20-50kg",
         "averageTime": "8-15分钟",
@@ -4251,7 +4249,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -4259,12 +4259,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GB90",
         "name": "座地式900电磁炒菜机触屏电动7寸触屏电动翻锅版",
         "highlights": [
-          "7寸触屏",
-          "电动翻锅",
-          "多档火力"
+          "7寸触屏', '电动翻锅', '多档火力"
         ],
         "scenarios": "院校机关食堂、中央厨房团膳、大型食堂、企业食堂",
-        "usage": null,
+        "usage": "适用于自动煸炒烹饪炒菜、炒饭、炒粉、炒面等，单次30-80kg，电动翻锅",
         "power": "40kW",
         "throughput": "30-80kg",
         "averageTime": "12-20分钟",
@@ -4293,7 +4291,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -4301,12 +4301,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GC90",
         "name": "座地式900电磁炒菜机语音菜单10寸触屏语音菜单版",
         "highlights": [
-          "10寸触屏",
-          "语音菜单",
-          "800菜谱"
+          "10寸触屏', '语音菜单', '800菜谱"
         ],
         "scenarios": "院校机关食堂、中央厨房团膳、大型食堂、企业食堂",
-        "usage": null,
+        "usage": "适用于自动煸炒烹饪炒菜、炒饭、炒粉、炒面等，单次30-80kg，语音菜单",
         "power": "40kW",
         "throughput": "30-80kg",
         "averageTime": "12-20分钟",
@@ -4335,7 +4333,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       },
       {
         "category": "座地式炒菜机",
@@ -4343,12 +4343,10 @@ export const PRODUCT_DATA_TABLE = [
         "model": "ESL-GQ90",
         "name": "座地式900电磁炒菜机语音菜单自动喷料10寸触屏自动喷料版",
         "highlights": [
-          "10寸触屏",
-          "自动喷料",
-          "800菜谱"
+          "10寸触屏', '自动喷料', '800菜谱"
         ],
         "scenarios": "院校机关食堂、中央厨房团膳、大型食堂、企业食堂",
-        "usage": null,
+        "usage": "适用于自动煸炒烹饪炒菜、炒饭、炒粉、炒面等，单次30-80kg，自动喷料",
         "power": "40kW",
         "throughput": "30-80kg",
         "averageTime": "12-20分钟",
@@ -4377,7 +4375,9 @@ export const PRODUCT_DATA_TABLE = [
         "barcode": null,
         "referencePrice": null,
         "minimumOrderQuantity": null,
-        "stockQuantity": null
+        "stockQuantity": null,
+        "launchTime": null,
+        "isActive": true
       }
     ]
   }

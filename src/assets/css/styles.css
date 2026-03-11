@@ -328,17 +328,16 @@ header nav a.active::after {
   z-index: 1001;
 }
 
-.primary-contact-btn:hover .contact-tooltip {
+.primary-contact-btn:hover .contact-tooltip,
+.primary-contact-btn:focus .contact-tooltip,
+.primary-contact-btn:focus-visible .contact-tooltip {
   opacity: 1;
   visibility: visible;
   right: 61px;
 }
 /* 次要联系按钮的工具提示样式 - 简化修复版 */
-.secondary-btn {
-    position: relative;
-}
-
-.secondary-btn .contact-tooltip {
+.secondary-btn .contact-tooltip,
+.expand-btn .contact-tooltip {
     position: absolute;
     right: 65px;
     background: rgba(39, 27, 59, 0.95);
@@ -354,14 +353,37 @@ header nav a.active::after {
     pointer-events: none;
     z-index: 1001;
     top: 50%;
+}
+
+.secondary-btn .contact-tooltip {
     transform: translateY(-50%) translateX(-20px);
 }
 
-.secondary-btn:hover .contact-tooltip {
+.expand-btn .contact-tooltip {
+  transform: translateX(20px) translateY(-50%);
+}
+
+.secondary-btn:hover .contact-tooltip,
+.secondary-btn:focus .contact-tooltip,
+.secondary-btn:focus-visible .contact-tooltip,
+.expand-btn:hover .contact-tooltip,
+.expand-btn:focus .contact-tooltip,
+.expand-btn:focus-visible .contact-tooltip {
     opacity: 1;
     visibility: visible;
-    transform: translateY(-50%) translateX(0);
     right: 61px;
+}
+
+.secondary-btn:hover .contact-tooltip,
+.secondary-btn:focus .contact-tooltip,
+.secondary-btn:focus-visible .contact-tooltip {
+  transform: translateY(-50%) translateX(0);
+}
+
+.expand-btn:hover .contact-tooltip,
+.expand-btn:focus .contact-tooltip,
+.expand-btn:focus-visible .contact-tooltip {
+  transform: translateX(0) translateY(-50%);
 }
 
 /* 确保工具提示不会溢出屏幕 */
@@ -370,48 +392,28 @@ header nav a.active::after {
     padding-top: 18px;
   }
 
-    .secondary-btn .contact-tooltip {
+  /* Mobile: hide left-side tooltips to avoid clipped text. */
+  .floating-sidebar .contact-tooltip,
+  .floating-sidebar .back-to-top-tooltip {
+    display: none !important;
+  }
+
+    .secondary-btn .contact-tooltip,
+    .expand-btn .contact-tooltip {
         right: 60px;
         white-space: normal;
         max-width: 100px;
         word-break: break-word;
     }
 
-    .secondary-btn:hover .contact-tooltip {
+    .secondary-btn:hover .contact-tooltip,
+    .secondary-btn:focus .contact-tooltip,
+    .secondary-btn:focus-visible .contact-tooltip,
+    .expand-btn:hover .contact-tooltip,
+    .expand-btn:focus .contact-tooltip,
+    .expand-btn:focus-visible .contact-tooltip {
         right: 55px;
     }
-}
-
-/* 展开按钮的工具提示样式 */
-.expand-btn {
-    position: relative;
-}
-
-/* 无论按钮在什么位置，提示都能显示 */
-.expand-btn .contact-tooltip {
-  position: absolute;
-  right: 65px;
-  background: rgba(39, 27, 59, 0.95);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 500;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  pointer-events: none;
-  z-index: 1001;
-  transform: translateX(20px) translateY(-50%);
-  top: 50%;
-}
-
-.expand-btn:hover .contact-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(0) translateY(-50%);
-  right: 61px;
 }
 
 /* 确保展开和收起状态都能正常显示 */
@@ -421,7 +423,11 @@ header nav a.active::after {
 }
 
 .expand-btn.expanded:hover .contact-tooltip,
-.expand-btn:not(.expanded):hover .contact-tooltip {
+.expand-btn:not(.expanded):hover .contact-tooltip,
+.expand-btn.expanded:focus .contact-tooltip,
+.expand-btn:not(.expanded):focus .contact-tooltip,
+.expand-btn.expanded:focus-visible .contact-tooltip,
+.expand-btn:not(.expanded):focus-visible .contact-tooltip {
     right: 61px;
 }
 
@@ -432,31 +438,11 @@ header nav a.active::after {
     transform: translateX(20px) translateY(-50%);
 }
 
-.floating-sidebar .expand-btn:hover .contact-tooltip {
+.floating-sidebar .expand-btn:hover .contact-tooltip,
+.floating-sidebar .expand-btn:focus .contact-tooltip,
+.floating-sidebar .expand-btn:focus-visible .contact-tooltip {
     transform: translateX(0) translateY(-50%);
     right: 61px;
-}
-
-/* 确保工具提示不会溢出屏幕 */
-@media (max-width: 768px) {
-    .secondary-btn .contact-tooltip,
-    .expand-btn .contact-tooltip {
-        right: 60px;
-        white-space: normal;
-        max-width: 100px;
-        word-break: break-word;
-    }
-
-    .secondary-btn:hover .contact-tooltip,
-    .expand-btn:hover .contact-tooltip {
-        right: 55px;
-    }
-}
-
-.primary-contact-btn:hover .contact-tooltip {
-  opacity: 1;
-  visibility: visible;
-  right: 61px;
 }
 
 /* Primary contact button colors */
@@ -488,6 +474,7 @@ header nav a.active::after {
 
 /* 次要联系人按钮增强 */
 .secondary-btn {
+  position: relative;
   width: 54px;
   height: 54px;
   border-radius: 50%;
@@ -522,6 +509,7 @@ header nav a.active::after {
 
 /* Expand button */
 .expand-btn {
+  position: relative;
   width: 54px;
   height: 54px;
   border-radius: 50%;
@@ -908,6 +896,7 @@ header nav a.active::after {
     line-height: 1.4;
     margin-bottom: 0.5rem;
     display: -webkit-box;
+    line-clamp: 4;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -1601,7 +1590,9 @@ header nav a.active::after {
   pointer-events: none;
 }
 
-.back-to-top-btn:hover .back-to-top-tooltip {
+.back-to-top-btn:hover .back-to-top-tooltip,
+.back-to-top-btn:focus .back-to-top-tooltip,
+.back-to-top-btn:focus-visible .back-to-top-tooltip {
   opacity: 1;
   visibility: visible;
   right: 61px;
@@ -1667,9 +1658,10 @@ header nav a.active::after {
   }
 
   .secondary-btn,
-  .expand-btn {
-    width: 42px;
-    height: 42px;
+  .expand-btn,
+  .back-to-top-btn {
+    width: 50px;
+    height: 50px;
   }
 
   .sidebar-indicator {
@@ -1712,7 +1704,7 @@ header nav a.active::after {
 
   .floating-sidebar {
     top: auto;
-    bottom: 14px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 26px);
     right: 10px;
     transform: none;
     gap: 6px;
@@ -1744,7 +1736,7 @@ header nav a.active::after {
 
   .sidebar-indicator {
     top: auto;
-    bottom: 92px;
+    bottom: 108px;
     right: calc(10px + 46px + 12px);
     transform: translateX(16px);
   }
@@ -1965,7 +1957,7 @@ header nav a.active::after {
 
   .floating-sidebar {
     right: 8px;
-    bottom: 10px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
   }
 
   .primary-contact-btn {
@@ -1977,12 +1969,12 @@ header nav a.active::after {
   .secondary-btn,
   .expand-btn,
   .back-to-top-btn {
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
   }
 
   .sidebar-indicator {
-    bottom: 82px;
+    bottom: 98px;
     right: calc(8px + 42px + 10px);
   }
 
@@ -2053,7 +2045,7 @@ header nav a.active::after {
 
   .floating-sidebar {
     right: 6px;
-    bottom: 8px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
     gap: 5px;
   }
 
@@ -2066,12 +2058,12 @@ header nav a.active::after {
   .secondary-btn,
   .expand-btn,
   .back-to-top-btn {
-    width: 32px;
-    height: 32px;
+    width: 38px;
+    height: 38px;
   }
 
   .sidebar-indicator {
-    bottom: 74px;
+    bottom: 90px;
     right: calc(6px + 38px + 8px);
   }
 
