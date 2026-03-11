@@ -1630,7 +1630,6 @@ ${tr('mailto_label_resolution', 'Resolution')}: ${window.screen.width}x${window.
 
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => smartPopup.init(), 1000);
-    setTimeout(setupJumpingAnimation, 1000);
     setupIndicatorPrompt();
     setupMobileMenuAutoClose();
     setupSecondaryContactsAutoCollapse();

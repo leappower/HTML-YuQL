@@ -184,7 +184,7 @@ const server = app.listen(PORT, (err) => {
 
   const feishuConfig = buildFeishuConfigFromEnv();
   if (validateFeishuConfig(feishuConfig)) {
-    runFeishuSyncOnce({ syncTo: 'both' })
+    runFeishuSyncOnce()
       .then((result) => {
         console.log('[feishu-sync] initial sync finished:', JSON.stringify(result));
       })

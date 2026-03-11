@@ -632,6 +632,57 @@ function mergeSeriesAppend(existingSeries, incomingSeries) {
   };
 }
 
+function validateAndCleanSeries(seriesList, { dropIncomplete = true, source = 'unknown' } = {}) {
+  const warnings = [];
+  const cleaned = [];
+  let droppedProducts = 0;
+
+  for (const series of seriesList || []) {
+    const category = String(series?.category || '').trim();
+    if (!category) {
+      warnings.push(`[quality] empty category series found in ${source}, dropped`);
+      continue;
+    }
+
+    const products = [];
+    for (const product of series.products || []) {
+      if (hasValidProductIdentity(product)) {
+        products.push(product);
+        continue;
+      }
+
+      const subCategory = String(product?.subCategory || '').trim();
+      const model = String(product?.model || '').trim();
+      const name = String(product?.name || '').trim();
+      warnings.push(
+        `[quality] incomplete identity dropped in ${source}: category=${category}, subCategory=${subCategory || '-'}, model=${model || '-'}, name=${name || '-'}`
+      );
+      if (dropIncomplete) {
+        droppedProducts += 1;
+      } else {
+        products.push(product);
+      }
+    }
+
+    cleaned.push({ category, products });
+  }
+
+  return {
+    series: cleaned,
+    warnings,
+    droppedProducts
+  };
+}
+
+function printQualityWarnings(title, report) {
+  if (!report || !Array.isArray(report.warnings) || report.warnings.length === 0) return;
+  console.warn(`[quality] ${title}: ${report.warnings.length} warning(s), dropped=${report.droppedProducts || 0}`);
+  report.warnings.slice(0, 50).forEach((line) => console.warn(line));
+  if (report.warnings.length > 50) {
+    console.warn(`[quality] ... ${report.warnings.length - 50} more warning(s) omitted`);
+  }
+}
+
 function writeAppendedSeriesToProductList(seriesList, productListPath = PRODUCT_LIST_PATH) {
   const content = fs.readFileSync(productListPath, 'utf-8');
   const start = content.indexOf(APPEND_START);
@@ -679,7 +730,13 @@ async function syncFeishuToProductList(config) {
     config.spreadsheetToken,
     config.sheetRange
   );
-  const incomingSeries = parseRowsToSeries(rows);
+  const incomingRaw = parseRowsToSeries(rows);
+  const qualityReport = validateAndCleanSeries(incomingRaw, {
+    dropIncomplete: true,
+    source: 'feishu:product-list'
+  });
+  printQualityWarnings('feishu:product-list', qualityReport);
+  const incomingSeries = qualityReport.series;
   const existingSeries = readAppendedSeriesFromProductList(config.productListPath || PRODUCT_LIST_PATH);
   const merged = mergeSeriesAppend(existingSeries, incomingSeries);
   writeAppendedSeriesToProductList(merged.series, config.productListPath || PRODUCT_LIST_PATH);
@@ -698,7 +755,13 @@ async function syncFeishuToProductDataTable(config) {
     config.spreadsheetToken,
     config.sheetRange
   );
-  const incomingSeries = parseRowsToSeries(rows);
+  const incomingRaw = parseRowsToSeries(rows);
+  const qualityReport = validateAndCleanSeries(incomingRaw, {
+    dropIncomplete: true,
+    source: 'feishu:product-table'
+  });
+  printQualityWarnings('feishu:product-table', qualityReport);
+  const incomingSeries = qualityReport.series;
   const existingSeries = readProductDataTableSeries(config.productTablePath || PRODUCT_TABLE_PATH);
   const merged = mergeSeriesAppend(existingSeries, incomingSeries);
   writeProductDataTableSeries(merged.series, config.productTablePath || PRODUCT_TABLE_PATH);
@@ -710,7 +773,7 @@ async function syncFeishuToProductDataTable(config) {
   };
 }
 
-async function runFeishuSyncOnce({ syncTo = 'both' } = {}) {
+async function runFeishuSyncOnce({ syncTo = 'product-table' } = {}) {
   const config = buildFeishuConfigFromEnv();
   if (!validateFeishuConfig(config)) {
     return { skipped: true, reason: 'missing env config' };
@@ -752,7 +815,7 @@ function scheduleDaily4amSync(task) {
 
 function startDailyFeishuSyncScheduler() {
   scheduleDaily4amSync(async () => {
-    const result = await runFeishuSyncOnce({ syncTo: 'both' });
+    const result = await runFeishuSyncOnce();
     if (result.skipped) {
       console.log('[feishu-sync] skipped daily run:', result.reason);
       return;
@@ -844,8 +907,14 @@ async function generateProductDataTable(args = parseCliArgs()) {
   }
 
   const incomingSeries = parseRowsToSeries(rawRows);
+  const qualityReport = validateAndCleanSeries(incomingSeries, {
+    dropIncomplete: true,
+    source: args.source
+  });
+  printQualityWarnings(`cli:${args.source}`, qualityReport);
+
   const existingSeries = readProductDataTableSeries(outPath);
-  const merged = mergeSeriesAppend(existingSeries, incomingSeries);
+  const merged = mergeSeriesAppend(existingSeries, qualityReport.series);
   writeJs(merged.series, outPath, sourceLabel);
 
   console.log(`rows=${rawRows.length}`);
@@ -863,6 +932,7 @@ const feishuProTables = {
   readProductDataTableSeries,
   readAppendedSeriesFromProductList,
   mergeSeriesAppend,
+  validateAndCleanSeries,
   writeJs,
   generateProductDataTable,
   parseCliArgs,
