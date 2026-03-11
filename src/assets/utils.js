@@ -862,17 +862,106 @@ import { IMAGE_ASSETS } from './image-assets.js';
     }, { passive: true });
   }
 
+  const indicatorState = {
+    pageEnterAt: Date.now(),
+    shownCount: 0,
+    maxShowsPerSession: 2,
+    lastShownAt: 0,
+    cooldownMs: 20000,
+    hasContactIntent: false,
+    touchInteractions: 0,
+    promptLoopTimer: null,
+    hideTimer: null
+  };
+
   function showIndicator() {
     const indicator = document.getElementById('sidebar-indicator');
     if (!indicator) return;
+
+    const popupOverlay = document.getElementById('smart-popup-overlay');
+    if (popupOverlay && popupOverlay.classList.contains('show')) return;
+
+    if (indicatorState.hasContactIntent) return;
+    if (indicatorState.shownCount >= indicatorState.maxShowsPerSession) return;
+    if (indicatorState.lastShownAt && (Date.now() - indicatorState.lastShownAt) < indicatorState.cooldownMs) return;
+
+    const elapsedSeconds = Math.floor((Date.now() - indicatorState.pageEnterAt) / 1000);
+    const scrollPercent = Math.round((window.scrollY / Math.max(1, (document.body.scrollHeight - window.innerHeight))) * 100);
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+    // Friendly and intent-based: mobile appears earlier and with lighter signal requirements.
+    const minWaitSeconds = isMobile ? 6 : 12;
+    if (elapsedSeconds < minWaitSeconds) return;
+
+    const isFirstShow = indicatorState.shownCount === 0;
+
+    if (!isFirstShow) {
+      if (isMobile) {
+        const hasEnoughBrowseSignal = scrollPercent >= 3 || indicatorState.touchInteractions >= 1;
+        const timeFallbackReached = elapsedSeconds >= 12;
+        if (!hasEnoughBrowseSignal && !timeFallbackReached) return;
+      } else if (scrollPercent < 18) {
+        return;
+      }
+    }
+
+    indicatorState.shownCount += 1;
+    indicatorState.lastShownAt = Date.now();
     indicator.classList.add('show');
-    setTimeout(hideIndicator, 15000);
+
+    // Ensure older hide timers do not instantly hide a newly shown indicator.
+    if (indicatorState.hideTimer) {
+      clearTimeout(indicatorState.hideTimer);
+    }
+    const visibleDuration = isMobile ? 10000 : 15000;
+    indicatorState.hideTimer = setTimeout(() => {
+      hideIndicator();
+      indicatorState.hideTimer = null;
+    }, visibleDuration);
   }
 
   function hideIndicator() {
     const indicator = document.getElementById('sidebar-indicator');
     if (!indicator) return;
     indicator.classList.remove('show');
+  }
+
+  function setupIndicatorPrompt() {
+    indicatorState.pageEnterAt = Date.now();
+    indicatorState.touchInteractions = 0;
+
+    const markIntent = () => {
+      indicatorState.hasContactIntent = true;
+      hideIndicator();
+      if (indicatorState.promptLoopTimer) {
+        clearInterval(indicatorState.promptLoopTimer);
+        indicatorState.promptLoopTimer = null;
+      }
+    };
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const indicator = document.getElementById('sidebar-indicator');
+      if (indicator && indicator.classList.contains('show') && !target.closest('#sidebar-indicator')) {
+        hideIndicator();
+      }
+
+      const touchedContactEntry = target.closest('#jump-btn-2, #jump-btn-3, #jump-btn-4, #secondary-contacts button, #contact-form, #smart-popup-form, [onclick="showSmartPopupManual()"]');
+      if (touchedContactEntry) {
+        markIntent();
+      }
+    });
+
+    document.addEventListener('touchstart', () => {
+      indicatorState.touchInteractions += 1;
+    }, { passive: true });
+
+    // First check after first-screen protection, then re-check periodically.
+    const initialDelay = window.matchMedia('(max-width: 768px)').matches ? 5000 : 10000;
+    setTimeout(showIndicator, initialDelay);
+    indicatorState.promptLoopTimer = setInterval(showIndicator, 10000);
   }
 
   function startWhatsApp() { window.open('https://wa.me/4975112345678?text=' + encodeURIComponent(tr('contact_whatsapp_prefill', 'Hello! I am interested in your products.')), '_blank'); }
@@ -1569,7 +1658,7 @@ ${tr('mailto_label_resolution', 'Resolution')}: ${window.screen.width}x${window.
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => smartPopup.init(), 1000);
     setTimeout(setupJumpingAnimation, 1000);
-    setTimeout(showIndicator, 2500);
+    setupIndicatorPrompt();
     setupMobileMenuAutoClose();
     setupSecondaryContactsAutoCollapse();
   });

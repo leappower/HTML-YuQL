@@ -97,6 +97,7 @@ header nav a.active::after {
   z-index: 999;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 8px;
   transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
@@ -105,7 +106,7 @@ header nav a.active::after {
 /* 悬停时的整体效果 */
 .floating-sidebar:hover {
   gap: 10px;
-  transform: translateY(-50%) scale(1.02);
+  transform: translateY(-50%);
   filter: drop-shadow(0 8px 24px rgba(39, 27, 59, 0.25));
 }
 
@@ -120,13 +121,13 @@ header nav a.active::after {
   justify-content: center;
   color: white;
   font-size: 24px;
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 22px rgba(39, 27, 59, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.45);
   cursor: pointer;
   opacity: 0.9;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(8px);
 }
 
 .floating-sidebar:hover .primary-contact-btn {
@@ -134,18 +135,18 @@ header nav a.active::after {
 }
 
 .primary-contact-btn:hover {
-  transform: scale(1.15) translateZ(10px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  transform: translateY(-1px) scale(1.08);
+  box-shadow: 0 14px 28px rgba(39, 27, 59, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   opacity: 1;
-  animation: buttonFloat 0.5s ease-in-out;
+  animation: none;
 }
 
 @keyframes buttonFloat {
   0%, 100% {
-    transform: scale(1.15) translateZ(10px) translateY(0);
+    transform: scale(1.08) translateY(0);
   }
   50% {
-    transform: scale(1.15) translateZ(10px) translateY(-3px);
+    transform: scale(1.08) translateY(-2px);
   }
 }
 /* 升级版：增强跳动动画 */
@@ -495,20 +496,21 @@ header nav a.active::after {
   justify-content: center;
   color: white;
   font-size: 20px;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
+  box-shadow: 0 10px 22px rgba(39, 27, 59, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.45);
   opacity: 0.8;
   cursor: pointer;
-  backface-visibility: hidden;
   border: none;
   padding: 0;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(8px);
 }
 
 .secondary-btn:hover {
-  transform: scale(1.15);
+  transform: translateY(-1px) scale(1.08);
   opacity: 1;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  box-shadow: 0 14px 28px rgba(39, 27, 59, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .telegram-btn { background: #0088cc; }
@@ -529,18 +531,20 @@ header nav a.active::after {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
   opacity: 0.8;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 22px rgba(39, 27, 59, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.45);
   border: none;
   padding: 0;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(8px);
 }
 
 .expand-btn:hover {
-  transform: scale(1.15);
+  transform: translateY(-1px) scale(1.08);
   opacity: 1;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  box-shadow: 0 14px 28px rgba(39, 27, 59, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .expand-btn .material-symbols-outlined {
@@ -608,7 +612,43 @@ header nav a.active::after {
 .sidebar-indicator.show {
   opacity: 1;
   transform: translateY(-50%) translateX(0);
+  pointer-events: auto;
   animation: bounceGentle 2s infinite;
+}
+
+.sidebar-indicator > div {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 34px rgba(39, 27, 59, 0.2);
+}
+
+/* Keep the indicator avatar icon perfectly square across breakpoints. */
+#sidebar-indicator-card-div-1-p-2-block {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#sidebar-indicator-card-div-1-p-2-block .material-symbols-outlined {
+  font-size: 16px;
+  line-height: 1;
+  display: block;
+}
+
+#sidebar-indicator-card-div-1-div-2 {
+  align-self: center;
+}
+
+.dark .sidebar-indicator > div {
+  border-color: rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.88);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
 }
 
 .sidebar-indicator::after {
@@ -1510,8 +1550,8 @@ header nav a.active::after {
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
+  box-shadow: 0 10px 22px rgba(39, 27, 59, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.45);
   cursor: pointer;
   border: none;
   padding: 0;
@@ -1519,6 +1559,8 @@ header nav a.active::after {
   z-index: 1000;
   opacity: 0.8;
   visibility: visible;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(8px);
 }
 
 .back-to-top-btn.hide {
@@ -1528,9 +1570,18 @@ header nav a.active::after {
 }
 
 .back-to-top-btn:hover {
-  transform: scale(1.15);
+  transform: translateY(-1px) scale(1.08);
   opacity: 1;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  box-shadow: 0 14px 28px rgba(39, 27, 59, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+#jump-btn-3-line-text,
+.expand-btn .material-symbols-outlined,
+.back-to-top-btn .material-symbols-outlined {
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 提示文字 */
@@ -1680,8 +1731,8 @@ header nav a.active::after {
 
   .secondary-btn,
   .expand-btn {
-    width: 38px;
-    height: 38px;
+    width: 46px;
+    height: 46px;
   }
 
   .back-to-top-btn {
