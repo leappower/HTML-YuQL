@@ -315,7 +315,10 @@ import { IMAGE_ASSETS } from './image-assets.js';
   }
 
   function getItemsPerPage() {
-    return window.matchMedia('(max-width: 640px)').matches ? 3 : 6;
+    if (window.matchMedia('(max-width: 640px)').matches) return 3;
+    if (window.matchMedia('(min-width: 1024px)').matches) return 8;
+    if (window.matchMedia('(min-width: 768px)').matches) return 6;
+    return 4;
   }
 
   function isMobileProductCarousel() {
@@ -369,6 +372,9 @@ import { IMAGE_ASSETS } from './image-assets.js';
 
   let _mobileCtrlFadeTimer = null;
   let _mobileCtrlTouchHandler = null;
+  let _mobileCtrlTouchEndHandler = null;
+  let _mobileCtrlCenterRevealHandler = null;
+  let _mobileCtrlCenterRevealRaf = 0;
 
   function resetMobileCtrlFadeTimer() {
     const controls = document.getElementById('product-grid-mobile-controls');
@@ -380,7 +386,39 @@ import { IMAGE_ASSETS } from './image-assets.js';
     _mobileCtrlFadeTimer = setTimeout(() => {
       const c = document.getElementById('product-grid-mobile-controls');
       if (c) c.classList.add('is-faded');
-    }, 3000);
+    }, 1400);
+  }
+
+  function revealMobileControlsOnCenteredCard() {
+    if (!isMobileProductCarousel()) return;
+
+    const grid = document.getElementById('product-grid');
+    const controls = document.getElementById('product-grid-mobile-controls');
+    if (!grid || !controls || controls.classList.contains('is-hidden')) return;
+
+    const cards = grid.querySelectorAll('.product-card');
+    if (!cards || cards.length === 0) return;
+
+    const gridRect = grid.getBoundingClientRect();
+    const viewportCenterX = gridRect.left + (gridRect.width / 2);
+
+    let nearestDist = Number.POSITIVE_INFINITY;
+    let nearestCardWidth = 0;
+
+    cards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenterX = rect.left + (rect.width / 2);
+      const dist = Math.abs(cardCenterX - viewportCenterX);
+      if (dist < nearestDist) {
+        nearestDist = dist;
+        nearestCardWidth = rect.width;
+      }
+    });
+
+    const centerThreshold = Math.max(24, nearestCardWidth * 0.16);
+    if (nearestDist <= centerThreshold) {
+      resetMobileCtrlFadeTimer();
+    }
   }
 
   function renderMobileProductSideControls(showControls, disableControls = false) {
@@ -545,6 +583,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
 
     const from = orderedProducts.length === 0 ? 0 : start + 1;
     const to = orderedProducts.length === 0 ? 0 : Math.min(start + pageProducts.length, orderedProducts.length);
+    const currentPageCount = pageProducts.length;
     const prevDisabled = currentPage <= 1;
     const nextDisabled = currentPage >= totalPages;
 
@@ -552,8 +591,8 @@ import { IMAGE_ASSETS } from './image-assets.js';
       <div class="lg:flex lg:items-center lg:justify-between lg:gap-4">
       <div class="flex w-full items-center justify-between gap-3 overflow-x-auto whitespace-nowrap px-1 pb-1 sm:justify-center sm:px-0 sm:pb-0 lg:flex-1 lg:justify-start lg:pb-0">
         <span class="shrink-0">${tr('product_label_series', 'Series')}: <strong>${currentFilter ? tr('category_' + currentFilter, currentFilter) : tr('all', 'All')}</strong></span>
-        <span class="shrink-0">${tr('product_label_page', 'Page')}: <strong>${currentPage}/${totalPages}</strong></span>
-        <span class="hidden shrink-0 sm:inline">${tr('product_label_results', 'Results')}: <strong>${from}-${to}</strong> / ${orderedProducts.length}</span>
+        <span class="hidden shrink-0 sm:inline">${tr('product_label_page', 'Page')}: <strong>${currentPage}/${totalPages}</strong></span>
+        <span class="hidden shrink-0 sm:inline">${tr('product_label_results', 'Results')}: <strong>${currentPageCount}</strong> / ${orderedProducts.length}</span>
       </div>
       <div class="mt-2 hidden w-full grid-cols-2 gap-2 product-meta-nav sm:mt-1 sm:flex sm:w-auto sm:grid-cols-none sm:gap-2 sm:justify-end lg:mt-0 lg:ml-4 lg:shrink-0">
         <button
@@ -661,19 +700,19 @@ import { IMAGE_ASSETS } from './image-assets.js';
             <p class="text-slate-500 dark:text-slate-400">${tr('product_label_min_order_qty', 'Minimum Order Quantity')}</p>
             <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${minimumOrderQuantity || '-'}</p>
           </div>
-          <div class="hidden rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5 sm:block">
+          <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
             <p class="text-slate-500 dark:text-slate-400">${tr('product_label_capacity_throughput', 'Capacity/Throughput')}</p>
             <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${throughput || '-'}</p>
           </div>
-          <div class="hidden rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5 sm:block">
+          <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
             <p class="text-slate-500 dark:text-slate-400">${tr('product_label_voltage_frequency', 'Voltage/Frequency')}</p>
             <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${voltage || frequency ? `${voltage || '-'} / ${frequency || '-'}` : '-'}</p>
           </div>
         </div>
 
-        <div class="hidden sm:flex flex-wrap gap-1.5 mb-2 min-h-[1.25rem]">${highlights || `<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">${tr('product_label_scene', 'Application Scenario')}: ${scenariosI18n || '-'}</span>`}</div>
+        <div class="flex flex-wrap gap-1.5 mb-2 min-h-[1.25rem]">${highlights || `<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">${tr('product_label_scene', 'Application Scenario')}: ${scenariosI18n || '-'}</span>`}</div>
 
-        <div class="hidden sm:grid grid-cols-1 gap-0.5 text-[10px] text-slate-600 dark:text-slate-300 mb-2.5 border-t border-slate-100 dark:border-slate-800 pt-2">
+        <div class="grid grid-cols-1 gap-0.5 text-[10px] text-slate-600 dark:text-slate-300 mb-2.5 border-t border-slate-100 dark:border-slate-800 pt-2">
           ${detailHtml}
         </div>
 
@@ -697,29 +736,70 @@ import { IMAGE_ASSETS } from './image-assets.js';
       renderMobileProductSideControls(true, orderedProducts.length <= 1);
       grid.removeEventListener('scroll', updateMobileProductNavState);
       grid.removeEventListener('scroll', resetMobileCtrlFadeTimer);
+      if (_mobileCtrlCenterRevealHandler) {
+        grid.removeEventListener('scroll', _mobileCtrlCenterRevealHandler);
+      }
       grid.addEventListener('scroll', updateMobileProductNavState, { passive: true });
       grid.addEventListener('scroll', resetMobileCtrlFadeTimer, { passive: true });
-      window.setTimeout(updateMobileProductNavState, 30);
+      _mobileCtrlCenterRevealHandler = () => {
+        if (_mobileCtrlCenterRevealRaf) return;
+        _mobileCtrlCenterRevealRaf = window.requestAnimationFrame(() => {
+          _mobileCtrlCenterRevealRaf = 0;
+          revealMobileControlsOnCenteredCard();
+        });
+      };
+      grid.addEventListener('scroll', _mobileCtrlCenterRevealHandler, { passive: true });
       if (_mobileCtrlTouchHandler) {
-        const shell = document.getElementById('product-grid-shell');
-        if (shell) shell.removeEventListener('touchstart', _mobileCtrlTouchHandler);
-        _mobileCtrlTouchHandler = null;
+        grid.removeEventListener('touchstart', _mobileCtrlTouchHandler);
       }
+      if (_mobileCtrlTouchEndHandler) {
+        grid.removeEventListener('touchend', _mobileCtrlTouchEndHandler);
+      }
+      _mobileCtrlTouchHandler = () => {
+        resetMobileCtrlFadeTimer();
+      };
+      _mobileCtrlTouchEndHandler = () => {
+        window.setTimeout(() => {
+          updateMobileProductNavState();
+          revealMobileControlsOnCenteredCard();
+          resetMobileCtrlFadeTimer();
+        }, 100);
+      };
+      grid.addEventListener('touchstart', _mobileCtrlTouchHandler, { passive: true });
+      grid.addEventListener('touchend', _mobileCtrlTouchEndHandler, { passive: true });
+      window.setTimeout(updateMobileProductNavState, 30);
     } else {
       grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8';
       renderMobileProductSideControls(false);
       grid.removeEventListener('scroll', updateMobileProductNavState);
+      grid.removeEventListener('scroll', resetMobileCtrlFadeTimer);
+      if (_mobileCtrlCenterRevealHandler) {
+        grid.removeEventListener('scroll', _mobileCtrlCenterRevealHandler);
+        _mobileCtrlCenterRevealHandler = null;
+      }
+      if (_mobileCtrlCenterRevealRaf) {
+        window.cancelAnimationFrame(_mobileCtrlCenterRevealRaf);
+        _mobileCtrlCenterRevealRaf = 0;
+      }
       if (_mobileCtrlTouchHandler) {
-        const shell = document.getElementById('product-grid-shell');
-        if (shell) shell.removeEventListener('touchstart', _mobileCtrlTouchHandler);
+        grid.removeEventListener('touchstart', _mobileCtrlTouchHandler);
         _mobileCtrlTouchHandler = null;
+      }
+      if (_mobileCtrlTouchEndHandler) {
+        grid.removeEventListener('touchend', _mobileCtrlTouchEndHandler);
+        _mobileCtrlTouchEndHandler = null;
       }
     }
 
-    renderPagination(totalPages);
+    renderPagination(totalPages, {
+      totalCount: orderedProducts.length,
+      from,
+      to,
+      currentPageCount
+    });
   }
 
-  function renderPagination(totalPages) {
+  function renderPagination(totalPages, pageStats = null) {
     const pagination = document.getElementById('pagination');
     if (isMobileProductCarousel()) {
       pagination.innerHTML = '';
@@ -731,12 +811,20 @@ import { IMAGE_ASSETS } from './image-assets.js';
       return;
     }
 
+    const allCount = pageStats && Number.isFinite(pageStats.totalCount)
+      ? pageStats.totalCount
+      : (currentFilter ? getProducts().filter((p) => p.category === currentFilter).length : getProducts().length);
     const itemsPerPage = getItemsPerPage();
-    const from = (currentPage - 1) * itemsPerPage + 1;
-    const to = Math.min(currentPage * itemsPerPage, (currentFilter ? getProducts().filter((p) => p.category === currentFilter) : getProducts()).length);
+    const fallbackFrom = (currentPage - 1) * itemsPerPage + 1;
+    const fallbackTo = Math.min(currentPage * itemsPerPage, allCount);
+    const from = pageStats && Number.isFinite(pageStats.from) ? pageStats.from : fallbackFrom;
+    const to = pageStats && Number.isFinite(pageStats.to) ? pageStats.to : fallbackTo;
+    const currentPageCount = pageStats && Number.isFinite(pageStats.currentPageCount)
+      ? pageStats.currentPageCount
+      : Math.max(0, to - from + 1);
 
     let html = '';
-    html += `<div class="w-full mb-2 text-center text-xs text-slate-500 dark:text-slate-400">${tr('product_pagination_summary', 'Showing')} ${from}-${to} ${tr('product_pagination_of', 'of')} ${currentFilter ? getProducts().filter((p) => p.category === currentFilter).length : getProducts().length} · ${tr('product_label_page', 'Page')} ${currentPage}/${totalPages}</div>`;
+    html += `<div class="w-full mb-2 text-center text-xs text-slate-500 dark:text-slate-400">${tr('product_pagination_summary', 'Showing')} ${currentPageCount} ${tr('product_pagination_of', 'of')} ${allCount} · ${tr('product_label_page', 'Page')} ${currentPage}/${totalPages}</div>`;
     html += `<button onclick="goToPage(${currentPage - 1})" class="pagination-btn inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}" ${currentPage === 1 ? 'disabled' : ''}>
     <span class="material-symbols-outlined text-lg">chevron_left</span>
     <span>${tr('product_prev_page', 'Previous')}</span>
