@@ -3,6 +3,10 @@ import { IMAGE_ASSETS } from './image-assets.js';
 
 // utils.js - Shared asset and product helpers
 (function attachAppUtils(global) {
+  function isProductActive(product) {
+    return product?.isActive !== false;
+  }
+
   function resolveImage(imageKey) {
     return IMAGE_ASSETS[imageKey] || '';
   }
@@ -27,14 +31,18 @@ import { IMAGE_ASSETS } from './image-assets.js';
   function buildProductCatalog() {
     let nextId = 1;
     return PRODUCT_SERIES.flatMap((series) =>
-      series.products.map((product) => {
-        const imageKey = product.productImageKey || `product_${series.key}`;
+      series.products
+        .filter(isProductActive)
+        .map((product) => {
+        const category = series.category;
+        const imageKey = product.imageRecognitionKey || `product_${category}`;
         const imageUrl = product.imageUrl || resolveImage(imageKey);
         return {
           ...PRODUCT_DEFAULTS,
           id: nextId++,
-          category: series.key,
-          filterKey: series.key,
+          category,
+          filterKey: category,
+          imageRecognitionKey: imageKey,
           imageKey,
           productImageKey: imageKey,
           imageUrl,
@@ -46,10 +54,12 @@ import { IMAGE_ASSETS } from './image-assets.js';
   }
 
   function getSeriesFilters() {
-    return PRODUCT_SERIES.map((series) => ({
-      key: series.key,
-      filterKey: `filter_${series.key}`
-    }));
+    return PRODUCT_SERIES
+      .filter((series) => (series.products || []).some(isProductActive))
+      .map((series) => ({
+        key: series.category,
+        filterKey: `filter_${series.category}`
+      }));
   }
 
   global.AppUtils = {
@@ -487,56 +497,6 @@ import { IMAGE_ASSETS } from './image-assets.js';
     renderProducts();
   }
 
-  function scoreFeaturedProduct(product) {
-    let score = 0;
-    if (product.badgeKey) score += 4;
-    if ((product.highlights || []).length > 0) score += Math.min((product.highlights || []).length, 3);
-    if (product.status && String(product.status).includes('在售')) score += 2;
-    if (product.price && String(product.price).trim() && String(product.price).trim() !== '-') score += 1;
-    if (product.model) score += 1;
-    return score;
-  }
-
-  function pinFeaturedBySeries(list) {
-    const groups = new Map();
-    const categoryOrder = [];
-
-    list.forEach((item) => {
-      if (!groups.has(item.category)) {
-        groups.set(item.category, []);
-        categoryOrder.push(item.category);
-      }
-      groups.get(item.category).push(item);
-    });
-
-    const ordered = [];
-    categoryOrder.forEach((category) => {
-      const groupItems = groups.get(category) || [];
-      if (groupItems.length === 0) return;
-
-      let featuredIndex = 0;
-      let bestScore = -Infinity;
-      groupItems.forEach((product, index) => {
-        const score = scoreFeaturedProduct(product);
-        if (score > bestScore) {
-          bestScore = score;
-          featuredIndex = index;
-        }
-      });
-
-      const featured = { ...groupItems[featuredIndex], __featured: true };
-      ordered.push(featured);
-
-      groupItems.forEach((product, index) => {
-        if (index !== featuredIndex) {
-          ordered.push({ ...product, __featured: false });
-        }
-      });
-    });
-
-    return ordered;
-  }
-
   function renderProducts() {
     const grid = document.getElementById('product-grid');
     if (!grid) return;
@@ -551,7 +511,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
 
     const allProducts = getProducts();
     const filtered = currentFilter ? allProducts.filter((p) => p.category === currentFilter) : allProducts;
-    const orderedProducts = pinFeaturedBySeries(filtered);
+    const orderedProducts = filtered;
     const mobileCarousel = isMobileProductCarousel();
     const itemsPerPage = mobileCarousel ? Math.max(1, orderedProducts.length) : getItemsPerPage();
     const totalPages = Math.max(1, Math.ceil(orderedProducts.length / itemsPerPage));
@@ -567,7 +527,6 @@ import { IMAGE_ASSETS } from './image-assets.js';
     const to = orderedProducts.length === 0 ? 0 : Math.min(start + pageProducts.length, orderedProducts.length);
     const prevDisabled = currentPage <= 1;
     const nextDisabled = currentPage >= totalPages;
-    const featuredCurrentSeries = currentFilter ? orderedProducts.find((p) => p.__featured) : null;
 
     meta.innerHTML = `
       <div class="lg:flex lg:items-center lg:justify-between lg:gap-4">
@@ -575,7 +534,6 @@ import { IMAGE_ASSETS } from './image-assets.js';
         <span class="shrink-0">${tr('product_label_series', 'Series')}: <strong>${currentFilter ? tr('category_' + currentFilter, currentFilter) : tr('all', 'All')}</strong></span>
         <span class="shrink-0">${tr('product_label_page', 'Page')}: <strong>${currentPage}/${totalPages}</strong></span>
         <span class="hidden shrink-0 sm:inline">${tr('product_label_results', 'Results')}: <strong>${from}-${to}</strong> / ${orderedProducts.length}</span>
-        ${featuredCurrentSeries ? `<span class="shrink-0">${tr('product_featured', 'Featured')}: <strong>${featuredCurrentSeries.model || featuredCurrentSeries.name || '-'}</strong></span>` : ''}
       </div>
       <div class="mt-2 hidden w-full grid-cols-2 gap-2 product-meta-nav sm:mt-1 sm:flex sm:w-auto sm:grid-cols-none sm:gap-2 sm:justify-end lg:mt-0 lg:ml-4 lg:shrink-0">
         <button
@@ -616,17 +574,24 @@ import { IMAGE_ASSETS } from './image-assets.js';
 
     grid.innerHTML = pageProducts.map((p) => {
       const highlights = (p.highlights || []).slice(0, 3).map((item) => `<span class="px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">${item}</span>`).join('');
-      const specs = p.detailParams || {};
       const categoryLabel = tr('category_' + p.category, p.category);
       const displayName = p.name || `${categoryLabel} ${p.model || ''}`.trim();
       const badgeColorClass = p.badgeColor || 'bg-primary';
+      const scenarios = p.scenarios;
+      const material = p.material;
+      const minimumOrderQuantity = p.minimumOrderQuantity;
+      const referencePrice = p.referencePrice;
+      const throughput = p.throughput;
+      const voltage = p.voltage;
+      const frequency = p.frequency;
+      const badge = p.badge;
+      const imageRecognitionKey = p.imageRecognitionKey;
 
       const detailRows = [
         [tr('product_label_usage', 'Usage'), p.usage],
-        [tr('product_label_scene', 'Application Scenario'), p.scene],
-        [tr('product_label_material', 'Material'), specs.material],
-        [tr('product_label_min_order_qty', 'Minimum Order Quantity'), p.minOrderQty],
-        [tr('product_label_launch_date', 'Launch Date'), p.launchDate],
+        [tr('product_label_scene', 'Application Scenario'), scenarios],
+        [tr('product_label_material', 'Material'), material],
+        [tr('product_label_min_order_qty', 'Minimum Order Quantity'), minimumOrderQuantity],
       ].filter(([, value]) => value && String(value).trim());
 
       const detailHtml = detailRows.length > 0
@@ -636,16 +601,15 @@ import { IMAGE_ASSETS } from './image-assets.js';
       return `
     <article class="product-card h-full flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/10 group" data-category="${p.category}">
       <div class="relative h-[200px] sm:h-[220px] lg:h-[250px] w-full overflow-hidden bg-slate-50 dark:bg-slate-800/60">
-        <img src="${p.productImage || resolveImage(p.imageKey)}" alt="${displayName}" loading="lazy" decoding="async" class="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-500">
+        <img src="${p.productImage || resolveImage(imageRecognitionKey)}" alt="${displayName}" loading="lazy" decoding="async" class="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-500">
 
-        ${p.badgeKey ? `<span class="absolute top-2 left-2 ${badgeColorClass} text-white px-2 py-0.5 rounded-full text-[10px] font-bold shadow">${tr(p.badgeKey, p.badgeKey)}</span>` : ''}
+        ${badge ? `<span class="absolute top-2 left-2 ${badgeColorClass} text-white px-2 py-0.5 rounded-full text-[10px] font-bold shadow">${tr(badge, badge)}</span>` : ''}
         ${p.status ? `<span class="absolute top-2 right-2 bg-slate-900/80 text-white px-2 py-0.5 rounded-full text-[10px]">${p.status}</span>` : ''}
       </div>
 
       <div class="p-3 sm:p-3.5 flex flex-col">
         <div class="flex items-start justify-between gap-2 mb-2">
           <div class="min-w-0">
-            ${p.__featured ? `<div class="mb-1"><span class="inline-flex rounded-full bg-amber-400/95 px-2 py-0.5 text-[10px] font-bold text-slate-900 shadow-sm">${tr('product_featured', 'Featured')}</span></div>` : ''}
             <h3 class="text-base sm:text-[15px] lg:text-base font-extrabold text-slate-900 dark:text-slate-100 leading-snug break-words whitespace-normal">${displayName}</h3>
           </div>
           <div class="shrink-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2 py-1 text-right">
@@ -657,23 +621,23 @@ import { IMAGE_ASSETS } from './image-assets.js';
         <div class="grid grid-cols-2 gap-1.5 text-[10px] sm:text-[11px] mb-2.5">
           <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
             <p class="text-slate-500 dark:text-slate-400">${tr('product_label_price', 'Price')}</p>
-            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${p.price || '-'}</p>
+            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${referencePrice || '-'}</p>
           </div>
           <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
-            <p class="text-slate-500 dark:text-slate-400">${tr('product_label_shipping_lead_time', 'Shipping Lead Time')}</p>
-            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${p.shippingLeadTime || '-'}</p>
+            <p class="text-slate-500 dark:text-slate-400">${tr('product_label_min_order_qty', 'Minimum Order Quantity')}</p>
+            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${minimumOrderQuantity || '-'}</p>
           </div>
           <div class="hidden rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5 sm:block">
             <p class="text-slate-500 dark:text-slate-400">${tr('product_label_capacity_throughput', 'Capacity/Throughput')}</p>
-            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${specs.capacity || specs.throughput || '-'}</p>
+            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${throughput || '-'}</p>
           </div>
           <div class="hidden rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5 sm:block">
             <p class="text-slate-500 dark:text-slate-400">${tr('product_label_voltage_frequency', 'Voltage/Frequency')}</p>
-            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${specs.voltage || specs.frequency ? `${specs.voltage || '-'} / ${specs.frequency || '-'}` : '-'}</p>
+            <p class="font-bold text-slate-800 dark:text-slate-100 truncate text-[11px]">${voltage || frequency ? `${voltage || '-'} / ${frequency || '-'}` : '-'}</p>
           </div>
         </div>
 
-        <div class="hidden sm:flex flex-wrap gap-1.5 mb-2 min-h-[1.25rem]">${highlights || `<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">${tr('product_label_scene', 'Application Scenario')}: ${p.scene || '-'}</span>`}</div>
+        <div class="hidden sm:flex flex-wrap gap-1.5 mb-2 min-h-[1.25rem]">${highlights || `<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px]">${tr('product_label_scene', 'Application Scenario')}: ${scenarios || '-'}</span>`}</div>
 
         <div class="hidden sm:grid grid-cols-1 gap-0.5 text-[10px] text-slate-600 dark:text-slate-300 mb-2.5 border-t border-slate-100 dark:border-slate-800 pt-2">
           ${detailHtml}

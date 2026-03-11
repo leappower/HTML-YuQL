@@ -4,38 +4,126 @@ import { MOCK_PRODUCT_SERIES_RAW } from './product-list.mock.js';
 
 const SAFE_PRODUCT_DATA_TABLE = Array.isArray(PRODUCT_DATA_TABLE) ? PRODUCT_DATA_TABLE : [];
 
-// 测试数据
 export const PRODUCT_DEFAULTS = {
-  launchDate: '2026-03',
-  shippingLeadTime: '7-15天',
-  minOrderQty: '1台',
-  price: '请咨询',
-  brand: 'YuKoLi'
+  category: null,
+  subCategory: null,
+  model: null,
+  name: null,
+  highlights: null,
+  scenarios: null,
+  usage: null,
+  power: null,
+  throughput: null,
+  averageTime: null,
+  launchTime: null,
+  status: null,
+  isActive: true,
+  badge: null,
+  badgeColor: null,
+  imageRecognitionKey: null,
+  packingQuantity: null,
+  productDimensions: null,
+  packageDimensions: null,
+  outerBoxDimensions: null,
+  packageType: null,
+  color: null,
+  netWeight: null,
+  grossWeight: null,
+  voltage: null,
+  frequency: null,
+  material: null,
+  warrantyPeriod: null,
+  certification: null,
+  temperatureRange: null,
+  controlMethod: null,
+  energyEfficiencyGrade: null,
+  applicablePeople: null,
+  origin: null,
+  barcode: null,
+  referencePrice: null,
+  minimumOrderQuantity: null,
+  stockQuantity: null,
+  brand: null
 };
 
-// 测试数据
-const DEFAULT_DETAIL_PARAMS = {
-  material: '整机外壳优质不锈钢',
-  voltage: '380V',
-  frequency: '50Hz',
-  power: '25kW',
-  drum: '仿球釜型锅体内直径Phi580mm',
-  drumCapacity: '5-20kg/锅次',
-  drumMaterial: '430#不锈钢（可选不粘锅）',
-  display: '10寸多功能触摸显示屏',
-  turningMode: '电控翻锅',
-  safety: '带急停功能',
-  tempMeasure: '红外线监测温度',
-  menuStorage: '存储800个菜谱（智能学习功能）',
-  voice: '智能实时语音播报功能',
-  sprayMode: '自动摆臂喷料/近锅口喷料',
-  tray: '接料台+排水池+可提冲孔隔渣网',
-  cleaning: '一键式自动清洗模式，水枪辅助清洗',
-  sprayGun: '优质高压喷枪',
-  capacity: '单次烹饪5-20kg',
-  throughput: '单次烹饪5-20kg',
-  avgCookTime: '5-10分钟'
-};
+function toArrayValue(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  const raw = String(value || '').trim();
+  if (!raw) return [];
+  return raw
+    .replace(/；/g, ';')
+    .replace(/，/g, ',')
+    .split(/[;,]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function toNullableString(value) {
+  if (value == null) return null;
+  const text = String(value).trim();
+  return text ? text : null;
+}
+
+function toBooleanOrDefault(value, defaultValue = true) {
+  if (value == null) return defaultValue;
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return true;
+
+  const text = String(value).trim();
+  if (!text) return defaultValue;
+  if (text === 'false' || text === 'False' || text === 'FALSE' || text === '否') {
+    return false;
+  }
+  return true;
+}
+
+function normalizeProduct(product, fallbackCategory) {
+  const imageRecognitionKey = product.imageRecognitionKey || null;
+
+  return new ProductEntity({
+    ...PRODUCT_DEFAULTS,
+    ...product,
+    category: toNullableString(product.category) || toNullableString(fallbackCategory),
+    subCategory: toNullableString(product.subCategory),
+    model: toNullableString(product.model),
+    name: toNullableString(product.name),
+    highlights: toArrayValue(product.highlights),
+    scenarios: toNullableString(product.scenarios),
+    usage: toNullableString(product.usage),
+    power: toNullableString(product.power),
+    throughput: toNullableString(product.throughput),
+    averageTime: toNullableString(product.averageTime),
+    launchTime: toNullableString(product.launchTime),
+    status: toNullableString(product.status) || '在售',
+    isActive: toBooleanOrDefault(product.isActive, true),
+    badge: toNullableString(product.badge),
+    badgeColor: toNullableString(product.badgeColor),
+    imageRecognitionKey,
+    packingQuantity: toNullableString(product.packingQuantity),
+    productDimensions: toNullableString(product.productDimensions),
+    packageDimensions: toNullableString(product.packageDimensions),
+    outerBoxDimensions: toNullableString(product.outerBoxDimensions),
+    packageType: toNullableString(product.packageType),
+    color: toNullableString(product.color),
+    netWeight: toNullableString(product.netWeight),
+    grossWeight: toNullableString(product.grossWeight),
+    voltage: toNullableString(product.voltage),
+    frequency: toNullableString(product.frequency),
+    material: toNullableString(product.material),
+    warrantyPeriod: toNullableString(product.warrantyPeriod),
+    certification: toNullableString(product.certification),
+    temperatureRange: toNullableString(product.temperatureRange),
+    controlMethod: toNullableString(product.controlMethod),
+    energyEfficiencyGrade: toNullableString(product.energyEfficiencyGrade),
+    applicablePeople: toNullableString(product.applicablePeople),
+    origin: toNullableString(product.origin),
+    barcode: toNullableString(product.barcode),
+    referencePrice: toNullableString(product.referencePrice),
+    minimumOrderQuantity: toNullableString(product.minimumOrderQuantity),
+    stockQuantity: toNullableString(product.stockQuantity),
+    productImageKey: imageRecognitionKey
+  });
+}
 
 export class ProductEntity {
   constructor(payload) {
@@ -43,30 +131,17 @@ export class ProductEntity {
   }
 }
 
-// 仅用于开发环境兜底：当 PRODUCT_DATA_TABLE 为空时启用
 const MOCK_PRODUCT_SERIES = MOCK_PRODUCT_SERIES_RAW.map((series) => ({
   ...series,
   products: (series.products || []).map((product) =>
-    new ProductEntity({
-      ...product,
-      detailParams: {
-        ...DEFAULT_DETAIL_PARAMS,
-        ...(product.detailParams || {})
-      }
-    })
+    normalizeProduct(product, series.category)
   )
 }));
 
 const GENERATED_PRODUCT_SERIES = SAFE_PRODUCT_DATA_TABLE.map((series) => ({
   ...series,
   products: (series.products || []).map((product) =>
-    new ProductEntity({
-      ...product,
-      detailParams: {
-        ...DEFAULT_DETAIL_PARAMS,
-        ...(product.detailParams || {})
-      }
-    })
+    normalizeProduct(product, series.category)
   )
 }));
 
@@ -77,13 +152,7 @@ export const APPENDED_PRODUCT_SERIES = [];
 const APPENDED_PRODUCT_SERIES_NORMALIZED = APPENDED_PRODUCT_SERIES.map((series) => ({
   ...series,
   products: (series.products || []).map((product) =>
-    new ProductEntity({
-      ...product,
-      detailParams: {
-        ...DEFAULT_DETAIL_PARAMS,
-        ...(product.detailParams || {})
-      }
-    })
+    normalizeProduct(product, series.category)
   )
 }));
 
@@ -91,9 +160,12 @@ function withImageUrl(seriesList) {
   return seriesList.map((series) => ({
     ...series,
     products: series.products.map((product) => {
-      const imageUrl = IMAGE_ASSETS[product.imageKey] || '';
+      const imageKey = product.imageRecognitionKey || '';
+      const imageUrl = IMAGE_ASSETS[imageKey] || '';
       return new ProductEntity({
         ...product,
+        imageRecognitionKey: imageKey || null,
+        productImageKey: imageKey || null,
         imageUrl
       });
     })

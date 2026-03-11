@@ -10,33 +10,142 @@ const APPEND_START = '// FEISHU_SYNC_APPEND_START';
 const APPEND_END = '// FEISHU_SYNC_APPEND_END';
 
 const ALIAS = {
-  '系列': 'key',
-  '系列key': 'key',
-  key: 'key',
+  '大类': 'category',
+  '大类(Key)': 'category',
+  '一级分类': 'category',
   '分类': 'category',
   category: 'category',
+  '小类': 'subCategory',
+  '小类(SPUKey)': 'subCategory',
+  '二级分类': 'subCategory',
+  subCategory: 'subCategory',
   '产品名称': 'name',
+  '名称': 'name',
   name: 'name',
   '型号': 'model',
+  '型号(SKUKey)': 'model',
   model: 'model',
   '卖点': 'highlights',
+  '亮点': 'highlights',
   highlights: 'highlights',
-  '应用场景': 'scene',
-  scene: 'scene',
+  '应用场景': 'scenarios',
+  '场景': 'scenarios',
+  scenarios: 'scenarios',
+  '用法': 'usage',
   '用途': 'usage',
   usage: 'usage',
   '功率': 'power',
-  '产能': 'capacity',
+  power: 'power',
+  '吞吐量': 'throughput',
   '吞吐': 'throughput',
-  '平均出餐时间': 'avgCookTime',
+  throughput: 'throughput',
+  '平均时间': 'averageTime',
+  '平均出餐时间': 'averageTime',
+  averageTime: 'averageTime',
+  '上市时间': 'launchTime',
+  launchTime: 'launchTime',
   '状态': 'status',
-  '徽标key': 'badgeKey',
-  badgeKey: 'badgeKey',
+  status: 'status',
+  '是否启用': 'isActive',
+  '是否显示': 'isActive',
+  '激活': 'isActive',
+  '上架': 'isActive',
+  isActive: 'isActive',
+  '徽章': 'badge',
+  '徽标key': 'badge',
+  badge: 'badge',
+  '徽章颜色': 'badgeColor',
   '徽标颜色': 'badgeColor',
   badgeColor: 'badgeColor',
-  '图片key': 'imageKey',
-  imageKey: 'imageKey'
+  '图片识别key': 'imageRecognitionKey',
+  '图片key': 'imageRecognitionKey',
+  imageRecognitionKey: 'imageRecognitionKey',
+  '装箱数量': 'packingQuantity',
+  packingQuantity: 'packingQuantity',
+  '产品尺寸': 'productDimensions',
+  productDimensions: 'productDimensions',
+  '包装尺寸': 'packageDimensions',
+  packageDimensions: 'packageDimensions',
+  '外箱尺寸': 'outerBoxDimensions',
+  outerBoxDimensions: 'outerBoxDimensions',
+  '包装方式': 'packageType',
+  packageType: 'packageType',
+  '颜色': 'color',
+  color: 'color',
+  '净重': 'netWeight',
+  netWeight: 'netWeight',
+  '毛重': 'grossWeight',
+  grossWeight: 'grossWeight',
+  '电压': 'voltage',
+  voltage: 'voltage',
+  '频率': 'frequency',
+  frequency: 'frequency',
+  '材质': 'material',
+  material: 'material',
+  '质保期': 'warrantyPeriod',
+  warrantyPeriod: 'warrantyPeriod',
+  '认证': 'certification',
+  certification: 'certification',
+  '温度范围': 'temperatureRange',
+  temperatureRange: 'temperatureRange',
+  '控制方式': 'controlMethod',
+  controlMethod: 'controlMethod',
+  '能效等级': 'energyEfficiencyGrade',
+  energyEfficiencyGrade: 'energyEfficiencyGrade',
+  '适用人群': 'applicablePeople',
+  applicablePeople: 'applicablePeople',
+  '产地': 'origin',
+  origin: 'origin',
+  '条码': 'barcode',
+  barcode: 'barcode',
+  '参考价格': 'referencePrice',
+  referencePrice: 'referencePrice',
+  '最小起订量': 'minimumOrderQuantity',
+  minimumOrderQuantity: 'minimumOrderQuantity',
+  '库存数量': 'stockQuantity',
+  stockQuantity: 'stockQuantity'
 };
+
+const PRODUCT_FIELD_KEYS = [
+  'category',
+  'subCategory',
+  'model',
+  'name',
+  'highlights',
+  'scenarios',
+  'usage',
+  'power',
+  'throughput',
+  'averageTime',
+  'launchTime',
+  'status',
+  'isActive',
+  'badge',
+  'badgeColor',
+  'imageRecognitionKey',
+  'packingQuantity',
+  'productDimensions',
+  'packageDimensions',
+  'outerBoxDimensions',
+  'packageType',
+  'color',
+  'netWeight',
+  'grossWeight',
+  'voltage',
+  'frequency',
+  'material',
+  'warrantyPeriod',
+  'certification',
+  'temperatureRange',
+  'controlMethod',
+  'energyEfficiencyGrade',
+  'applicablePeople',
+  'origin',
+  'barcode',
+  'referencePrice',
+  'minimumOrderQuantity',
+  'stockQuantity'
+];
 
 function loadSharedFeishuConfig(configPath = FEISHU_CONFIG_PATH) {
   if (!fs.existsSync(configPath)) {
@@ -313,21 +422,38 @@ function fetchRowsFromXlsx(xlsxPath) {
 function splitHighlights(text) {
   const s = String(text || '').trim();
   if (!s) return [];
-  const normalized = s.replace(/；/g, ';').replace(/，/g, ',');
-  const parts = normalized.includes(';') ? normalized.split(';') : normalized.split(',');
-  return parts.map((p) => p.trim()).filter(Boolean);
+  const normalized = s
+    .replace(/<br\s*\/?>/gi, ';');
+  const parts = normalized.split(/[;；]/);
+  return parts
+    .map((p) => p.trim().replace(/^['"\s]+|['"\s]+$/g, ''))
+    .filter(Boolean);
+}
+
+function toNullableString(value) {
+  if (value == null) return null;
+  const text = String(value).trim();
+  return text ? text : null;
+}
+
+function toBooleanOrDefault(value, defaultValue = true) {
+  if (value == null) return defaultValue;
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return true;
+
+  const text = String(value).trim();
+  if (!text) return defaultValue;
+  if (text === 'false' || text === 'False' || text === 'FALSE' || text === '否') {
+    return false;
+  }
+  return true;
 }
 
 function compactRow(rawRow) {
   const normalized = {};
   for (const [key, value] of Object.entries(rawRow || {})) {
-    normalized[ALIAS[key] || key] = value == null ? '' : String(value).trim();
-  }
-  if (!normalized.key) {
-    normalized.key = normalized.category || '';
-  }
-  if (!normalized.category) {
-    normalized.category = normalized.key || '';
+    const normalizedKey = ALIAS[key] || key;
+    normalized[normalizedKey] = value == null ? '' : String(value).trim();
   }
   return normalized;
 }
@@ -337,43 +463,62 @@ function parseRowsToSeries(rawRows) {
 
   for (const row of rawRows || []) {
     const n = compactRow(row);
-    const key = String(n.key || '').trim();
-    if (!key) continue;
+    const category = toNullableString(n.category);
+    if (!category) continue;
 
-    if (!seriesMap.has(key)) {
-      seriesMap.set(key, []);
+    if (!seriesMap.has(category)) {
+      seriesMap.set(category, []);
     }
 
-    const product = {
-      name: n.name || '',
-      model: n.model || '',
-      category: n.category || key,
-      highlights: splitHighlights(n.highlights || ''),
-      scene: n.scene || '',
-      usage: n.usage || '',
-      detailParams: {
-        power: n.power || null,
-        capacity: n.capacity || null,
-        throughput: n.throughput || null,
-        avgCookTime: n.avgCookTime || null
-      },
-      status: n.status || '在售',
-      badgeKey: n.badgeKey || null,
-      badgeColor: n.badgeColor || null,
-      imageKey: n.imageKey || null
-    };
+    const product = {};
+    for (const field of PRODUCT_FIELD_KEYS) {
+      product[field] = null;
+    }
 
-    const compact = Object.fromEntries(
-      Object.entries(product).filter(([, value]) => value !== null)
-    );
-    compact.detailParams = Object.fromEntries(
-      Object.entries(compact.detailParams || {}).filter(([, value]) => value !== null)
-    );
+    product.category = category;
+    product.subCategory = toNullableString(n.subCategory);
+    product.model = toNullableString(n.model);
+    product.name = toNullableString(n.name);
+    const highlights = splitHighlights(n.highlights || '');
+    product.highlights = highlights.length > 0 ? highlights : null;
+    product.scenarios = toNullableString(n.scenarios);
+    product.usage = toNullableString(n.usage);
+    product.power = toNullableString(n.power);
+    product.throughput = toNullableString(n.throughput);
+    product.averageTime = toNullableString(n.averageTime);
+    product.launchTime = toNullableString(n.launchTime);
+    product.status = toNullableString(n.status) || '在售';
+    product.isActive = toBooleanOrDefault(n.isActive, true);
+    product.badge = toNullableString(n.badge);
+    product.badgeColor = toNullableString(n.badgeColor);
+    product.imageRecognitionKey = toNullableString(n.imageRecognitionKey);
+    product.packingQuantity = toNullableString(n.packingQuantity);
+    product.productDimensions = toNullableString(n.productDimensions);
+    product.packageDimensions = toNullableString(n.packageDimensions);
+    product.outerBoxDimensions = toNullableString(n.outerBoxDimensions);
+    product.packageType = toNullableString(n.packageType);
+    product.color = toNullableString(n.color);
+    product.netWeight = toNullableString(n.netWeight);
+    product.grossWeight = toNullableString(n.grossWeight);
+    product.voltage = toNullableString(n.voltage);
+    product.frequency = toNullableString(n.frequency);
+    product.material = toNullableString(n.material);
+    product.warrantyPeriod = toNullableString(n.warrantyPeriod);
+    product.certification = toNullableString(n.certification);
+    product.temperatureRange = toNullableString(n.temperatureRange);
+    product.controlMethod = toNullableString(n.controlMethod);
+    product.energyEfficiencyGrade = toNullableString(n.energyEfficiencyGrade);
+    product.applicablePeople = toNullableString(n.applicablePeople);
+    product.origin = toNullableString(n.origin);
+    product.barcode = toNullableString(n.barcode);
+    product.referencePrice = toNullableString(n.referencePrice);
+    product.minimumOrderQuantity = toNullableString(n.minimumOrderQuantity);
+    product.stockQuantity = toNullableString(n.stockQuantity);
 
-    seriesMap.get(key).push(compact);
+    seriesMap.get(category).push(product);
   }
 
-  return Array.from(seriesMap.entries()).map(([key, products]) => ({ key, products }));
+  return Array.from(seriesMap.entries()).map(([category, products]) => ({ category, products }));
 }
 
 function writeJs(seriesList, outPath, sourceLabel) {
@@ -384,15 +529,30 @@ function writeJs(seriesList, outPath, sourceLabel) {
   fs.writeFileSync(outPath, content, 'utf-8');
 }
 
-function readExistingSeries(outPath) {
-  if (!fs.existsSync(outPath)) {
-    return [];
-  }
-  const content = fs.readFileSync(outPath, 'utf-8');
+function readProductDataTableSeries(tablePath = PRODUCT_TABLE_PATH) {
+  if (!fs.existsSync(tablePath)) return [];
+  const content = fs.readFileSync(tablePath, 'utf-8');
   const match = content.match(/export const PRODUCT_DATA_TABLE\s*=\s*(\[.*\])\s*;/s);
-  if (!match) {
+  if (!match) return [];
+  try {
+    return JSON.parse(match[1]);
+  } catch (_) {
     return [];
   }
+}
+
+function readAppendedSeriesFromProductList(productListPath = PRODUCT_LIST_PATH) {
+  if (!fs.existsSync(productListPath)) return [];
+  const content = fs.readFileSync(productListPath, 'utf-8');
+  const start = content.indexOf(APPEND_START);
+  const end = content.indexOf(APPEND_END);
+  if (start < 0 || end < 0 || end <= start) {
+    throw new Error('product-list.js is missing FEISHU append markers');
+  }
+
+  const block = content.slice(start, end);
+  const match = block.match(/export const APPENDED_PRODUCT_SERIES\s*=\s*(\[.*\])\s*;/s);
+  if (!match) return [];
   try {
     return JSON.parse(match[1]);
   } catch (_) {
@@ -401,19 +561,28 @@ function readExistingSeries(outPath) {
 }
 
 function productIdentityKey(product) {
-  const category = String(product.category || '').trim();
-  const model = String(product.model || '').trim();
-  const name = String(product.name || '').trim();
-  return `${category}::${model || name}`;
+  const category = String(product?.category || '').trim();
+  const subCategory = String(product?.subCategory || '').trim();
+  const model = String(product?.model || '').trim();
+  return `${category}::${subCategory}::${model}`;
+}
+
+function hasValidProductIdentity(product) {
+  return Boolean(
+    String(product?.category || '').trim() &&
+    String(product?.subCategory || '').trim() &&
+    String(product?.model || '').trim()
+  );
 }
 
 function mergeSeriesAppend(existingSeries, incomingSeries) {
   const merged = new Map();
+
   for (const series of existingSeries || []) {
-    const key = String(series?.key || '').trim();
-    if (!key) continue;
-    merged.set(key, {
-      key,
+    const category = String(series?.category || '').trim();
+    if (!category) continue;
+    merged.set(category, {
+      category,
       products: Array.isArray(series.products) ? [...series.products] : []
     });
   }
@@ -422,22 +591,23 @@ function mergeSeriesAppend(existingSeries, incomingSeries) {
   let updatedCount = 0;
 
   for (const incoming of incomingSeries || []) {
-    const key = String(incoming?.key || '').trim();
-    if (!key) continue;
+    const category = String(incoming?.category || '').trim();
+    if (!category) continue;
 
-    if (!merged.has(key)) {
-      merged.set(key, { key, products: [] });
+    if (!merged.has(category)) {
+      merged.set(category, { category, products: [] });
     }
 
-    const target = merged.get(key);
+    const target = merged.get(category);
     const indexMap = new Map();
     target.products.forEach((product, idx) => {
+      if (!hasValidProductIdentity(product)) return;
       indexMap.set(productIdentityKey(product), idx);
     });
 
     for (const product of incoming.products || []) {
+      if (!hasValidProductIdentity(product)) continue;
       const pid = productIdentityKey(product);
-      if (pid.endsWith('::')) continue;
 
       if (indexMap.has(pid)) {
         const idx = indexMap.get(pid);
@@ -462,38 +632,6 @@ function mergeSeriesAppend(existingSeries, incomingSeries) {
   };
 }
 
-function extractJsonArrayFromJs(fileContent, exportName) {
-  const marker = `export const ${exportName} =`;
-  const start = fileContent.indexOf(marker);
-  if (start < 0) return null;
-
-  const arrayStart = fileContent.indexOf('[', start);
-  if (arrayStart < 0) return null;
-
-  let depth = 0;
-  for (let i = arrayStart; i < fileContent.length; i += 1) {
-    const ch = fileContent[i];
-    if (ch === '[') depth += 1;
-    if (ch === ']') depth -= 1;
-    if (depth === 0) {
-      const jsonText = fileContent.slice(arrayStart, i + 1);
-      return JSON.parse(jsonText);
-    }
-  }
-  return null;
-}
-
-function readAppendedSeriesFromProductList(productListPath = PRODUCT_LIST_PATH) {
-  const content = fs.readFileSync(productListPath, 'utf-8');
-  const start = content.indexOf(APPEND_START);
-  const end = content.indexOf(APPEND_END);
-  if (start < 0 || end < 0 || end <= start) {
-    throw new Error('product-list.js is missing FEISHU append markers');
-  }
-  const block = content.slice(start, end);
-  return extractJsonArrayFromJs(block, 'APPENDED_PRODUCT_SERIES') || [];
-}
-
 function writeAppendedSeriesToProductList(seriesList, productListPath = PRODUCT_LIST_PATH) {
   const content = fs.readFileSync(productListPath, 'utf-8');
   const start = content.indexOf(APPEND_START);
@@ -505,11 +643,6 @@ function writeAppendedSeriesToProductList(seriesList, productListPath = PRODUCT_
   const replacement = `${APPEND_START}\nexport const APPENDED_PRODUCT_SERIES = ${JSON.stringify(seriesList, null, 2)};\n`;
   const newContent = content.slice(0, start) + replacement + content.slice(end);
   fs.writeFileSync(productListPath, newContent, 'utf-8');
-}
-
-function readProductDataTableSeries(tablePath = PRODUCT_TABLE_PATH) {
-  const content = fs.readFileSync(tablePath, 'utf-8');
-  return extractJsonArrayFromJs(content, 'PRODUCT_DATA_TABLE') || [];
 }
 
 function writeProductDataTableSeries(seriesList, tablePath = PRODUCT_TABLE_PATH) {
@@ -549,7 +682,6 @@ async function syncFeishuToProductList(config) {
   const incomingSeries = parseRowsToSeries(rows);
   const existingSeries = readAppendedSeriesFromProductList(config.productListPath || PRODUCT_LIST_PATH);
   const merged = mergeSeriesAppend(existingSeries, incomingSeries);
-
   writeAppendedSeriesToProductList(merged.series, config.productListPath || PRODUCT_LIST_PATH);
   return {
     rows: rows.length,
@@ -569,7 +701,6 @@ async function syncFeishuToProductDataTable(config) {
   const incomingSeries = parseRowsToSeries(rows);
   const existingSeries = readProductDataTableSeries(config.productTablePath || PRODUCT_TABLE_PATH);
   const merged = mergeSeriesAppend(existingSeries, incomingSeries);
-
   writeProductDataTableSeries(merged.series, config.productTablePath || PRODUCT_TABLE_PATH);
   return {
     rows: rows.length,
@@ -713,12 +844,12 @@ async function generateProductDataTable(args = parseCliArgs()) {
   }
 
   const incomingSeries = parseRowsToSeries(rawRows);
-  const existingSeries = readExistingSeries(outPath);
+  const existingSeries = readProductDataTableSeries(outPath);
   const merged = mergeSeriesAppend(existingSeries, incomingSeries);
   writeJs(merged.series, outPath, sourceLabel);
 
   console.log(`rows=${rawRows.length}`);
-  console.log(`series=${merged.series.map((s) => s.key).join(',')}`);
+  console.log(`series=${merged.series.map((s) => s.category).join(',')}`);
   console.log(`appended=${merged.appendedCount}`);
   console.log(`updated=${merged.updatedCount}`);
   console.log(`written=${outPath}`);
@@ -729,7 +860,8 @@ const feishuProTables = {
   fetchRowsFromXlsx,
   fetchRowsFromFeishuSheet,
   parseRowsToSeries,
-  readExistingSeries,
+  readProductDataTableSeries,
+  readAppendedSeriesFromProductList,
   mergeSeriesAppend,
   writeJs,
   generateProductDataTable,
