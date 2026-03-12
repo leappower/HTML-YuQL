@@ -49,7 +49,7 @@ async function demo() {
   console.log('  演示 3: 大文本翻译（自动拆分）');
   console.log('========================================\n');
 
-  const longText = `多功能自动漂烫焯水油炸机大容量触屏版。超大容量设计，适合商业厨房使用。自动摆臂喷料系统，确保调料均匀分布。内置800道智能菜谱，涵盖中餐、西餐、日料等多种菜系。智能语音播报功能，实时提示烹饪进度和操作提示。304不锈钢材质，食品级安全标准。耐高温设计，使用寿命长。易清洗设计，维护简单。`;
+  const longText = '多功能自动漂烫焯水油炸机大容量触屏版。超大容量设计，适合商业厨房使用。自动摆臂喷料系统，确保调料均匀分布。内置800道智能菜谱，涵盖中餐、西餐、日料等多种菜系。智能语音播报功能，实时提示烹饪进度和操作提示。304不锈钢材质，食品级安全标准。耐高温设计，使用寿命长。易清洗设计，维护简单。';
 
   console.log(`原始文本长度: ${longText.length} 字符`);
   const longResult = await translate(longText, 'en');
@@ -61,12 +61,12 @@ async function demo() {
   console.log('========================================\n');
 
   console.log('// 基础翻译');
-  console.log("const { translate } = require('./scripts/unified-translator');");
-  console.log("const result = await translate('文本', 'en');\n");
+  console.log('const { translate } = require(\'./scripts/unified-translator\');');
+  console.log('const result = await translate(\'文本\', \'en\');\n');
 
   console.log('// 批量翻译');
-  console.log("const { batchTranslate } = require('./scripts/unified-translator');");
-  console.log("const results = await batchTranslate(['文本1', '文本2'], 'en');\n");
+  console.log('const { batchTranslate } = require(\'./scripts/unified-translator\');');
+  console.log('const results = await batchTranslate([\'文本1\', \'文本2\'], \'en\');\n');
 
   console.log('========================================');
   console.log('  模块功能');

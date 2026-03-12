@@ -260,6 +260,112 @@ class TranslationManager {
   }
 
   /**
+   * Show language loading indicator for smooth language switching
+   */
+  showLanguageLoadingIndicator() {
+    let indicator = document.getElementById('language-loading-indicator');
+    if (!indicator) {
+      indicator = document.createElement('div');
+      indicator.id = 'language-loading-indicator';
+      indicator.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: none;
+        align-items: center;
+        gap: 12px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+      `;
+      indicator.innerHTML = `
+        <div style="
+          border: 3px solid #f3f3f3;
+          border-top: 3px solid #3498db;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          animation: spin 1s linear infinite;
+        "></div>
+        <span style="color: #333; font-size: 14px; font-weight: 500;">${this.t('loading_language') || 'Loading language...'}</span>
+        <style>
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+          @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+          }
+        </style>
+      `;
+      document.body.appendChild(indicator);
+    }
+    indicator.style.display = 'flex';
+  }
+
+  /**
+   * Hide language loading indicator with fade out animation
+   */
+  hideLanguageLoadingIndicator() {
+    const indicator = document.getElementById('language-loading-indicator');
+    if (indicator) {
+      indicator.style.animation = 'fadeOut 0.3s ease-out forwards';
+      setTimeout(() => {
+        if (indicator.parentNode) {
+          indicator.parentNode.removeChild(indicator);
+        }
+      }, 300);
+    }
+  }
+
+  /**
+   * Apply translations with smooth transition animation
+   */
+  async applyTranslationsWithTransition(previousLanguage, newLanguage) {
+    const { i18nElements } = this.getCachedElements();
+
+    // Add fade out class to all translatable elements
+    i18nElements.forEach(el => {
+      el.style.transition = 'opacity 0.2s ease-out';
+      el.style.opacity = '0';
+    });
+
+    // Wait for fade out animation
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    // Apply new translations
+    await this.applyTranslations();
+
+    // Update company name and title
+    this.refreshCompanyName();
+    this.refreshDocumentTitle(this.translationsCache.get(newLanguage));
+
+    // Fade in with new translations
+    i18nElements.forEach(el => {
+      el.style.opacity = '1';
+    });
+
+    // Wait for fade in animation
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    // Remove transition styles
+    i18nElements.forEach(el => {
+      el.style.transition = '';
+      el.style.opacity = '';
+    });
+
+    console.log(`✅ Smooth transition completed: ${previousLanguage} → ${newLanguage}`);
+  }
+
+  /**
    * Preload product data in the background
    * Uses requestIdleCallback to avoid blocking main thread
    */
@@ -778,49 +884,62 @@ class TranslationManager {
 
       console.log(`Switching language from ${this.currentLanguage} to ${lang}`);
 
-      // Load new translations (on-demand)
-      await this.loadTranslations(lang);
+      // Show loading indicator for smooth transition
+      this.showLanguageLoadingIndicator();
 
-      // Update current language
-      const previousLanguage = this.currentLanguage;
-      this.currentLanguage = lang;
+      try {
+        // Preload target language with high priority
+        console.log(`🔄 Preloading target language ${lang} before switch...`);
+        await this.preloadLanguage(lang, 'high');
 
-      // Save to localStorage
-      localStorage.setItem('userLanguage', lang);
+        // Update current language
+        const previousLanguage = this.currentLanguage;
+        this.currentLanguage = lang;
 
-      // Apply translations with error handling
-      await this.applyTranslations();
+        // Save to localStorage
+        localStorage.setItem('userLanguage', lang);
 
-      // Update document language
-      document.documentElement.lang = lang;
+        // Apply translations with smooth transition
+        await this.applyTranslationsWithTransition(previousLanguage, lang);
 
-      // Dispatch custom event for other modules
-      window.dispatchEvent(new CustomEvent('languageChanged', {
-        detail: {
-          language: lang,
-          previousLanguage: previousLanguage
+        // Update document language
+        document.documentElement.lang = lang;
+
+        // Dispatch custom event for other modules
+        window.dispatchEvent(new CustomEvent('languageChanged', {
+          detail: {
+            language: lang,
+            previousLanguage: previousLanguage
+          }
+        }));
+
+        // Close language dropdown
+        this.closeLanguageDropdown();
+
+        // Reset dropdown search state so next open shows full language list.
+        this.resetLanguageSearch();
+
+        // Show success notification
+        if (window.showNotification) {
+          const prefix = this.uiText('notify_language_changed', 'Language changed to');
+          const message = `${prefix} ${languageNames[lang] || lang}`;
+          window.showNotification(message, 'success');
         }
-      }));
 
-      // Close language dropdown
-      this.closeLanguageDropdown();
+        this.emit('languageChanged', { language: lang, previousLanguage });
 
-      // Reset dropdown search state so next open shows full language list.
-      this.resetLanguageSearch();
+        console.log(`Successfully switched to language: ${lang}`);
 
-      // Show success notification
-      if (window.showNotification) {
-        const prefix = this.uiText('notify_language_changed', 'Language changed to');
-        const message = `${prefix} ${languageNames[lang] || lang}`;
-        window.showNotification(message, 'success');
+      } finally {
+        // Hide loading indicator
+        this.hideLanguageLoadingIndicator();
       }
-
-      this.emit('languageChanged', { language: lang, previousLanguage });
-
-      console.log(`Successfully switched to language: ${lang}`);
 
     } catch (error) {
       console.error('Failed to set language:', error);
+
+      // Hide loading indicator in case of error
+      this.hideLanguageLoadingIndicator();
 
       // Try fallback to Chinese Simplified
       if (lang !== 'zh-CN') {
