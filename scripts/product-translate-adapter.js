@@ -20,6 +20,9 @@ const { translateWithRetry } = require('./unified-translator');
 const TRANSLATIONS_DIR = path.join(process.cwd(), 'src/assets/lang');
 const PRODUCT_TABLE_PATH = path.join(process.cwd(), 'src/assets/product-data-table.js');
 
+// 日志配置：设置为 true 可查看详细的 key/value 翻译过程
+const VERBOSE_LOGGING = false;
+
 /**
  * 支持的语言和对应的Google Translate语言代码
  */
@@ -160,42 +163,47 @@ async function translateTexts(texts, targetLang, apiKey, delayMs = 100) {
     return {};
   }
   
-  console.log(`🔤 Processing ${validTexts.length} valid texts for ${targetLang} (using Gemini 3 API)...`);
-  
+  console.log(`🔤 Processing ${validTexts.length} texts for ${targetLang}...`);
+
+  let successCount = 0;
+  let failCount = 0;
+
   for (let i = 0; i < validTexts.length; i++) {
     const text = validTexts[i];
     try {
       // 追加输入验证
       if (!text || typeof text !== 'string') {
-        console.warn(`⚠️  Invalid text at index ${i} for ${targetLang}:`, text);
+        failCount++;
         results[text] = text || '';
         continue;
       }
-      
+
       const trimmedText = text.trim();
       if (trimmedText.length === 0) {
         results[text] = text;
         continue;
       }
-      
+
       // 使用 Gemini API 翻译
       results[text] = await translateWithGemini(trimmedText, targetLang);
-      
+      successCount++;
+
       // 添加进度提示（每50个）
       if ((i + 1) % 50 === 0) {
-        console.log(`  Progress: ${i + 1}/${validTexts.length} translated (${targetLang})`);
+        console.log(`  Progress: ${i + 1}/${validTexts.length} (${targetLang})`);
       }
-      
+
       if (i < validTexts.length - 1) {
         // Gemini API 本身有限速机制，但我们可以添加少量延迟
         await new Promise(r => setTimeout(r, Math.min(delayMs, 200)));
       }
     } catch (err) {
-      console.warn(`⚠️  Failed to translate: "${text}" to ${targetLang}: ${err.message}`);
+      console.error(`⚠️  Failed to translate to ${targetLang}: ${err.message}`);
+      failCount++;
       results[text] = text || ''; // 降级返回原文本或空字符串
     }
   }
-  console.log(`✅ Completed ${targetLang} translation: ${Object.keys(results).length} results`);
+  console.log(`✅ ${targetLang} completed: ${successCount} success, ${failCount} failed`);
   return results;
 }
 
@@ -279,6 +287,8 @@ function loadTranslations() {
 
 
 function logTranslationKeyValue(stage, lang, key, value, source) {
+  if (!VERBOSE_LOGGING) return;
+
   const sourcePart = source ? ` | source=${source}` : '';
   console.log(`[${stage}][${lang}] ${key} = ${value}${sourcePart}`);
 }

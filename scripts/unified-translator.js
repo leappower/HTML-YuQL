@@ -219,28 +219,25 @@ async function translateWithRetry(text, targetLang, retryCount = 0) {
 
     if (promptLength > CONFIG.gemini.maxPromptLength) {
       // 文本过长，需要拆分翻译
-      console.log(`[Gemini] 文本过长 (${promptLength} 字符)，开始拆分翻译...`);
       return await translateInChunks(text, targetLang);
     } else {
       // 文本长度合适，直接翻译
-      console.log(`[Gemini] 翻译到 ${targetLang}: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`);
       const result = await translateWithGemini(text, targetLang);
-      console.log('[Gemini] 翻译成功');
       return result;
     }
   } catch (error) {
-    console.error(`翻译失败 (尝试 ${retryCount + 1}/${maxRetries + 1}): ${error.message}`);
+    console.error(`[Gemini] 翻译失败 (尝试 ${retryCount + 1}/${maxRetries + 1}): ${error.message}`);
 
     if (retryCount < maxRetries) {
       // 指数退避
       const delay = CONFIG.gemini.retryDelay * Math.pow(2, retryCount);
-      console.log(`等待 ${delay}ms 后重试...`);
+      console.log(`[Gemini] 等待 ${delay}ms 后重试...`);
       await new Promise(resolve => setTimeout(resolve, delay));
       return translateWithRetry(text, targetLang, retryCount + 1);
     }
 
     // 重试耗尽，返回原始文本
-    console.error('翻译失败，返回原始文本');
+    console.error(`[Gemini] 翻译失败，返回原始文本: ${text.substring(0, 50)}...`);
     return text;
   }
 }
@@ -253,26 +250,28 @@ async function translateWithRetry(text, targetLang, retryCount = 0) {
  */
 async function translateInChunks(text, targetLang) {
   const chunks = splitTextIntoChunks(text, CONFIG.gemini.maxChunkSize);
-  console.log(`[Gemini] 拆分为 ${chunks.length} 个块`);
+  console.log(`[Gemini] 文本过长 (${text.length} 字符)，拆分为 ${chunks.length} 个块进行翻译...`);
 
   const translatedChunks = [];
+  let successCount = 0;
+  let failCount = 0;
 
   for (let i = 0; i < chunks.length; i++) {
-    console.log(`[Gemini] 翻译块 ${i + 1}/${chunks.length} (${chunks[i].length} 字符)`);
     try {
       const translated = await translateWithGemini(chunks[i], targetLang);
       translatedChunks.push(translated);
-      console.log(`[Gemini] 块 ${i + 1} 翻译成功`);
+      successCount++;
     } catch (error) {
-      console.error(`[Gemini] 块 ${i + 1} 翻译失败: ${error.message}`);
+      console.error(`[Gemini] 块 ${i + 1}/${chunks.length} 翻译失败: ${error.message}`);
       // 翻译失败时保留原文
       translatedChunks.push(chunks[i]);
+      failCount++;
     }
   }
 
   // 合并所有翻译块
   const result = translatedChunks.join('');
-  console.log(`[Gemini] 合并翻译完成，总长度: ${result.length} 字符`);
+  console.log(`[Gemini] 拆分翻译完成: ${successCount} 成功, ${failCount} 失败, 总长度: ${result.length} 字符`);
   return result;
 }
 
