@@ -35,12 +35,19 @@ module.exports = (_, argv = {}) => {
           new MiniCssExtractPlugin({
             filename: 'styles.[contenthash:8].css',
           }),
-          // Copy language files for static deployment
+          // Copy language files for static deployment (only split files: *-ui.json and *-product.json)
           new CopyWebpackPlugin({
             patterns: [
               {
                 from: 'src/assets/lang',
                 to: 'assets/lang',
+                filter: (resourcePath) => {
+                  const filename = path.basename(resourcePath);
+                  // Only copy split files: *-ui.json, *-product.json, and languages.json
+                  return filename.endsWith('-ui.json') ||
+                         filename.endsWith('-product.json') ||
+                         filename === 'languages.json';
+                },
                 noErrorOnMissing: true,
               },
               {

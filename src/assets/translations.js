@@ -57,7 +57,13 @@ class TranslationManager {
     return 'zh-CN';
   }
 
+  /**
+   * Load UI and product translations (separate files)
+   * UI translations are loaded first for initial page load
+   * Product translations are loaded on-demand
+   */
   async loadTranslations(lang) {
+    // Check if already loaded
     if (this.translationsCache.has(lang)) {
       return this.translationsCache.get(lang);
     }
@@ -73,6 +79,35 @@ class TranslationManager {
       return await loadPromise;
     } finally {
       this.pendingLoads.delete(lang);
+    }
+  }
+
+  /**
+   * Fetch and merge UI and product translations
+   */
+  async fetchTranslations(lang) {
+    try {
+      // Load UI translations first (required for initial page load)
+      const uiTranslations = await this.loadUITranslations(lang);
+
+      // Merge UI and product translations
+      const productTranslations = await this.loadProductTranslations(lang);
+      const mergedTranslations = this.mergeTranslations(uiTranslations, productTranslations);
+
+      // Cache merged translations
+      this.translationsCache.set(lang, mergedTranslations);
+
+      console.log(`✅ Loaded ${lang} (UI: ${Object.keys(uiTranslations).length} keys, Product: ${Object.keys(productTranslations).length} keys)`);
+
+      return mergedTranslations;
+    } catch (error) {
+      console.error(`Failed to load translations for ${lang}:`, error);
+      // Fallback to Chinese (Simplified)
+      if (lang !== 'zh-CN') {
+        console.log('Attempting fallback to zh-CN');
+        return this.loadTranslations('zh-CN');
+      }
+      throw error;
     }
   }
 
@@ -472,26 +507,28 @@ class TranslationManager {
    * Useful for preloading frequently accessed languages
    */
   async preloadLanguage(lang, priority = 'low') {
-    // Check if already loaded or loading
-    if (this.translationsCache.has(lang)) {
-      console.log(`✅ Language ${lang} already loaded`);
-      return this.translationsCache.get(lang);
+    // Check if UI translations already loaded
+    const uiCacheKey = `ui-${lang}`;
+    if (this.translationsCache.has(uiCacheKey)) {
+      console.log(`✅ UI translations for ${lang} already loaded`);
+      return this.translationsCache.get(uiCacheKey);
     }
 
-    if (this.pendingLoads.has(lang)) {
-      console.log(`⏳ Language ${lang} already loading`);
-      return this.pendingLoads.get(lang);
+    // Check if already loading
+    if (this.pendingLoads.has(uiCacheKey)) {
+      console.log(`⏳ UI translations for ${lang} already loading`);
+      return this.pendingLoads.get(uiCacheKey);
     }
 
     const loadPromise = new Promise((resolve, reject) => {
       const loadFunction = async () => {
         try {
-          console.log(`🔄 Preloading language ${lang} (priority: ${priority})...`);
-          const translations = await this.fetchTranslations(lang);
-          console.log(`✅ Language ${lang} preloaded`);
-          resolve(translations);
+          console.log(`🔄 Preloading UI translations for ${lang} (priority: ${priority})...`);
+          const uiTranslations = await this.loadUITranslations(lang);
+          console.log(`✅ UI translations for ${lang} preloaded`);
+          resolve(uiTranslations);
         } catch (error) {
-          console.error(`❌ Failed to preload language ${lang}:`, error);
+          console.error(`❌ Failed to preload UI translations for ${lang}:`, error);
           reject(error);
         }
       };
@@ -516,11 +553,11 @@ class TranslationManager {
       }
     });
 
-    this.pendingLoads.set(lang, loadPromise);
+    this.pendingLoads.set(uiCacheKey, loadPromise);
 
     // Cleanup pending loads
     loadPromise.finally(() => {
-      this.pendingLoads.delete(lang);
+      this.pendingLoads.delete(uiCacheKey);
     });
 
     return loadPromise;
@@ -701,8 +738,22 @@ class TranslationManager {
   }
 
   translate(key) {
-    const lang = this.translationsCache.get(this.currentLanguage);
-    return this.resolveTranslationValue(lang, key);
+    // Try UI translations first
+    const uiCacheKey = `ui-${this.currentLanguage}`;
+    let translations = this.translationsCache.get(uiCacheKey);
+
+    // If UI translation not found, try product translations
+    if (!translations) {
+      const productCacheKey = `product-${this.currentLanguage}`;
+      translations = this.translationsCache.get(productCacheKey);
+    }
+
+    // If product translation not found, try merged translations
+    if (!translations) {
+      translations = this.translationsCache.get(this.currentLanguage);
+    }
+
+    return this.resolveTranslationValue(translations, key);
   }
 
   uiText(key, fallback) {
@@ -715,14 +766,15 @@ class TranslationManager {
 
   async applyTranslations() {
     try {
-      // Ensure translations are loaded
-      if (!this.translationsCache.has(this.currentLanguage)) {
-        await this.loadTranslations(this.currentLanguage);
+      // Ensure UI translations are loaded
+      const uiCacheKey = `ui-${this.currentLanguage}`;
+      if (!this.translationsCache.has(uiCacheKey)) {
+        await this.loadUITranslations(this.currentLanguage);
       }
 
-      const translations = this.translationsCache.get(this.currentLanguage);
-      if (!translations) {
-        console.warn(`No translations available for ${this.currentLanguage}`);
+      const uiTranslations = this.translationsCache.get(uiCacheKey);
+      if (!uiTranslations) {
+        console.warn(`No UI translations available for ${this.currentLanguage}`);
         return;
       }
 
@@ -731,7 +783,7 @@ class TranslationManager {
       // Apply data-i18n attributes
       i18nElements.forEach(el => {
         const key = el.getAttribute('data-i18n');
-        const translation = this.translate(key);
+        const translation = this.resolveTranslationValue(uiTranslations, key);
 
         // Only update if translation is different from current content
         if (translation && translation !== key) {
@@ -748,7 +800,7 @@ class TranslationManager {
       // Apply data-i18n-placeholder
       placeholderElements.forEach(el => {
         const key = el.getAttribute('data-i18n-placeholder');
-        const translation = this.translate(key);
+        const translation = this.resolveTranslationValue(uiTranslations, key);
         if (translation && translation !== key) {
           if (el.placeholder !== translation) {
             el.placeholder = translation;
@@ -766,7 +818,7 @@ class TranslationManager {
       // Apply translated aria-label values
       ariaElements.forEach(el => {
         const key = el.getAttribute('data-i18n-aria');
-        const translation = this.translate(key);
+        const translation = this.resolveTranslationValue(uiTranslations, key);
         if (translation && translation !== key) {
           el.setAttribute('aria-label', translation);
         } else {
@@ -786,8 +838,8 @@ class TranslationManager {
       }
 
       // Ensure company name always reflects the active language.
-      this.refreshCompanyName(translations);
-      this.refreshDocumentTitle(translations);
+      this.refreshCompanyName(uiTranslations);
+      this.refreshDocumentTitle(uiTranslations);
 
       this.emit('translationsApplied', { language: this.currentLanguage });
     } catch (error) {
@@ -825,26 +877,33 @@ class TranslationManager {
 
   getFallbackTranslation(key) {
     // Prefer English fallback first for neutral UI labels.
-    if (this.currentLanguage !== 'en' && this.translationsCache.has('en')) {
-      const enTranslations = this.translationsCache.get('en');
-      const enValue = this.resolveTranslationValue(enTranslations, key);
-      if (enValue && enValue !== key) {
-        return enValue;
+    if (this.currentLanguage !== 'en') {
+      const enCacheKey = `ui-en`;
+      if (this.translationsCache.has(enCacheKey)) {
+        const enTranslations = this.translationsCache.get(enCacheKey);
+        const enValue = this.resolveTranslationValue(enTranslations, key);
+        if (enValue && enValue !== key) {
+          return enValue;
+        }
       }
     }
 
     // Then fallback to Chinese Simplified.
-    if (this.currentLanguage !== 'zh-CN' && this.translationsCache.has('zh-CN')) {
-      const zhTranslations = this.translationsCache.get('zh-CN');
-      return this.resolveTranslationValue(zhTranslations, key);
+    if (this.currentLanguage !== 'zh-CN') {
+      const zhCacheKey = `ui-zh-CN`;
+      if (this.translationsCache.has(zhCacheKey)) {
+        const zhTranslations = this.translationsCache.get(zhCacheKey);
+        return this.resolveTranslationValue(zhTranslations, key);
+      }
     }
     return key;
   }
 
   applyFallbackTranslations() {
-    // Apply Chinese Simplified translations as fallback
-    if (this.translationsCache.has('zh-CN')) {
-      const zhTranslations = this.translationsCache.get('zh-CN');
+    // Apply Chinese Simplified UI translations as fallback
+    const zhCacheKey = `ui-zh-CN`;
+    if (this.translationsCache.has(zhCacheKey)) {
+      const zhTranslations = this.translationsCache.get(zhCacheKey);
       const { i18nElements } = this.getCachedElements();
 
       i18nElements.forEach(el => {
@@ -1090,9 +1149,9 @@ class TranslationManager {
       // Set current language without triggering save
       this.currentLanguage = initialLang;
 
-      // Load only the current language (on-demand)
-      console.log('Loading single language file (on-demand)...');
-      await this.loadTranslations(initialLang);
+      // Load only UI translations for initial page load (faster)
+      console.log('Loading UI translations (lightweight, ~16KB)...');
+      await this.loadUITranslations(initialLang);
 
       // Apply translations to DOM
       await this.applyTranslations();
@@ -1111,8 +1170,8 @@ class TranslationManager {
       this.isInitialized = true;
 
       console.log('Translation system initialized successfully');
-      console.log(`Loaded language: ${initialLang}`);
-      console.log('Other languages will be loaded on-demand');
+      console.log(`Loaded UI language: ${initialLang}`);
+      console.log('Product translations will be loaded on-demand');
 
       // Emit initialization event
       this.emit('initialized', { language: this.currentLanguage });

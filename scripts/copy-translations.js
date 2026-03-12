@@ -8,6 +8,15 @@ if (!fs.existsSync(sourceDir)) {
   throw new Error(`Source directory does not exist: ${sourceDir}`);
 }
 
+/**
+ * Check if file should be copied (only split files: *-ui.json, *-product.json, and languages.json)
+ */
+function shouldCopyFile(filename) {
+  return filename.endsWith('-ui.json') ||
+         filename.endsWith('-product.json') ||
+         filename === 'languages.json';
+}
+
 function collectFilesRecursively(dir, base = dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   const files = [];
@@ -16,6 +25,11 @@ function collectFilesRecursively(dir, base = dir) {
     const absPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       files.push(...collectFilesRecursively(absPath, base));
+      continue;
+    }
+
+    // Only include split files
+    if (!shouldCopyFile(entry.name)) {
       continue;
     }
 
@@ -70,6 +84,36 @@ if (!hasSourceChanged()) {
 // Keep target in sync with source and avoid stale translation files.
 fs.rmSync(targetDir, { recursive: true, force: true });
 fs.mkdirSync(path.dirname(targetDir), { recursive: true });
-fs.cpSync(sourceDir, targetDir, { recursive: true, force: true });
 
-console.log(`Copied translations: ${sourceDir} -> ${targetDir}`);
+// Copy only split files
+const entries = fs.readdirSync(sourceDir, { withFileTypes: true });
+let copiedCount = 0;
+
+for (const entry of entries) {
+  const srcPath = path.join(sourceDir, entry.name);
+  const dstPath = path.join(targetDir, entry.name);
+
+  if (entry.isDirectory()) {
+    // Recursively copy subdirectories
+    fs.mkdirSync(dstPath, { recursive: true });
+    const subEntries = fs.readdirSync(srcPath, { withFileTypes: true });
+
+    for (const subEntry of subEntries) {
+      const subSrcPath = path.join(srcPath, subEntry.name);
+      const subDstPath = path.join(dstPath, subEntry.name);
+
+      if (!subEntry.isFile() || !shouldCopyFile(subEntry.name)) {
+        continue;
+      }
+
+      fs.copyFileSync(subSrcPath, subDstPath);
+      copiedCount++;
+    }
+  } else if (entry.isFile() && shouldCopyFile(entry.name)) {
+    // Copy only split files
+    fs.copyFileSync(srcPath, dstPath);
+    copiedCount++;
+  }
+}
+
+console.log(`Copied ${copiedCount} translation files: ${sourceDir} -> ${targetDir}`);
