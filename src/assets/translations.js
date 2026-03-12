@@ -78,15 +78,23 @@ class TranslationManager {
 
   async fetchTranslations(lang) {
     try {
-      const response = await fetch(`./translations/${lang}.json?ts=${Date.now()}`, {
+      // Load all translations from single i18n.json file
+      const response = await fetch(`./assets/i18n.json?ts=${Date.now()}`, {
         cache: 'no-store'
       });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      const data = await response.json();
-      const normalizedData = this.normalizeTranslationKeys(data);
-      this.translationsCache.set(lang, normalizedData);
+      const allTranslations = await response.json();
+
+      // Cache all languages for future use
+      Object.keys(allTranslations).forEach(langCode => {
+        const normalizedData = this.normalizeTranslationKeys(allTranslations[langCode]);
+        this.translationsCache.set(langCode, normalizedData);
+      });
+
+      // Return requested language
+      const normalizedData = this.normalizeTranslationKeys(allTranslations[lang]);
       return normalizedData;
     } catch (error) {
       console.error(`Failed to load translations for ${lang}:`, error);
