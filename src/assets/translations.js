@@ -360,30 +360,156 @@ class TranslationManager {
     return observer;
   }
 
+  /**
+   * Preload language file (on-demand loading)
+   * Loads a language file without switching to it
+   * Useful for preloading frequently accessed languages
+   */
+  async preloadLanguage(lang, priority = 'low') {
+    // Check if already loaded or loading
+    if (this.translationsCache.has(lang)) {
+      console.log(`✅ Language ${lang} already loaded`);
+      return this.translationsCache.get(lang);
+    }
+
+    if (this.pendingLoads.has(lang)) {
+      console.log(`⏳ Language ${lang} already loading`);
+      return this.pendingLoads.get(lang);
+    }
+
+    const loadPromise = new Promise((resolve, reject) => {
+      const loadFunction = async () => {
+        try {
+          console.log(`🔄 Preloading language ${lang} (priority: ${priority})...`);
+          const translations = await this.fetchTranslations(lang);
+          console.log(`✅ Language ${lang} preloaded`);
+          resolve(translations);
+        } catch (error) {
+          console.error(`❌ Failed to preload language ${lang}:`, error);
+          reject(error);
+        }
+      };
+
+      // Use different strategies based on priority
+      if (priority === 'high') {
+        // High priority: load immediately
+        loadFunction();
+      } else if (priority === 'medium') {
+        // Medium priority: use setTimeout with short delay
+        setTimeout(loadFunction, 100);
+      } else {
+        // Low priority: use requestIdleCallback
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(() => loadFunction(), {
+            timeout: 2000 // Fallback to immediate after 2s
+          });
+        } else {
+          // Fallback: use setTimeout
+          setTimeout(loadFunction, 200);
+        }
+      }
+    });
+
+    this.pendingLoads.set(lang, loadPromise);
+
+    // Cleanup pending loads
+    loadPromise.finally(() => {
+      this.pendingLoads.delete(lang);
+    });
+
+    return loadPromise;
+  }
+
+  /**
+   * Preload multiple languages at once
+   * Useful for preloading frequently accessed language pairs
+   */
+  async preloadLanguages(languages, priority = 'low') {
+    console.log(`🔄 Preloading ${languages.length} languages (priority: ${priority})...`);
+
+    const loadPromises = languages.map(lang => {
+      return this.preloadLanguage(lang, priority).catch(error => {
+        console.warn(`⚠️ Failed to preload ${lang}:`, error.message);
+        return null;
+      });
+    });
+
+    const results = await Promise.allSettled(loadPromises);
+
+    const successCount = results.filter(r => r.status === 'fulfilled' && r.value).length;
+    console.log(`✅ Preloaded ${successCount}/${languages.length} languages`);
+
+    return results;
+  }
+
+  /**
+   * Get all available languages that can be loaded
+   */
+  getAvailableLanguages() {
+    return Object.keys(languageNames);
+  }
+
+  /**
+   * Get loaded languages (cached in memory)
+   */
+  getLoadedLanguages() {
+    return Array.from(this.translationsCache.keys());
+  }
+
+  /**
+   * Clear language cache (free memory)
+   * Optionally keeps specified languages
+   */
+  clearCache(exceptLanguages = []) {
+    const languagesToKeep = new Set([
+      this.currentLanguage,
+      'zh-CN', // Always keep Chinese as fallback
+      'en',    // Always keep English as fallback
+      ...exceptLanguages
+    ]);
+
+    const clearedCount = this.translationsCache.size;
+    const cacheKeys = Array.from(this.translationsCache.keys());
+
+    cacheKeys.forEach(lang => {
+      if (!languagesToKeep.has(lang)) {
+        this.translationsCache.delete(lang);
+      }
+    });
+
+    const remainingCount = this.translationsCache.size;
+    console.log(`🧹 Cache cleared: ${clearedCount - remainingCount} languages removed, ${remainingCount} kept`);
+  }
+
+  /**
+   * Fetch single language file (on-demand loading)
+   * Loads only the requested language, not all languages
+   */
   async fetchTranslations(lang) {
     try {
-      // Load all translations from single i18n.json file
-      const response = await fetch(`./assets/i18n.json?ts=${Date.now()}`, {
+      // Load single language file from assets/lang/{lang}.json
+      const response = await fetch(`./assets/lang/${lang}.json?ts=${Date.now()}`, {
         cache: 'no-store'
       });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      const allTranslations = await response.json();
+      const translations = await response.json();
 
-      // Cache all languages for future use
-      Object.keys(allTranslations).forEach(langCode => {
-        const normalizedData = this.normalizeTranslationKeys(allTranslations[langCode]);
-        this.translationsCache.set(langCode, normalizedData);
-      });
+      // Normalize translation keys
+      const normalizedData = this.normalizeTranslationKeys(translations);
 
-      // Return requested language
-      const normalizedData = this.normalizeTranslationKeys(allTranslations[lang]);
+      // Cache the loaded language
+      this.translationsCache.set(lang, normalizedData);
+
+      console.log(`✅ Loaded ${lang} (${Object.keys(translations).length} keys, ${Math.round(Buffer.byteLength(JSON.stringify(translations)) / 1024)} KB)`);
+
       return normalizedData;
     } catch (error) {
       console.error(`Failed to load translations for ${lang}:`, error);
       // Fallback to Chinese (Simplified)
       if (lang !== 'zh-CN') {
+        console.log('Attempting fallback to zh-CN');
         return this.loadTranslations('zh-CN');
       }
       throw error;
@@ -652,7 +778,7 @@ class TranslationManager {
 
       console.log(`Switching language from ${this.currentLanguage} to ${lang}`);
 
-      // Load new translations
+      // Load new translations (on-demand)
       await this.loadTranslations(lang);
 
       // Update current language
@@ -797,15 +923,21 @@ class TranslationManager {
   debug() {
     console.log('Translation Manager Debug Info:');
     console.log('- Current Language:', this.currentLanguage);
+    console.log('- Loading Strategy:', 'On-demand (single language files)');
     console.log('- Cache Size:', this.translationsCache.size);
-    console.log('- Cached Languages:', Array.from(this.translationsCache.keys()));
+    console.log('- Loaded Languages:', Array.from(this.translationsCache.keys()));
     console.log('- Available Languages:', Object.keys(languageNames));
+    console.log('- Pending Loads:', Array.from(this.pendingLoads.keys()));
 
     // Check if current language translations are loaded
     const currentTranslations = this.translationsCache.get(this.currentLanguage);
     console.log('- Current Language Loaded:', !!currentTranslations);
 
     if (currentTranslations) {
+      const keyCount = Object.keys(currentTranslations).length;
+      const sizeKB = Math.round(Buffer.byteLength(JSON.stringify(currentTranslations)) / 1024);
+      console.log(`- Current Language Size: ${keyCount} keys, ${sizeKB} KB`);
+
       console.log('- Sample Translations:');
       console.log('  nav_contact:', currentTranslations.nav_contact);
       console.log('  nav_produkte:', currentTranslations.nav_produkte);
@@ -823,7 +955,7 @@ class TranslationManager {
 
   async initialize() {
     try {
-      console.log('Initializing translation system with lazy loading strategy...');
+      console.log('Initializing translation system with on-demand loading strategy...');
 
       // Detect browser language if not already set (only once)
       if (!localStorage.getItem('browserLang')) {
@@ -839,12 +971,11 @@ class TranslationManager {
       // Set current language without triggering save
       this.currentLanguage = initialLang;
 
-      // Load UI translations only (lightweight, ~16KB)
-      console.log('Loading UI translations first...');
-      const languagesToLoad = new Set([initialLang, 'en', 'zh-CN']);
-      await Promise.all(Array.from(languagesToLoad).map((lang) => this.loadUITranslations(lang)));
+      // Load only the current language (on-demand)
+      console.log('Loading single language file (on-demand)...');
+      await this.loadTranslations(initialLang);
 
-      // Apply UI translations to DOM
+      // Apply translations to DOM
       await this.applyTranslations();
 
       // Set up event listeners
@@ -860,8 +991,9 @@ class TranslationManager {
       // Mark as initialized
       this.isInitialized = true;
 
-      console.log('Translation system initialized successfully with UI translations only');
-      console.log('Product data will be loaded on demand when accessing product section');
+      console.log('Translation system initialized successfully');
+      console.log(`Loaded language: ${initialLang}`);
+      console.log('Other languages will be loaded on-demand');
 
       // Emit initialization event
       this.emit('initialized', { language: this.currentLanguage });
@@ -872,7 +1004,7 @@ class TranslationManager {
       // Fallback: try to initialize with Chinese Simplified (but don't save it as user choice)
       try {
         this.currentLanguage = 'zh-CN';
-        await this.loadUITranslations('zh-CN');
+        await this.loadTranslations('zh-CN');
         await this.applyTranslations();
         document.documentElement.lang = 'zh-CN';
         console.log('Fallback initialization successful');
