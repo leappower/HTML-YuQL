@@ -668,12 +668,12 @@ import { IMAGE_ASSETS } from './image-assets.js';
       ].filter(([, value]) => value && String(value).trim());
 
       const detailHtml = detailRows.length > 0
-        ? detailRows.slice(0, 2).map(([label, value]) => `<div class="truncate"><strong>${label}:</strong> <span class="truncate inline">${value}</span></div>`).join('')
+        ? detailRows.slice(0, 1).map(([label, value]) => `<div class="truncate"><strong>${label}:</strong> <span class="truncate inline">${value}</span></div>`).join('')
         : `<div class="truncate"><strong>${tr('product_label_usage', 'Usage')}:</strong> <span class="truncate inline">${tr('product_not_specified', 'To be confirmed')}</span></div>`;
 
       return `
     <article class="product-card flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/10 group" data-category="${p.category}">
-      <!-- 图片区域 (60%) -->
+      <!-- 图片区域 (固定高度，优先保证) -->
       <div class="relative h-[228px] sm:h-[252px] lg:h-[276px] w-full overflow-hidden bg-slate-50 dark:bg-slate-800/60 shrink-0">
         <img src="${p.productImage || resolveImage(imageRecognitionKey)}" alt="${displayName}" loading="lazy" decoding="async" class="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-500">
 
@@ -681,57 +681,57 @@ import { IMAGE_ASSETS } from './image-assets.js';
         ${p.status ? `<span class="absolute top-2 right-2 bg-slate-900/80 text-white px-2 py-0.5 rounded-full text-[10px]">${p.status}</span>` : ''}
       </div>
 
-      <!-- 内容区域 (40%) -->
-      <div class="p-3 flex flex-col">
-        <!-- 产品名称 + 型号 -->
-        <div class="flex items-start justify-between gap-2 mb-2 shrink-0">
+      <!-- 内容区域 (压缩高度，固定最小高度) -->
+      <div class="p-2.5 flex flex-col min-h-0 flex-1">
+        <!-- 产品名称 + 型号 (压缩间距) -->
+        <div class="flex items-start justify-between gap-2 mb-1.5">
           <div class="flex-1 min-w-0">
-            <h3 class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight line-clamp-2">${displayName}</h3>
+            <h3 class="text-[12px] sm:text-[13px] font-bold text-slate-900 dark:text-slate-100 leading-tight line-clamp-1">${displayName}</h3>
           </div>
-          <div class="shrink-0 w-16 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-1.5 py-1 text-center">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_model', 'Model')}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${p.model || '-'}</p>
-          </div>
-        </div>
-
-        <!-- 参数网格 (2x2) -->
-        <div class="grid grid-cols-2 gap-1.5 mb-2 shrink-0">
-          <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_price', 'Price')}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${referencePrice || '-'}</p>
-          </div>
-          <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_min_order_qty', 'MOQ')}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${minimumOrderQuantity || '-'}</p>
-          </div>
-          <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_capacity_throughput', 'Capacity')}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${throughput || '-'}</p>
-          </div>
-          <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_voltage_frequency', 'Voltage')}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${voltage || frequency ? `${voltage || '-'} / ${frequency || '-'}` : '-'}</p>
+          <div class="shrink-0 w-14 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-1 py-0.5 text-center">
+            <p class="text-[9px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_model', 'Model')}</p>
+            <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${p.model || '-'}</p>
           </div>
         </div>
 
-        <!-- 标签 -->
-        <div class="flex flex-wrap gap-1 mb-2 overflow-hidden shrink-0">
-          ${highlights || `<span class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] truncate">${tr('product_label_scene', 'Scene')}: ${scenariosI18n || '-'}</span>`}
+        <!-- 参数网格 (压缩间距和字体) -->
+        <div class="grid grid-cols-2 gap-1 mb-1.5">
+          <div class="rounded-md bg-slate-50 dark:bg-slate-800/70 p-1">
+            <p class="text-[9px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_price', 'Price')}</p>
+            <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${referencePrice || '-'}</p>
+          </div>
+          <div class="rounded-md bg-slate-50 dark:bg-slate-800/70 p-1">
+            <p class="text-[9px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_min_order_qty', 'MOQ')}</p>
+            <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${minimumOrderQuantity || '-'}</p>
+          </div>
+          <div class="rounded-md bg-slate-50 dark:bg-slate-800/70 p-1">
+            <p class="text-[9px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_capacity_throughput', 'Capacity')}</p>
+            <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${throughput || '-'}</p>
+          </div>
+          <div class="rounded-md bg-slate-50 dark:bg-slate-800/70 p-1">
+            <p class="text-[9px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_voltage_frequency', 'Voltage')}</p>
+            <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">${voltage || frequency ? `${voltage || '-'} / ${frequency || '-'}` : '-'}</p>
+          </div>
         </div>
 
-        <!-- 详情 -->
-        <div class="text-[10px] text-slate-600 dark:text-slate-300 mb-2 line-clamp-1 overflow-hidden shrink-0">
+        <!-- 标签 (只显示前2个) -->
+        <div class="flex flex-wrap gap-1 mb-1 overflow-hidden">
+          ${highlightsItems.slice(0, 2).map((item) => `<span class="px-1.5 py-0.5 rounded-md bg-primary/10 text-primary text-[9px] font-medium truncate">${item}</span>`).join('')}
+        </div>
+
+        <!-- 详情 (只显示1行) -->
+        <div class="text-[9px] text-slate-600 dark:text-slate-300 mb-1 line-clamp-1 overflow-hidden">
           ${detailHtml}
         </div>
 
-        <!-- 按钮 -->
-        <div class="mt-auto grid grid-cols-2 gap-1.5 shrink-0">
-          <button onclick="showSmartPopupManual()" class="inline-flex h-full min-h-[34px] items-center justify-center gap-1 rounded-lg border border-primary/20 bg-primary/5 px-2 py-1.5 text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
-            <span class="material-symbols-outlined text-xs">tune</span>
+        <!-- 按钮 (固定最小高度，始终可见) -->
+        <div class="mt-auto grid grid-cols-2 gap-1 shrink-0">
+          <button onclick="showSmartPopupManual()" class="inline-flex min-h-[32px] items-center justify-center gap-1 rounded-md border border-primary/20 bg-primary/5 px-2 py-1.5 text-[11px] font-bold text-primary hover:bg-primary/10 transition-colors">
+            <span class="material-symbols-outlined text-[10px]">tune</span>
             ${tr('product_optional_specs', 'Optional')}
           </button>
-          <button onclick="showSmartPopupManual()" class="inline-flex h-full min-h-[34px] items-center justify-center gap-1 rounded-lg bg-primary px-2 py-1.5 text-xs font-bold text-white hover:bg-primary/90 transition-colors">
-            <span class="material-symbols-outlined text-xs">request_page</span>
+          <button onclick="showSmartPopupManual()" class="inline-flex min-h-[32px] items-center justify-center gap-1 rounded-md bg-primary px-2 py-1.5 text-[11px] font-bold text-white hover:bg-primary/90 transition-colors">
+            <span class="material-symbols-outlined text-[10px]">request_page</span>
             ${tr('product_request', 'Request')}
           </button>
         </div>
