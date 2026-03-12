@@ -46,6 +46,10 @@ module.exports = (_, argv = {}) => {
           directory: path.join(__dirname, 'src/assets'),
           publicPath: '/assets',
         },
+        {
+          directory: path.join(__dirname, 'dist/lang'),
+          publicPath: '/assets/lang',
+        },
       ],
       compress: true,
       port: 3000,

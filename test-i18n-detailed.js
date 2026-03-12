@@ -59,7 +59,7 @@ fetch('./assets/i18n.json?ts=' + Date.now())
     return response.json();
   })
   .then(data => {
-    console.log(`   ✅ 成功加载 i18n.json`);
+    console.log('   ✅ 成功加载 i18n.json');
     console.log(`   📊 包含 ${Object.keys(data).length} 种语言`);
 
     // 测试5: 检查翻译管理器状态
@@ -112,7 +112,7 @@ function testNextLanguage() {
         setTimeout(testNextLanguage, 1000);
       });
   } else {
-    console.log(`   ⚠️  setLanguage函数未定义，跳过测试`);
+    console.log('   ⚠️  setLanguage函数未定义，跳过测试');
     testIndex = testLanguages.length;
   }
 }
