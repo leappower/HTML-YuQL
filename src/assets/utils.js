@@ -1050,9 +1050,9 @@ import { IMAGE_ASSETS } from './image-assets.js';
     indicatorState.promptLoopTimer = setInterval(showIndicator, 10000);
   }
 
-  function startWhatsApp() { window.open('https://wa.me/4975112345678?text=' + encodeURIComponent(tr('contact_whatsapp_prefill', 'Hello! I am interested in your products.')), '_blank'); }
+  function startWhatsApp() { window.open('https://wa.me/16478158194?text=' + encodeURIComponent(tr('contact_whatsapp_prefill', 'Hello! I am interested in your products.')), '_blank'); }
   function startLine() { window.open('https://line.me/ti/p/@baeckerei-profi', '_blank'); }
-  function startPhone() { window.location.href = 'tel:+497511234567'; }
+  function startPhone() { window.location.href = 'tel:+16478158194'; }
   function startTelegram() { window.open('https://t.me/baeckerei-profi', '_blank'); }
   function startEmail() {
     const subject = encodeURIComponent(tr('contact_email_subject', 'Product Inquiry'));
