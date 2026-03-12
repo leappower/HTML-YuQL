@@ -40,5 +40,6 @@ module.exports = {
     'src/assets/performance-monitor.js',
     'src/assets/sentry-init.js',
     'src/assets/store.js',
+    'docs/backup/',
   ],
 };

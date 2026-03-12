@@ -624,41 +624,6 @@ class TranslationManager {
     console.log(`🧹 Cache cleared: ${clearedCount - remainingCount} languages removed, ${remainingCount} kept`);
   }
 
-  /**
-   * Fetch single language file (on-demand loading)
-   * Loads only the requested language, not all languages
-   */
-  async fetchTranslations(lang) {
-    try {
-      // Load single language file from assets/lang/{lang}.json
-      const response = await fetch(`./assets/lang/${lang}.json?ts=${Date.now()}`, {
-        cache: 'no-store'
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      const translations = await response.json();
-
-      // Normalize translation keys
-      const normalizedData = this.normalizeTranslationKeys(translations);
-
-      // Cache the loaded language
-      this.translationsCache.set(lang, normalizedData);
-
-      console.log(`✅ Loaded ${lang} (${Object.keys(translations).length} keys, ${Math.round(Buffer.byteLength(JSON.stringify(translations)) / 1024)} KB)`);
-
-      return normalizedData;
-    } catch (error) {
-      console.error(`Failed to load translations for ${lang}:`, error);
-      // Fallback to Chinese (Simplified)
-      if (lang !== 'zh-CN') {
-        console.log('Attempting fallback to zh-CN');
-        return this.loadTranslations('zh-CN');
-      }
-      throw error;
-    }
-  }
-
   normalizeTranslationKeys(value) {
     if (Array.isArray(value)) {
       return value.map((item) => this.normalizeTranslationKeys(item));
@@ -878,7 +843,7 @@ class TranslationManager {
   getFallbackTranslation(key) {
     // Prefer English fallback first for neutral UI labels.
     if (this.currentLanguage !== 'en') {
-      const enCacheKey = `ui-en`;
+      const enCacheKey = 'ui-en';
       if (this.translationsCache.has(enCacheKey)) {
         const enTranslations = this.translationsCache.get(enCacheKey);
         const enValue = this.resolveTranslationValue(enTranslations, key);
@@ -890,7 +855,7 @@ class TranslationManager {
 
     // Then fallback to Chinese Simplified.
     if (this.currentLanguage !== 'zh-CN') {
-      const zhCacheKey = `ui-zh-CN`;
+      const zhCacheKey = 'ui-zh-CN';
       if (this.translationsCache.has(zhCacheKey)) {
         const zhTranslations = this.translationsCache.get(zhCacheKey);
         return this.resolveTranslationValue(zhTranslations, key);
@@ -901,7 +866,7 @@ class TranslationManager {
 
   applyFallbackTranslations() {
     // Apply Chinese Simplified UI translations as fallback
-    const zhCacheKey = `ui-zh-CN`;
+    const zhCacheKey = 'ui-zh-CN';
     if (this.translationsCache.has(zhCacheKey)) {
       const zhTranslations = this.translationsCache.get(zhCacheKey);
       const { i18nElements } = this.getCachedElements();
