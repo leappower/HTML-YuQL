@@ -1057,7 +1057,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
   function startEmail() {
     const subject = encodeURIComponent(tr('contact_email_subject', 'Product Inquiry'));
     const body = encodeURIComponent(tr('contact_email_body', 'Hello,\n\nI am interested in your products.\n\nPlease contact me.\n\nBest regards'));
-    window.location.href = `mailto:info@baeckereitechnik-profi.de?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:support@yukoli.com?subject=${subject}&body=${body}`;
   }
   function startFacebook() { window.open('https://facebook.com/baeckereitechnikprofi', '_blank'); }
   function startInstagram() { window.open('https://instagram.com/baeckerei.profi', '_blank'); }
