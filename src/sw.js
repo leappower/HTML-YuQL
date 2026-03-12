@@ -114,7 +114,7 @@ self.addEventListener('fetch', (event) => {
 
             // Fallback: try to serve Chinese (zh-CN) as universal fallback
             if (!url.pathname.includes('/zh-CN.json')) {
-              const fallbackUrl = url.pathname.replace(/\/[^\/]+\.json$/, '/zh-CN.json');
+              const fallbackUrl = url.pathname.replace(/\/[^/]+\.json$/, '/zh-CN.json');
               const fallbackRequest = new Request(fallbackUrl, event.request);
 
               return cache.match(fallbackRequest).then((fallbackResponse) => {
@@ -211,7 +211,7 @@ async function getCacheStatus() {
       totalLanguages: LANGUAGE_FILES.length,
       cachedLanguages: cachedFiles.length,
       cachedFiles: cachedFiles.map(file => {
-        const match = file.match(/\/([^\/]+)\.json$/);
+        const match = file.match(/\/([^/]+)\.json$/);
         return match ? match[1] : file;
       }),
       cacheSize: keys.reduce((total, key) => {

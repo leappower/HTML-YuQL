@@ -34,7 +34,7 @@
    - 展示大文本自动拆分翻译
    - 运行命令：`node scripts/demo-gemini-translation.js`
 
-3. **scripts/GEMINI_API_GUIDE.md** - 完整使用指南
+3. **docs/gemini/GEMINI_API_GUIDE.md** - 完整使用指南
    - 核心特性说明
    - 快速开始指南
    - API配置说明
@@ -47,12 +47,12 @@
    - 故障排查指南
    - 最佳实践
 
-4. **scripts/GEMINI_QUICK_REF.md** - 快速参考手册
+4. **docs/gemini/GEMINI_QUICK_REF.md** - 快速参考手册
    - API快速参考
    - 常用代码片段
    - 配置选项速查
 
-5. **scripts/GEMINI_TRANSLATION_SUMMARY.md** - 技术总结文档
+5. **docs/gemini/GEMINI_TRANSLATION_SUMMARY.md** - 技术总结文档
    - 完整的技术实现细节
    - 性能测试结果
    - 对比分析
@@ -312,9 +312,9 @@ feat: 完成Gemini 3翻译API调用模块
 7 files changed, 1768 insertions(+), 144 deletions(-)
 
 新增文件:
-- scripts/GEMINI_API_GUIDE.md
-- scripts/GEMINI_QUICK_REF.md
-- scripts/GEMINI_TRANSLATION_SUMMARY.md
+- docs/gemini/GEMINI_API_GUIDE.md
+- docs/gemini/GEMINI_QUICK_REF.md
+- docs/gemini/GEMINI_TRANSLATION_SUMMARY.md
 - scripts/demo-gemini-translation.js
 - scripts/test-content-splitting.js
 - scripts/test-gemini-only.js

@@ -17,7 +17,7 @@ const crypto = require('crypto');
 const { prepareForTranslation, postprocessText } = require('./product-translation-handler');
 const { translateWithRetry } = require('./gemini-translator');
 
-const TRANSLATIONS_DIR = path.join(process.cwd(), 'src/assets/translations');
+const TRANSLATIONS_DIR = path.join(process.cwd(), 'src/assets/lang');
 const PRODUCT_TABLE_PATH = path.join(process.cwd(), 'src/assets/product-data-table.js');
 
 /**

@@ -81,8 +81,8 @@ node scripts/test-content-splitting.js
 
 ## 📚 文档
 
-- 使用指南：`scripts/GEMINI_API_GUIDE.md`
-- 技术文档：`scripts/GEMINI_TRANSLATION_SUMMARY.md`
+- 使用指南：`docs/gemini/GEMINI_API_GUIDE.md`
+- 技术文档：`docs/gemini/GEMINI_TRANSLATION_SUMMARY.md`
 
 ## 💡 示例
 

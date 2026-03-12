@@ -362,7 +362,7 @@ async function safeTranslate(texts, targetLang) {
 
 ## 相关文档
 
-- `scripts/GEMINI_TRANSLATION_SUMMARY.md` - 完整技术文档
+- `docs/gemini/GEMINI_TRANSLATION_SUMMARY.md` - 完整技术文档
 - `scripts/TRANSLATION_INTEGRATION_GUIDE.md` - 集成指南
 
 ## 支持
