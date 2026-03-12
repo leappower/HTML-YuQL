@@ -725,7 +725,7 @@ header nav a.active::after {
 
 /* Product Cards - 新样式 */
 .product-card {
-  height: 380px; /* Mobile: 图片228px (60%) + 内容152px (40%) */
+  min-height: 380px; /* Mobile: 图片228px (60%) + 内容152px (40%) */
   transition: all 0.3s ease;
 }
 
@@ -738,16 +738,16 @@ header nav a.active::after {
   aspect-ratio: 4/3;
 }
 
-/* 响应式卡片高度 */
+/* 响应式卡片最小高度 */
 @media (min-width: 640px) {
   .product-card {
-    height: 420px; /* Tablet: 图片252px (60%) + 内容168px (40%) */
+    min-height: 420px; /* Tablet: 图片252px (60%) + 内容168px (40%) */
   }
 }
 
 @media (min-width: 1024px) {
   .product-card {
-    height: 460px; /* Desktop: 图片276px (60%) + 内容184px (40%) */
+    min-height: 460px; /* Desktop: 图片276px (60%) + 内容184px (40%) */
   }
 }
 
