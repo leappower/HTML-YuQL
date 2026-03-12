@@ -14,7 +14,7 @@ const path = require('path');
 const config = {
   inputUIFile: path.join(__dirname, '../src/assets/ui-i18n.json'),
   inputProductFile: path.join(__dirname, '../src/assets/product-i18n.json'),
-  outputDir: path.join(__dirname, '../dist/lang'),
+  outputDir: path.join(__dirname, '../dist/assets/lang'),
 };
 
 /**
