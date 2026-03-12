@@ -1176,6 +1176,29 @@ import { IMAGE_ASSETS } from './image-assets.js';
     });
   }
 
+  function ensureMobileMenuClosed() {
+    console.log('ensureMobileMenuClosed: ensuring menu is closed on page load');
+    const menu = document.getElementById('mobile-menu');
+    const overlay = document.getElementById('mobile-menu-overlay');
+
+    if (menu) {
+      console.log('Menu classes before reset:', menu.className);
+      menu.classList.add('translate-x-full');
+      menu.classList.remove('translate-x-0', 'open');
+      console.log('Menu classes after reset:', menu.className);
+    }
+
+    if (overlay) {
+      console.log('Overlay classes before reset:', overlay.className);
+      overlay.classList.add('hidden');
+      console.log('Overlay classes after reset:', overlay.className);
+    }
+
+    // Ensure body scroll is not locked
+    document.body.style.overflow = '';
+    console.log('ensureMobileMenuClosed: menu reset complete');
+  }
+
   // ============================================
   // 测试环境判断 (localhost / 127.0.0.1)
   // ============================================
@@ -1766,6 +1789,8 @@ ${tr('mailto_label_resolution', 'Resolution')}: ${window.screen.width}x${window.
     setupIndicatorPrompt();
     setupMobileMenuAutoClose();
     setupSecondaryContactsAutoCollapse();
+    // Ensure mobile menu is closed on page load
+    ensureMobileMenuClosed();
   });
 
   let jumpAnimationSystem = null;

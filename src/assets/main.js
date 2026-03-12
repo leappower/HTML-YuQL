@@ -84,6 +84,12 @@ class MobileMenuModule {
   }
 
   setupMobileMenu() {
+    // Mobile menu is handled by utils.js toggleMobileMenu() function
+    // This module is disabled to avoid conflicts
+    return;
+
+    // Original code disabled:
+    /*
     const mobileMenuToggle = document.querySelector('[onclick="toggleMobileMenu()"]');
     const mobileMenu = document.getElementById('mobile-menu');
     const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
@@ -103,6 +109,7 @@ class MobileMenuModule {
     mobileMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', toggleMenu);
     });
+    */
   }
 }
 
