@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * 统一翻译适配器
+ * Gemini 翻译适配器
  *
- * 支持多种翻译服务:
- * 1. Google Translate (免费, 无需API Key)
- * 2. Gemini 3 API (高质量, 需要API Key)
- *
- * 优先使用Gemini API，失败时降级到Google Translate
+ * 仅使用 Gemini 3 API 进行高质量翻译
+ * 支持内容拆分以处理大文本
  */
 
 const https = require('https');
@@ -16,21 +13,16 @@ const https = require('https');
 const CONFIG = {
   // Gemini API配置
   gemini: {
-    enabled: true,
     apiBase: 'api.kuai.host',
     apiKey: 'sk-UbRnogvfRC0IZyRREiMFMUU8lYRYMVmB7Kwgh4mZ6RYnzj89',
     model: 'gemini-3-flash-preview',
     timeout: 30000,
-    maxRetries: 2,
+    maxRetries: 3,
+    retryDelay: 1000,
+    // 内容拆分配置
+    maxChunkSize: 2000, // 单个块的最大字符数
+    maxPromptLength: 8000, // 提示词最大长度（包括系统提示）
   },
-  // Google Translate配置
-  google: {
-    enabled: true,
-    timeout: 10000,
-    maxRetries: 2,
-  },
-  // 翻译策略: 'gemini-first' (优先Gemini) 或 'google-only' (仅Google)
-  strategy: process.env.TRANSLATION_STRATEGY || 'gemini-first',
 };
 
 // 语言代码映射
@@ -60,6 +52,62 @@ const LANGUAGE_NAMES = {
 };
 
 /**
+ * 将文本拆分成多个块
+ * @param {string} text - 要拆分的文本
+ * @param {number} maxChunkSize - 每个块的最大字符数
+ * @returns {Array<string>} 拆分后的文本块数组
+ */
+function splitTextIntoChunks(text, maxChunkSize) {
+  const chunks = [];
+  let currentChunk = '';
+  let currentLength = 0;
+
+  // 按句子拆分（保持句子完整）
+  const sentences = text.split(/([.。!！?？;；\n]+)/);
+
+  for (let i = 0; i < sentences.length; i++) {
+    const sentence = sentences[i];
+    const sentenceLength = sentence.length;
+
+    // 如果单个句子超过最大长度，强制拆分
+    if (sentenceLength > maxChunkSize) {
+      // 先保存当前块（如果有内容）
+      if (currentChunk.length > 0) {
+        chunks.push(currentChunk);
+        currentChunk = '';
+        currentLength = 0;
+      }
+
+      // 拆分长句子
+      for (let start = 0; start < sentenceLength; start += maxChunkSize) {
+        chunks.push(sentence.substring(start, start + maxChunkSize));
+      }
+      continue;
+    }
+
+    // 检查添加这个句子是否会超过最大长度
+    if (currentLength + sentenceLength <= maxChunkSize) {
+      currentChunk += sentence;
+      currentLength += sentenceLength;
+    } else {
+      // 保存当前块，开始新块
+      if (currentChunk.length > 0) {
+        chunks.push(currentChunk);
+      }
+      currentChunk = sentence;
+      currentLength = sentenceLength;
+    }
+  }
+
+  // 添加最后一个块
+  if (currentChunk.length > 0) {
+    chunks.push(currentChunk);
+  }
+
+  return chunks;
+}
+
+/**
  * 构建翻译提示词
  */
 function buildTranslationPrompt(text, targetLang) {
@@ -73,13 +121,12 @@ ${text}`;
 }
 
 /**
- * 调用Gemini API
+ * 调用 Gemini API
+ * @param {string} text - 要翻译的文本
+ * @param {string} targetLang - 目标语言
+ * @returns {Promise<string>} 翻译结果
  */
 async function translateWithGemini(text, targetLang) {
-  if (!CONFIG.gemini.enabled || CONFIG.strategy === 'google-only') {
-    throw new Error('Gemini API disabled or strategy is google-only');
-  }
-
   const prompt = buildTranslationPrompt(text, targetLang);
 
   return new Promise((resolve, reject) => {
@@ -147,99 +194,14 @@ async function translateWithGemini(text, targetLang) {
 }
 
 /**
- * 调用Google Translate API
+ * 带重试的翻译函数（支持内容拆分）
+ * @param {string} text - 待翻译文本
+ * @param {string} targetLang - 目标语言代码
+ * @param {number} retryCount - 当前重试次数
+ * @returns {Promise<string>} 翻译结果
  */
-async function translateWithGoogle(text, targetLang) {
-  if (!CONFIG.google.enabled) {
-    throw new Error('Google Translate disabled');
-  }
-
-  return new Promise((resolve, reject) => {
-    const sourceLang = 'zh-CN';
-    const query = new URLSearchParams({
-      client: 'gtx',
-      sl: sourceLang,
-      tl: targetLang,
-      dt: 't',
-      q: String(text || ''),
-    }).toString();
-
-    const options = {
-      hostname: 'translate.googleapis.com',
-      port: 443,
-      path: `/translate_a/single?${query}`,
-      method: 'GET',
-      headers: {
-        'User-Agent': 'HTML-YuQL-Translate/1.0',
-      },
-      timeout: CONFIG.google.timeout,
-    };
-
-    let timeoutId = null;
-    let isResolved = false;
-
-    const safeResolve = (value) => {
-      if (!isResolved) {
-        isResolved = true;
-        if (timeoutId) clearTimeout(timeoutId);
-        resolve(value);
-      }
-    };
-
-    const safeReject = (error) => {
-      if (!isResolved) {
-        isResolved = true;
-        if (timeoutId) clearTimeout(timeoutId);
-        reject(error);
-      }
-    };
-
-    timeoutId = setTimeout(() => {
-      safeReject(new Error('Google Translate timeout'));
-    }, options.timeout);
-
-    const req = https.request(options, (res) => {
-      let data = '';
-
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      res.on('end', () => {
-        try {
-          const json = JSON.parse(data);
-          if (json[0]) {
-            const translated = json[0].map(item => item[0]).filter(Boolean).join('');
-            safeResolve(translated);
-          } else {
-            safeResolve(text);
-          }
-        } catch (error) {
-          console.error('Google Translate parsing error:', error.message);
-          safeResolve(text);
-        }
-      });
-    });
-
-    req.on('error', (error) => {
-      console.error('Google Translate request error:', error.message);
-      safeResolve(text);
-    });
-
-    req.end();
-  });
-}
-
-/**
- * 统一翻译函数
- * 优先使用Gemini，失败时降级到Google Translate
- */
-async function translate(text, targetLang, options = {}) {
-  const {
-    retries = 0,
-    maxRetries = 3,
-    useGemini = true,
-  } = options;
+async function translateWithRetry(text, targetLang, retryCount = 0) {
+  const maxRetries = CONFIG.gemini.maxRetries;
 
   // 输入验证
   if (!text || typeof text !== 'string' || text.trim() === '') {
@@ -251,42 +213,77 @@ async function translate(text, targetLang, options = {}) {
     return text;
   }
 
-  // 根据策略选择翻译服务
-  if (CONFIG.strategy === 'gemini-first' && useGemini && CONFIG.gemini.enabled) {
-    try {
-      console.log(`[Gemini] 翻译到 ${targetLang}: ${text.substring(0, 50)}...`);
-      const result = await translateWithGemini(text, targetLang);
-      if (result && result !== text) {
-        console.log('[Gemini] 翻译成功');
-        return result;
-      }
-    } catch (error) {
-      console.error(`[Gemini] 翻译失败: ${error.message}`);
-      console.log('[Google] 降级到Google Translate...');
-    }
-  }
-
-  // 使用Google Translate
   try {
-    console.log(`[Google] 翻译到 ${targetLang}: ${text.substring(0, 50)}...`);
-    const result = await translateWithGoogle(text, targetLang);
-    console.log('[Google] 翻译成功');
-    return result;
-  } catch (error) {
-    console.error(`[Google] 翻译失败: ${error.message}`);
+    // 检查文本长度，决定是否需要拆分
+    const promptLength = buildTranslationPrompt(text, targetLang).length;
 
-    // 重试
-    if (retries < maxRetries) {
-      const delay = 1000 * Math.pow(2, retries);
+    if (promptLength > CONFIG.gemini.maxPromptLength) {
+      // 文本过长，需要拆分翻译
+      console.log(`[Gemini] 文本过长 (${promptLength} 字符)，开始拆分翻译...`);
+      return await translateInChunks(text, targetLang);
+    } else {
+      // 文本长度合适，直接翻译
+      console.log(`[Gemini] 翻译到 ${targetLang}: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`);
+      const result = await translateWithGemini(text, targetLang);
+      console.log('[Gemini] 翻译成功');
+      return result;
+    }
+  } catch (error) {
+    console.error(`翻译失败 (尝试 ${retryCount + 1}/${maxRetries + 1}): ${error.message}`);
+
+    if (retryCount < maxRetries) {
+      // 指数退避
+      const delay = CONFIG.gemini.retryDelay * Math.pow(2, retryCount);
       console.log(`等待 ${delay}ms 后重试...`);
       await new Promise(resolve => setTimeout(resolve, delay));
-      return translate(text, targetLang, { ...options, retries: retries + 1 });
+      return translateWithRetry(text, targetLang, retryCount + 1);
     }
 
     // 重试耗尽，返回原始文本
     console.error('翻译失败，返回原始文本');
     return text;
   }
+}
+
+/**
+ * 分块翻译大文本
+ * @param {string} text - 要翻译的文本
+ * @param {string} targetLang - 目标语言
+ * @returns {Promise<string>} 合并后的翻译结果
+ */
+async function translateInChunks(text, targetLang) {
+  const chunks = splitTextIntoChunks(text, CONFIG.gemini.maxChunkSize);
+  console.log(`[Gemini] 拆分为 ${chunks.length} 个块`);
+
+  const translatedChunks = [];
+
+  for (let i = 0; i < chunks.length; i++) {
+    console.log(`[Gemini] 翻译块 ${i + 1}/${chunks.length} (${chunks[i].length} 字符)`);
+    try {
+      const translated = await translateWithGemini(chunks[i], targetLang);
+      translatedChunks.push(translated);
+      console.log(`[Gemini] 块 ${i + 1} 翻译成功`);
+    } catch (error) {
+      console.error(`[Gemini] 块 ${i + 1} 翻译失败: ${error.message}`);
+      // 翻译失败时保留原文
+      translatedChunks.push(chunks[i]);
+    }
+  }
+
+  // 合并所有翻译块
+  const result = translatedChunks.join('');
+  console.log(`[Gemini] 合并翻译完成，总长度: ${result.length} 字符`);
+  return result;
+}
+
+/**
+ * 统一翻译函数
+ * @param {string} text - 待翻译文本
+ * @param {string} targetLang - 目标语言代码
+ * @returns {Promise<string>} 翻译结果
+ */
+async function translate(text, targetLang) {
+  return translateWithRetry(text, targetLang, 0);
 }
 
 /**
@@ -318,19 +315,17 @@ async function batchTranslate(texts, targetLang, progressCallback) {
  */
 async function main() {
   console.log('========================================');
-  console.log('  统一翻译适配器测试');
+  console.log('  Gemini 翻译适配器测试');
   console.log('========================================\n');
 
-  console.log(`翻译策略: ${CONFIG.strategy}\n`);
-
   const testCases = [
-    { text: '多功能自动漂烫焯水油炸机大容量触屏版', target: 'en' },
-    { text: '超大容量；自动摆臂喷料；800菜谱；语音播报', target: 'en' },
-    { text: '肉制品、蔬菜等焯水/漂烫/去农残预处理', target: 'en' },
+    { text: '多功能自动漂烫焯水油炸机大容量触屏版', target: 'en', desc: '短文本' },
+    { text: '超大容量；自动摆臂喷料；800菜谱；语音播报', target: 'en', desc: '中等文本' },
+    { text: '肉制品、蔬菜等焯水/漂烫/去农残预处理', target: 'en', desc: '产品应用' },
   ];
 
   for (const test of testCases) {
-    console.log(`\n测试: ${test.text.substring(0, 40)}...`);
+    console.log(`\n测试 (${test.desc}): ${test.text.substring(0, 30)}...`);
     console.log(`目标语言: ${test.target}`);
 
     const result = await translate(test.text, test.target);
@@ -343,6 +338,18 @@ async function main() {
     }
   }
 
+  // 测试大文本拆分
+  console.log('\n========================================');
+  console.log('测试大文本拆分翻译');
+  console.log('========================================\n');
+
+  const longText = '多功能自动漂烫焯水油炸机大容量触屏版。超大容量设计，适合商业厨房使用。自动摆臂喷料系统，确保调料均匀分布。内置800道智能菜谱，涵盖中餐、西餐、日料等多种菜系。智能语音播报功能，实时提示烹饪进度和操作提示。304不锈钢材质，食品级安全标准。耐高温设计，使用寿命长。易清洗设计，维护简单。智能温度控制系统，精确控温，温度范围30-200℃。智能时间控制系统，可定时烹饪，解放双手。自动报警系统，异常情况及时提醒。安全防护设计，防干烧、防过热、防漏电。';
+
+  console.log(`原始文本长度: ${longText.length} 字符`);
+  const translationResult = await translate(longText, 'en');
+  console.log(`翻译结果长度: ${translationResult.length} 字符`);
+  console.log(`\n翻译结果:\n${translationResult}`);
+
   console.log('\n========================================');
   console.log('  测试完成');
   console.log('========================================\n');
@@ -352,6 +359,9 @@ async function main() {
 module.exports = {
   translate,
   batchTranslate,
+  splitTextIntoChunks,
+  translateInChunks,
+  translateWithGemini,
   CONFIG,
   LANGUAGE_NAMES,
 };
