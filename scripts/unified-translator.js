@@ -358,6 +358,7 @@ async function main() {
 // 导出
 module.exports = {
   translate,
+  translateWithRetry,  // 添加导出
   batchTranslate,
   splitTextIntoChunks,
   translateInChunks,
