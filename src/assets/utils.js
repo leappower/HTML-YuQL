@@ -1101,7 +1101,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
   // MOBILE MENU
   // ============================================
   function isMobileMenuOpen(menu) {
-    return menu.classList.contains('translate-x-0') && !menu.classList.contains('translate-x-full');
+    return menu.classList.contains('translate-x-0');
   }
 
   let lastMobileMenuToggleAt = 0;
@@ -1110,7 +1110,14 @@ import { IMAGE_ASSETS } from './image-assets.js';
     const overlay = document.getElementById('mobile-menu-overlay');
     const menu = document.getElementById('mobile-menu');
 
-    if (!overlay || !menu) return;
+    if (!overlay || !menu) {
+      console.error('setMobileMenuOpen: overlay or menu not found', { overlay, menu });
+      return;
+    }
+
+    console.log('setMobileMenuOpen called with:', shouldOpen);
+    console.log('Before change - menu classes:', menu.className);
+    console.log('Before change - overlay classes:', overlay.className);
 
     if (shouldOpen) {
       overlay.classList.remove('hidden');
@@ -1123,13 +1130,18 @@ import { IMAGE_ASSETS } from './image-assets.js';
       menu.classList.remove('translate-x-0');
       document.body.style.overflow = '';
     }
+
+    console.log('After change - menu classes:', menu.className);
+    console.log('After change - overlay classes:', overlay.className);
   }
 
   function toggleMobileMenu(forceOpen) {
     console.log('toggleMobileMenu called with:', forceOpen);
     const menu = document.getElementById('mobile-menu');
     console.log('menu element:', menu);
-    
+    console.log('menu classes:', menu?.className);
+    console.log('isMobileMenuOpen:', isMobileMenuOpen(menu));
+
     if (!menu) {
       console.error('Mobile menu element not found!');
       return;
@@ -1139,6 +1151,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
     const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !isMobileMenuOpen(menu);
     console.log('shouldOpen:', shouldOpen);
     setMobileMenuOpen(shouldOpen);
+    console.log('After setMobileMenuOpen, menu classes:', menu?.className);
   }
 
   function setupMobileMenuAutoClose() {
