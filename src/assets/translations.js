@@ -295,7 +295,7 @@ class TranslationManager {
   }
 
   /**
-   * Show language loading indicator for smooth language switching
+   * Show language loading indicator for smooth language switching (without spinner)
    */
   showLanguageLoadingIndicator() {
     let indicator = document.getElementById('language-loading-indicator');
@@ -317,20 +317,8 @@ class TranslationManager {
         animation: slideIn 0.3s ease-out;
       `;
       indicator.innerHTML = `
-        <div style="
-          border: 3px solid #f3f3f3;
-          border-top: 3px solid #3498db;
-          border-radius: 50%;
-          width: 20px;
-          height: 20px;
-          animation: spin 1s linear infinite;
-        "></div>
         <span style="color: #333; font-size: 14px; font-weight: 500;">${this.uiText('loading_language', 'Loading language...')}</span>
         <style>
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
           @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
