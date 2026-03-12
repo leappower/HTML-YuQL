@@ -823,7 +823,7 @@ class TranslationManager {
 
   async initialize() {
     try {
-      console.log('Initializing translation system...');
+      console.log('Initializing translation system with lazy loading strategy...');
 
       // Detect browser language if not already set (only once)
       if (!localStorage.getItem('browserLang')) {
@@ -839,14 +839,20 @@ class TranslationManager {
       // Set current language without triggering save
       this.currentLanguage = initialLang;
 
-      // Load current language plus fallback dictionaries together.
+      // Load UI translations only (lightweight, ~16KB)
+      console.log('Loading UI translations first...');
       const languagesToLoad = new Set([initialLang, 'en', 'zh-CN']);
-      await Promise.all(Array.from(languagesToLoad).map((lang) => this.loadTranslations(lang)));
+      await Promise.all(Array.from(languagesToLoad).map((lang) => this.loadUITranslations(lang)));
+
+      // Apply UI translations to DOM
       await this.applyTranslations();
 
       // Set up event listeners
       this.setupEventListeners();
       this.setupDomObserver();
+
+      // Setup product section preload observer
+      this.setupProductSectionPreload();
 
       // Update document language
       document.documentElement.lang = this.currentLanguage;
@@ -854,7 +860,8 @@ class TranslationManager {
       // Mark as initialized
       this.isInitialized = true;
 
-      console.log('Translation system initialized successfully with language:', this.currentLanguage);
+      console.log('Translation system initialized successfully with UI translations only');
+      console.log('Product data will be loaded on demand when accessing product section');
 
       // Emit initialization event
       this.emit('initialized', { language: this.currentLanguage });
@@ -865,7 +872,7 @@ class TranslationManager {
       // Fallback: try to initialize with Chinese Simplified (but don't save it as user choice)
       try {
         this.currentLanguage = 'zh-CN';
-        await this.loadTranslations('zh-CN');
+        await this.loadUITranslations('zh-CN');
         await this.applyTranslations();
         document.documentElement.lang = 'zh-CN';
         console.log('Fallback initialization successful');
