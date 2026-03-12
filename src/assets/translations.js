@@ -150,6 +150,115 @@ class TranslationManager {
     };
   }
 
+  /**
+   * Lazy load product data when needed
+   * Automatically shows loading indicator
+   */
+  async lazyLoadProductData(lang, showLoadingIndicator = true) {
+    const cacheKey = `product-${lang}`;
+
+    // Check if already loaded
+    if (this.translationsCache.has(cacheKey)) {
+      console.log(`✅ Product data already loaded for ${lang}`);
+      return this.translationsCache.get(cacheKey);
+    }
+
+    // Show loading indicator
+    if (showLoadingIndicator) {
+      this.showLoadingIndicator();
+    }
+
+    try {
+      console.log(`🔄 Lazy loading product data for ${lang}...`);
+      const productTranslations = await this.loadProductTranslations(lang);
+
+      // Merge with existing UI translations
+      const uiCacheKey = `ui-${lang}`;
+      const uiTranslations = this.translationsCache.get(uiCacheKey) || {};
+      const mergedTranslations = this.mergeTranslations(uiTranslations, productTranslations);
+
+      // Update cache with merged data
+      this.translationsCache.set(lang, mergedTranslations);
+
+      // Hide loading indicator
+      if (showLoadingIndicator) {
+        this.hideLoadingIndicator();
+      }
+
+      console.log(`✅ Product data loaded and merged for ${lang}`);
+      return mergedTranslations;
+    } catch (error) {
+      console.error(`❌ Failed to lazy load product data for ${lang}:`, error);
+
+      // Hide loading indicator
+      if (showLoadingIndicator) {
+        this.hideLoadingIndicator();
+      }
+
+      throw error;
+    }
+  }
+
+  /**
+   * Show loading indicator for product data
+   */
+  showLoadingIndicator() {
+    let indicator = document.getElementById('product-loading-indicator');
+    if (!indicator) {
+      indicator = document.createElement('div');
+      indicator.id = 'product-loading-indicator';
+      indicator.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      `;
+      indicator.innerHTML = `
+        <div style="
+          background: white;
+          padding: 20px 40px;
+          border-radius: 8px;
+          text-align: center;
+        ">
+          <div style="
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+          "></div>
+          <p style="margin: 0; color: #333;">${this.t('loading') || '加载中...'}</p>
+        </div>
+        <style>
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        </style>
+      `;
+      document.body.appendChild(indicator);
+    }
+    indicator.style.display = 'flex';
+  }
+
+  /**
+   * Hide loading indicator
+   */
+  hideLoadingIndicator() {
+    const indicator = document.getElementById('product-loading-indicator');
+    if (indicator) {
+      indicator.style.display = 'none';
+    }
+  }
+
   async fetchTranslations(lang) {
     try {
       // Load all translations from single i18n.json file
