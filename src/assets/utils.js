@@ -1051,7 +1051,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
   }
 
   function startWhatsApp() { window.open('https://wa.me/16478158194?text=' + encodeURIComponent(tr('contact_whatsapp_prefill', 'Hello! I am interested in your products.')), '_blank'); }
-  function startLine() { window.open('https://line.me/ti/p/@baeckerei-profi', '_blank'); }
+  function startLine() { window.open('https://line.me/ti/p/@66840273150', '_blank'); }
   function startPhone() { window.location.href = 'tel:+16478158194'; }
   function startTelegram() { window.open('https://t.me/baeckerei-profi', '_blank'); }
   function startEmail() {
