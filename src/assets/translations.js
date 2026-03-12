@@ -908,9 +908,6 @@ class TranslationManager {
 
       console.log(`Switching language from ${this.currentLanguage} to ${lang}`);
 
-      // Show loading indicator for smooth transition
-      this.showLanguageLoadingIndicator();
-
       try {
         // Preload target language with high priority
         console.log(`🔄 Preloading target language ${lang} before switch...`);
@@ -923,8 +920,8 @@ class TranslationManager {
         // Save to localStorage
         localStorage.setItem('userLanguage', lang);
 
-        // Apply translations with smooth transition
-        await this.applyTranslationsWithTransition(previousLanguage, lang);
+        // Apply translations directly without transition animation
+        await this.applyTranslations();
 
         // Update document language
         document.documentElement.lang = lang;
@@ -955,15 +952,11 @@ class TranslationManager {
         console.log(`Successfully switched to language: ${lang}`);
 
       } finally {
-        // Hide loading indicator
-        this.hideLanguageLoadingIndicator();
+        // No loading indicator to hide
       }
 
     } catch (error) {
       console.error('Failed to set language:', error);
-
-      // Hide loading indicator in case of error
-      this.hideLanguageLoadingIndicator();
 
       // Try fallback to Chinese Simplified
       if (lang !== 'zh-CN') {
