@@ -1138,9 +1138,14 @@ import { IMAGE_ASSETS } from './image-assets.js';
   function toggleMobileMenu(forceOpen) {
     console.log('toggleMobileMenu called with:', forceOpen);
     const menu = document.getElementById('mobile-menu');
+    const button = document.getElementById('mobile-menu-btn');
     console.log('menu element:', menu);
     console.log('menu classes:', menu?.className);
     console.log('isMobileMenuOpen:', isMobileMenuOpen(menu));
+    console.log('button element:', button);
+    console.log('button classes:', button?.className);
+    console.log('button z-index:', window.getComputedStyle(button).zIndex);
+    console.log('button pointer-events:', window.getComputedStyle(button).pointerEvents);
 
     if (!menu) {
       console.error('Mobile menu element not found!');
