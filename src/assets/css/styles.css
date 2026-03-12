@@ -725,7 +725,7 @@ header nav a.active::after {
 
 /* Product Cards - 新样式 */
 .product-card {
-  height: 380px; /* Mobile: 图片228px (60%) + 内容152px (40%) - 固定高度 */
+  height: 390px; /* Mobile: 图片228px + 内容162px */
   transition: all 0.3s ease;
 }
 
@@ -741,13 +741,13 @@ header nav a.active::after {
 /* 响应式卡片固定高度 */
 @media (min-width: 640px) {
   .product-card {
-    height: 420px; /* Tablet: 图片252px (60%) + 内容168px (40%) */
+    height: 440px; /* Tablet: 图片252px + 内容188px */
   }
 }
 
 @media (min-width: 1024px) {
   .product-card {
-    height: 460px; /* Desktop: 图片276px (60%) + 内容184px (40%) */
+    height: 490px; /* Desktop: 图片276px + 内容214px */
   }
 }
 
@@ -1032,25 +1032,29 @@ header nav a.active::after {
     flex: 0 0 min(88vw, 315px);
     max-width: min(88vw, 315px);
     scroll-snap-align: start;
-    height: 380px !important;
+    height: 390px !important;
   }
 
   .product-grid-mobile .product-card > div:first-child {
     height: 228px !important;
   }
 
-  /* 移动端内容区域压缩 */
+  /* 移动端内容区域微调 */
   .product-grid-mobile .product-card > div:last-child {
     padding: 0.625rem;
   }
 
   .product-grid-mobile .product-card h3 {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .product-grid-mobile .product-card button {
-    min-height: 30px;
-    font-size: 10px;
+    height: 30px;
+    font-size: 11px;
+  }
+
+  .product-grid-mobile .product-card button .material-symbols-outlined {
+    font-size: 9px;
   }
 
   .product-meta-nav {
@@ -2043,7 +2047,7 @@ header nav a.active::after {
   .product-grid-mobile .product-card {
     flex-basis: min(88vw, 315px);
     max-width: min(88vw, 315px);
-    height: 380px !important;
+    height: 390px !important;
   }
 
   .product-grid-mobile .product-card > div:first-child {
