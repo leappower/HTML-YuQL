@@ -259,6 +259,107 @@ class TranslationManager {
     }
   }
 
+  /**
+   * Preload product data in the background
+   * Uses requestIdleCallback to avoid blocking main thread
+   */
+  preloadProductData(lang, priority = 'low') {
+    const cacheKey = `product-${lang}`;
+
+    // Check if already loaded or loading
+    if (this.translationsCache.has(cacheKey)) {
+      console.log(`✅ Product data already loaded for ${lang}`);
+      return Promise.resolve(this.translationsCache.get(cacheKey));
+    }
+
+    if (this.pendingLoads.has(cacheKey)) {
+      console.log(`⏳ Product data already loading for ${lang}`);
+      return this.pendingLoads.get(cacheKey);
+    }
+
+    const loadPromise = new Promise((resolve, reject) => {
+      const loadFunction = async () => {
+        try {
+          console.log(`🔄 Preloading product data for ${lang} (priority: ${priority})...`);
+          const productTranslations = await this.loadProductTranslations(lang);
+
+          // Merge with existing UI translations
+          const uiCacheKey = `ui-${lang}`;
+          const uiTranslations = this.translationsCache.get(uiCacheKey) || {};
+          const mergedTranslations = this.mergeTranslations(uiTranslations, productTranslations);
+
+          // Update cache
+          this.translationsCache.set(lang, mergedTranslations);
+
+          console.log(`✅ Product data preloaded for ${lang}`);
+          resolve(mergedTranslations);
+        } catch (error) {
+          console.error(`❌ Failed to preload product data for ${lang}:`, error);
+          reject(error);
+        }
+      };
+
+      // Use different strategies based on priority
+      if (priority === 'high') {
+        // High priority: load immediately
+        loadFunction();
+      } else if (priority === 'medium') {
+        // Medium priority: use setTimeout with short delay
+        setTimeout(loadFunction, 100);
+      } else {
+        // Low priority: use requestIdleCallback
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(() => loadFunction(), {
+            timeout: 2000 // Fallback to immediate after 2s
+          });
+        } else {
+          // Fallback: use setTimeout
+          setTimeout(loadFunction, 200);
+        }
+      }
+    });
+
+    this.pendingLoads.set(cacheKey, loadPromise);
+
+    // Cleanup pending loads
+    loadPromise.finally(() => {
+      this.pendingLoads.delete(cacheKey);
+    });
+
+    return loadPromise;
+  }
+
+  /**
+   * Observe when product section is visible and trigger preload
+   */
+  setupProductSectionPreload() {
+    const observerCallback = (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          console.log('👀 Product section visible, triggering preload...');
+          const lang = this.currentLanguage;
+          this.preloadProductData(lang, 'medium');
+          observer.disconnect(); // Only preload once
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      root: null,
+      rootMargin: '200px', // Start preloading 200px before visible
+      threshold: 0.1
+    });
+
+    // Observe product section
+    const productSection = document.getElementById('product-section') ||
+                           document.querySelector('[data-product-section]');
+    if (productSection) {
+      observer.observe(productSection);
+    }
+
+    return observer;
+  }
+
   async fetchTranslations(lang) {
     try {
       // Load all translations from single i18n.json file
