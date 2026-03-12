@@ -725,6 +725,7 @@ header nav a.active::after {
 
 /* Product Cards - 新样式 */
 .product-card {
+  height: 380px; /* Mobile: 图片228px (60%) + 内容152px (40%) */
   transition: all 0.3s ease;
 }
 
@@ -735,6 +736,19 @@ header nav a.active::after {
 
 .product-card .aspect-\[4\/3\] {
   aspect-ratio: 4/3;
+}
+
+/* 响应式卡片高度 */
+@media (min-width: 640px) {
+  .product-card {
+    height: 420px; /* Tablet: 图片252px (60%) + 内容168px (40%) */
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-card {
+    height: 460px; /* Desktop: 图片276px (60%) + 内容184px (40%) */
+  }
 }
 
 /* iOS-like page switcher in product meta */
@@ -1015,17 +1029,21 @@ header nav a.active::after {
   }
 
   .product-grid-mobile .product-card {
-    flex: 0 0 min(84vw, 330px);
-    max-width: min(84vw, 330px);
+    flex: 0 0 min(88vw, 315px);
+    max-width: min(88vw, 315px);
     scroll-snap-align: start;
   }
 
-  /* Tighten vertical spacing in mobile product cards */
-  .product-grid-mobile .product-card > div:first-child {
-    height: 168px;
-    min-height: 168px;
+  /* 移动端产品卡高度覆盖 */
+  .product-grid-mobile .product-card {
+    height: 380px !important;
   }
 
+  .product-grid-mobile .product-card > div:first-child {
+    height: 228px !important;
+  }
+
+  /* Tighten vertical spacing in mobile product cards */
   .product-grid-mobile .product-card > div:last-child {
     padding-top: 0.625rem;
     padding-bottom: 0.625rem;
@@ -2042,6 +2060,15 @@ header nav a.active::after {
   .product-grid-mobile .product-card {
     flex-basis: min(88vw, 315px);
     max-width: min(88vw, 315px);
+  }
+
+  /* 移动端产品卡高度覆盖（保持一致） */
+  .product-grid-mobile .product-card {
+    height: 380px !important;
+  }
+
+  .product-grid-mobile .product-card > div:first-child {
+    height: 228px !important;
   }
 }
 
