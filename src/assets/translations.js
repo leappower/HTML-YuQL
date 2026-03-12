@@ -76,6 +76,80 @@ class TranslationManager {
     }
   }
 
+  /**
+   * Load UI translations only (lightweight, ~16KB per language)
+   * Used for initial page load to improve TTI
+   */
+  async loadUITranslations(lang) {
+    const cacheKey = `ui-${lang}`;
+    if (this.translationsCache.has(cacheKey)) {
+      return this.translationsCache.get(cacheKey);
+    }
+
+    try {
+      const response = await fetch(`./assets/lang/${lang}-ui.json?ts=${Date.now()}`, {
+        cache: 'no-store'
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      const uiTranslations = await response.json();
+      const normalizedData = this.normalizeTranslationKeys(uiTranslations);
+      this.translationsCache.set(cacheKey, normalizedData);
+      console.log(`✅ Loaded UI translations for ${lang} (${Object.keys(uiTranslations).length} keys)`);
+      return normalizedData;
+    } catch (error) {
+      console.error(`Failed to load UI translations for ${lang}:`, error);
+      // Fallback to Chinese (Simplified)
+      if (lang !== 'zh-CN') {
+        return this.loadUITranslations('zh-CN');
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Load product data translations (heavy, ~140KB per language)
+   * Used when accessing product pages
+   */
+  async loadProductTranslations(lang) {
+    const cacheKey = `product-${lang}`;
+    if (this.translationsCache.has(cacheKey)) {
+      return this.translationsCache.get(cacheKey);
+    }
+
+    try {
+      const response = await fetch(`./assets/lang/${lang}-product.json?ts=${Date.now()}`, {
+        cache: 'no-store'
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      const productTranslations = await response.json();
+      const normalizedData = this.normalizeTranslationKeys(productTranslations);
+      this.translationsCache.set(cacheKey, normalizedData);
+      console.log(`✅ Loaded product translations for ${lang} (${Object.keys(productTranslations).length} keys)`);
+      return normalizedData;
+    } catch (error) {
+      console.error(`Failed to load product translations for ${lang}:`, error);
+      // Fallback to Chinese (Simplified)
+      if (lang !== 'zh-CN') {
+        return this.loadProductTranslations('zh-CN');
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Merge UI and product translations
+   */
+  mergeTranslations(uiTranslations, productTranslations) {
+    return {
+      ...uiTranslations,
+      ...productTranslations
+    };
+  }
+
   async fetchTranslations(lang) {
     try {
       // Load all translations from single i18n.json file
