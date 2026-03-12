@@ -310,3 +310,5 @@ if (document.readyState === 'loading') {
 
 // Expose app instance for debugging
 window.app = app;
+// Export App class for testing
+export { App };

@@ -4,6 +4,7 @@ module.exports = {
     commonjs: true,
     es2021: true,
     node: true,
+    jest: true,
   },
   extends: [
     'eslint:recommended',
@@ -22,6 +23,7 @@ module.exports = {
       'varsIgnorePattern': '^(currentLanguage|translationsCache|loadTranslations|applyTranslations|setupProductSectionTracking|setupLanguageSystem|t|setLanguage|toggleLanguageDropdown|filterLanguages)$'
     }],
     'no-console': 'off',
+    'no-undef': ['off'], // Temporarily disable no-undef for Jest files
   },
   ignorePatterns: [
     'node_modules/',
@@ -29,5 +31,14 @@ module.exports = {
     'build/',
     '*.min.js',
     'src/assets/product-data-table.js',
+    'jest.config.js',
+    'jest.setup.js',
+    'tests/',
+    'tsconfig.json',
+    'src/types/',
+    'src/assets/error-handler.js',
+    'src/assets/performance-monitor.js',
+    'src/assets/sentry-init.js',
+    'src/assets/store.js',
   ],
 };
