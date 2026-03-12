@@ -58,6 +58,11 @@ module.exports = (_, argv = {}) => {
         {
           directory: path.join(__dirname, 'dist'),
         },
+        // Try dist/assets/lang first (new format with split files), fallback to src/assets/lang
+        {
+          directory: path.join(__dirname, 'dist/assets/lang'),
+          publicPath: '/assets/lang',
+        },
         {
           directory: path.join(__dirname, 'src/assets/lang'),
           publicPath: '/assets/lang',
