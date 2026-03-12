@@ -245,17 +245,17 @@ All files are saved with keys in **alphabetical order**:
 
 ### Check Product Keys Count
 ```bash
-node -e "const fs=require('fs');const zh=JSON.parse(fs.readFileSync('src/assets/translations/zh.json','utf8'));const en=JSON.parse(fs.readFileSync('src/assets/translations/en.json','utf8'));const prod=JSON.parse(fs.readFileSync('scripts/producti18n.json','utf8'));const zhKeys=Object.keys(zh).filter(k=>/^[0-9a-f]{8}/.test(k));const enKeys=Object.keys(en).filter(k=>/^[0-9a-f]{8}/.test(k));const prodKeys=Object.keys(prod).filter(k=>/^[0-9a-f]{8}/.test(k));console.log('zh.json:', zhKeys.length, 'keys');console.log('en.json:', enKeys.length, 'keys');console.log('producti18n.json:', prodKeys.length, 'keys');"
+node -e "const fs=require('fs');const zhCN=JSON.parse(fs.readFileSync('src/assets/lang/zh-CN.json','utf8'));const en=JSON.parse(fs.readFileSync('src/assets/lang/en.json','utf8'));const prod=JSON.parse(fs.readFileSync('scripts/producti18n.json','utf8'));const zhCNKeys=Object.keys(zhCN).filter(k=>/^[0-9a-f]{8}/.test(k));const enKeys=Object.keys(en).filter(k=>/^[0-9a-f]{8}/.test(k));const prodKeys=Object.keys(prod).filter(k=>/^[0-9a-f]{8}/.test(k));console.log('zh-CN.json:', zhCNKeys.length, 'keys');console.log('en.json:', enKeys.length, 'keys');console.log('producti18n.json:', prodKeys.length, 'keys');"
 ```
 
-### Check All 22 Languages
+### Check All 21 Languages
 ```bash
-node -e "const fs=require('fs');['ar','de','en','es','fil','fr','he','id','it','ja','ko','ms','nl','pl','pt','ru','th','tr','vi','zh','zh-CN','zh-TW'].forEach(lang=>{const data=JSON.parse(fs.readFileSync('src/assets/translations/'+lang+'.json','utf8'));const keys=Object.keys(data).filter(k=>/^[0-9a-f]{8}/.test(k));console.log(lang+': '+keys.length);});"
+node -e "const fs=require('fs');['ar','de','en','es','fil','fr','he','id','it','ja','ko','ms','nl','pl','pt','ru','th','tr','vi','zh-CN','zh-TW'].forEach(lang=>{const data=JSON.parse(fs.readFileSync('src/assets/lang/'+lang+'.json','utf8'));const keys=Object.keys(data).filter(k=>/^[0-9a-f]{8}/.test(k));console.log(lang+': '+keys.length);});"
 ```
 
 ### Sample Product Key Value
 ```bash
-node -e "const fs=require('fs');const zh=JSON.parse(fs.readFileSync('src/assets/translations/zh.json','utf8'));const en=JSON.parse(fs.readFileSync('src/assets/translations/en.json','utf8'));console.log('Key 003c70e2_name:');console.log('  zh:', zh['003c70e2_name']);console.log('  en:', en['003c70e2_name']);"
+node -e "const fs=require('fs');const zhCN=JSON.parse(fs.readFileSync('src/assets/lang/zh-CN.json','utf8'));const en=JSON.parse(fs.readFileSync('src/assets/lang/en.json','utf8'));console.log('Key 003c70e2_name:');console.log('  zh-CN:', zhCN['003c70e2_name']);console.log('  en:', en['003c70e2_name']);"
 ```
 
 ---
@@ -278,7 +278,7 @@ node -e "const fs=require('fs');const zh=JSON.parse(fs.readFileSync('src/assets/
 - `/scripts/product-sync-i18n.js` - Sync script (NEW)
 - `/scripts/product-i18n-adapter.js` - Extract script
 - `/scripts/product-translate-adapter.js` - Translation script
-- `/src/assets/translations/*.json` - Translation files (22 languages)
+- `/src/assets/lang/*.json` - Translation files (21 languages)
 - `/scripts/producti18n.json` - Product temporary data
 
 ---

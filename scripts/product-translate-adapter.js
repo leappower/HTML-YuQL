@@ -223,8 +223,8 @@ function extractChineseProductData() {
 }
 
 /**
- * 保存翻译数据到 src/assets/translations/*.json（合并模式）
- * producti18n.json 是中文原始文件，翻译结果只写 translations 目录
+ * 保存翻译数据到 src/assets/lang/*.json（合并模式）
+ * producti18n.json 是中文原始文件，翻译结果只写 lang 目录
  */
 function saveTranslationFiles(translationsByLang) {
   let saved = 0;
@@ -380,7 +380,7 @@ async function translateProducts(apiKey) {
 
   const totalProducts = productSeries.reduce((sum, series) => sum + ((series.products || []).length), 0);
   if (totalProducts === 0) {
-    console.error('❌ PRODUCT_DATA_TABLE contains 0 products. Cannot write product translations to zh.json.');
+    console.error('❌ PRODUCT_DATA_TABLE contains 0 products. Cannot write product translations.');
     console.error('💡 Please check Feishu field mapping (category/subCategory/model/name) and regenerate product-data-table.js.');
     process.exit(1);
   }
@@ -525,8 +525,8 @@ async function translateProducts(apiKey) {
     console.log(`✅ Processed ${lang}`);
   }
 
-  // 6. 保存翻译结果到 src/assets/translations/*.json
-  console.log('\n💾 Saving product translations to translations/*.json...\n');
+  // 6. 保存翻译结果到 src/assets/lang/*.json
+  console.log('\n💾 Saving product translations to lang/*.json...\n');
   try {
     saveTranslationFiles(translations);
 
@@ -548,7 +548,7 @@ async function translateProducts(apiKey) {
     console.error(`❌ Failed saving translations: ${err.message}`);
   }
 
-  console.log('\n✨ Done! All products translated and saved to translations/*.json.\n');
+  console.log('\n✨ Done! All products translated and saved to lang/*.json.\n');
 }
 
 /**

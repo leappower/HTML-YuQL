@@ -41,7 +41,7 @@
 │   ├── main.js             # 模块化主逻辑
 │   ├── translations.js     # 翻译管理器
 │   ├── init.js             # 初始化和用户跟踪
-│   └── translations/       # 翻译文件目录
+│   └── lang/               # 翻译文件目录
 │       ├── zh-CN.json      # 中文翻译
 │       ├── en.json         # 英语翻译
 │       └── ...             # 其他语言

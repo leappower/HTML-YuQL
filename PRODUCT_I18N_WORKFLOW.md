@@ -274,39 +274,37 @@ scripts/
 ### 输出文件
 ```
 src/assets/
-├── translations/
-│   ├── zh.json                 # 中文+UI翻译
+├── lang/
 │   ├── zh-CN.json              # 简体中文翻译
 │   ├── en.json                 # 英文翻译
 │   ├── de.json, es.json, ...   # 其他20种语言
-│   └── (共22个文件)
+│   └── (共21个文件)
 ├── producti18n.json            # 产品临时翻译（所有语言）
 └── product-data-table.js       # 产品数据
 
 dist/
-├── translations/               # 构建后复制的翻译文件
+├── assets/lang/               # 构建后复制的翻译文件
 └── ...
 ```
 
 ---
 
-## 三文件地位说明
+## 两文件地位说明
 
-### zh.json & zh-CN.json
+### zh-CN.json
 - **地位：**通用翻译文件，包含UI和产品
 - **作用：**主要翻译来源，包含所有key
-- **地位等同：**互为备份，应该保持一致
 - **包含内容：**
   - UI翻译（按钮、菜单等）
   - 产品翻译（name、highlights等）
 
 ### producti18n.json
-- **地位：**与zh/zh-CN等同，专用于产品临时数据
-- **作用：**Google Translate的输出和其他语言的源数据
+- **地位：**与zh-CN等同，专用于产品临时数据
+- **作用：**Gemini Translate的输出和其他语言的源数据
 - **包含内容：**仅产品翻译（hash_field格式）
 - **为什么需要：**
   - 隔离产品数据，避免混淆UI翻译
-  - Google Translate的结果需要存储
+  - Gemini Translate的结果需要存储
   - 其他语言的翻译来源
 
 ### 其他21种语言文件

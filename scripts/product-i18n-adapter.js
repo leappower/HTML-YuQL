@@ -1,13 +1,13 @@
 /**
  * 产品多语言适配器脚本
- * 
+ *
  * 工作流程：
  * 1. 从Feishu/Excel读取多语言列（如 name_en, name_zh-CN, usage_en 等）
  * 2. 提取多语言值，生成翻译key：category_subCategory_model_fieldName
- * 3. 填充到 src/assets/translations/*.json 中
+ * 3. 填充到 src/assets/lang/*.json 中
  * 4. 修改产品表，将多语言字段改为对应的i18n key
  * 5. 前端通过 tr(key) 获取翻译值
- * 
+ *
  * 使用方法：
  *   node scripts/product-i18n-adapter.js --action generate
  */
@@ -16,7 +16,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const TRANSLATIONS_DIR = path.join(process.cwd(), 'src/assets/translations');
+const TRANSLATIONS_DIR = path.join(process.cwd(), 'src/assets/lang');
 const PRODUCT_TABLE_PATH = path.join(process.cwd(), 'src/assets/product-data-table.js');
 const PRODUCT_I18N_PATH = path.join(process.cwd(), 'scripts/producti18n.json');
 
@@ -440,9 +440,9 @@ function displayImplementationPlan() {
   该脚本会：
   ✓ 读取product-data-table.js中的nameI18n/highlightsI18n等
   ✓ 为每条多语言数据生成key
-  ✓ 并入到src/assets/translations/*.json
-  
-  生成的translations/en.json会包含：
+  ✓ 并入到src/assets/lang/*.json
+
+  生成的lang/en.json会包含：
   {
     "existing_keys": "...",
     "category_subcategory_model_name": "Product Name",
@@ -472,11 +472,11 @@ function displayImplementationPlan() {
   console.log('────────────────');
   console.log(`
   npm run build
-  
+
   Webpack会：
-  ✓ 将所有translations/*.json打包到dist/
+  ✓ 将所有lang/*.json打包到dist/
   ✓ bundle.js中的tr()函数按需查询对应语言的key
-  ✓ 没有增加bundle体积（translations已经分离）
+  ✓ 没有增加bundle体积（lang已经分离）
   `);
 
   console.log('\n\n📊 数据示例对比：\n');

@@ -41,7 +41,7 @@ Thank you for your interest in contributing to HTML-YuQL! We welcome contributio
 
 When adding a new language:
 
-1. Create a new JSON file in `assets/translations/`
+1. Create a new JSON file in `assets/lang/`
 2. Use the language code as filename (e.g., `fr.json` for French)
 3. Include all required keys from existing translations
 4. Test the new language thoroughly

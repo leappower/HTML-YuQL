@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const sourceDir = path.resolve(__dirname, '../src/assets/translations');
-const targetDir = path.resolve(__dirname, '../dist/translations');
+const sourceDir = path.resolve(__dirname, '../src/assets/lang');
+const targetDir = path.resolve(__dirname, '../dist/assets/lang');
 
 if (!fs.existsSync(sourceDir)) {
   throw new Error(`Source directory does not exist: ${sourceDir}`);

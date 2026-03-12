@@ -28,21 +28,21 @@ All work has been **successfully completed** with zero lint errors across all fi
 
 ### 2. Created: `scripts/product-sync-i18n.js` (NEW)
 
-**Purpose:** Synchronize zh.json, zh-CN.json, producti18n.json and other 21 languages
+**Purpose:** Synchronize zh-CN.json, producti18n.json and other 20 languages
 
 **Five-Step Workflow:**
 
 ```
-Step 1: Load source files (zh.json, zh-CN.json, producti18n.json)
+Step 1: Load source files (zh-CN.json, producti18n.json)
         ↓
 Step 2: Extract product keys (hash_field pattern)
         ↓
-Step 3: Sync zh.json ↔ zh-CN.json ↔ producti18n.json
+Step 3: Sync zh-CN.json ↔ producti18n.json
         - Merge all unique keys
         - Fill missing keys with values from other files
-        - Priority: zh-CN.json → zh.json → producti18n.json
+        - Priority: zh-CN.json → producti18n.json
         ↓
-Step 4: Sync to other 21 languages
+Step 4: Sync to other 20 languages
         - For each language (ar, de, en, es, ..., zh-TW)
         - Add missing product keys from producti18n.json
         - Use Chinese as placeholder if no translation exists
@@ -268,14 +268,13 @@ npm run build              # Step 5: Build
 src/assets/
 ├── product-data-table.js           # 114 products (source)
 ├── producti18n.json                # Product translations (all languages)
-└── translations/
-    ├── zh.json                     # Chinese + UI
+└── lang/
     ├── zh-CN.json                  # Simplified Chinese + UI
-    ├── ar.json, de.json, en.json   # Other 19 languages
-    └── ... (22 files total)
+    ├── ar.json, de.json, en.json   # Other 20 languages
+    └── ... (21 files total)
 
 dist/
-└── translations/                   # Copied from src/assets/translations
+└── assets/lang/                   # Copied from src/assets/lang
 ```
 
 ---
@@ -284,12 +283,12 @@ dist/
 
 | Feature | Benefit |
 |---------|---------|
-| **Three-File Redundancy** | No data loss if one file is corrupted |
+| **Two-File Redundancy** | No data loss if one file is corrupted |
 | **Automatic Sync** | Missing keys filled automatically |
 | **Smart Placeholders** | Chinese as fallback for untranslated languages |
 | **Special Content Protection** | Brands/numbers/emojis preserved across translations |
 | **Flexible Workflow** | Supports incremental updates and translations |
-| **22-Language Coverage** | All major languages supported |
+| **21-Language Coverage** | All major languages supported |
 
 ---
 
