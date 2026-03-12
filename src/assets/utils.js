@@ -682,9 +682,9 @@ import { IMAGE_ASSETS } from './image-assets.js';
       </div>
 
       <!-- 内容区域 (40%) -->
-      <div class="p-3 flex flex-col flex-1">
+      <div class="p-3 flex flex-col">
         <!-- 产品名称 + 型号 -->
-        <div class="flex items-start justify-between gap-2 mb-2 shrink-0">
+        <div class="flex items-start justify-between gap-2 mb-2">
           <div class="flex-1 min-w-0">
             <h3 class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight line-clamp-2">${displayName}</h3>
           </div>
@@ -695,7 +695,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
         </div>
 
         <!-- 参数网格 (2x2) -->
-        <div class="grid grid-cols-2 gap-1.5 mb-2 shrink-0">
+        <div class="grid grid-cols-2 gap-1.5 mb-2">
           <div class="rounded-lg bg-slate-50 dark:bg-slate-800/70 p-1.5">
             <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_price', 'Price')}</p>
             <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${referencePrice || '-'}</p>
@@ -715,17 +715,17 @@ import { IMAGE_ASSETS } from './image-assets.js';
         </div>
 
         <!-- 标签 -->
-        <div class="flex flex-wrap gap-1 mb-2 overflow-hidden shrink-0">
+        <div class="flex flex-wrap gap-1 mb-2 overflow-hidden">
           ${highlights || `<span class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] truncate">${tr('product_label_scene', 'Scene')}: ${scenariosI18n || '-'}</span>`}
         </div>
 
         <!-- 详情 -->
-        <div class="text-[10px] text-slate-600 dark:text-slate-300 mb-2 line-clamp-1 shrink-0 overflow-hidden">
+        <div class="text-[10px] text-slate-600 dark:text-slate-300 mb-2 line-clamp-1 overflow-hidden">
           ${detailHtml}
         </div>
 
         <!-- 按钮 -->
-        <div class="mt-auto grid grid-cols-2 gap-1.5 shrink-0">
+        <div class="mt-auto grid grid-cols-2 gap-1.5">
           <button onclick="showSmartPopupManual()" class="inline-flex h-full min-h-[34px] items-center justify-center gap-1 rounded-lg border border-primary/20 bg-primary/5 px-2 py-1.5 text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
             <span class="material-symbols-outlined text-xs">tune</span>
             ${tr('product_optional_specs', 'Optional')}
