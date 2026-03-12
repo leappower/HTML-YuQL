@@ -2088,4 +2088,13 @@ header nav a.active::after {
   }
 }
 
+/* Prevent mobile menu from flashing on initial page load */
+#mobile-menu {
+  visibility: hidden;
+}
+
+#mobile-menu.translate-x-full {
+  visibility: visible;
+}
+
 /* End of moved CSS */
