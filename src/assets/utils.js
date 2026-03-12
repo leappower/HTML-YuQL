@@ -1126,11 +1126,18 @@ import { IMAGE_ASSETS } from './image-assets.js';
   }
 
   function toggleMobileMenu(forceOpen) {
+    console.log('toggleMobileMenu called with:', forceOpen);
     const menu = document.getElementById('mobile-menu');
-    if (!menu) return;
+    console.log('menu element:', menu);
+    
+    if (!menu) {
+      console.error('Mobile menu element not found!');
+      return;
+    }
 
     lastMobileMenuToggleAt = Date.now();
     const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !isMobileMenuOpen(menu);
+    console.log('shouldOpen:', shouldOpen);
     setMobileMenuOpen(shouldOpen);
   }
 

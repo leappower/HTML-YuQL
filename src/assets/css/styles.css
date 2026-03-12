@@ -2097,4 +2097,11 @@ header nav a.active::after {
   visibility: visible;
 }
 
+/* Ensure mobile menu button is clickable */
+#mobile-menu-btn {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 1001;
+}
+
 /* End of moved CSS */
