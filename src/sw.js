@@ -139,31 +139,31 @@ self.addEventListener('message', (event) => {
   const { type, payload } = event.data;
 
   switch (type) {
-    case 'SKIP_WAITING':
-      console.log('[SW] Skip waiting requested');
-      self.skipWaiting();
-      break;
+  case 'SKIP_WAITING':
+    console.log('[SW] Skip waiting requested');
+    self.skipWaiting();
+    break;
 
-    case 'CACHE_LANGUAGE':
-      console.log('[SW] Cache language requested:', payload.language);
-      cacheLanguageFile(payload.language).catch(err => {
-        console.error('[SW] Failed to cache language:', err);
-      });
-      break;
+  case 'CACHE_LANGUAGE':
+    console.log('[SW] Cache language requested:', payload.language);
+    cacheLanguageFile(payload.language).catch(err => {
+      console.error('[SW] Failed to cache language:', err);
+    });
+    break;
 
-    case 'CLEAR_CACHE':
-      console.log('[SW] Clear cache requested');
-      clearLanguageCache();
-      break;
+  case 'CLEAR_CACHE':
+    console.log('[SW] Clear cache requested');
+    clearLanguageCache();
+    break;
 
-    case 'GET_CACHE_STATUS':
-      getCacheStatus().then(status => {
-        event.ports[0].postMessage({ type: 'CACHE_STATUS', payload: status });
-      });
-      break;
+  case 'GET_CACHE_STATUS':
+    getCacheStatus().then(status => {
+      event.ports[0].postMessage({ type: 'CACHE_STATUS', payload: status });
+    });
+    break;
 
-    default:
-      console.warn('[SW] Unknown message type:', type);
+  default:
+    console.warn('[SW] Unknown message type:', type);
   }
 });
 

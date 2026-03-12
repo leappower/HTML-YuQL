@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (_, argv = {}) => {
   const isProduction = argv.mode === 'production';
@@ -34,6 +35,21 @@ module.exports = (_, argv = {}) => {
           new MiniCssExtractPlugin({
             filename: 'styles.[contenthash:8].css',
           }),
+          // Copy language files for static deployment
+          new CopyWebpackPlugin({
+            patterns: [
+              {
+                from: 'src/assets/lang',
+                to: 'assets/lang',
+                noErrorOnMissing: true,
+              },
+              {
+                from: 'src/sw.js',
+                to: 'sw.js',
+                noErrorOnMissing: true,
+              },
+            ],
+          }),
         ]
         : []),
     ],
@@ -43,16 +59,19 @@ module.exports = (_, argv = {}) => {
           directory: path.join(__dirname, 'dist'),
         },
         {
-          directory: path.join(__dirname, 'src/assets'),
-          publicPath: '/assets',
+          directory: path.join(__dirname, 'src/assets/lang'),
+          publicPath: '/assets/lang',
         },
         {
-          directory: path.join(__dirname, 'dist/lang'),
-          publicPath: '/assets/lang',
+          directory: path.join(__dirname, 'src/sw.js'),
+          publicPath: '/sw.js',
         },
       ],
       compress: true,
       port: 3000,
+      headers: {
+        'Service-Worker-Allowed': '/',
+      },
     },
   };
 };

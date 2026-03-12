@@ -114,10 +114,10 @@ function testServiceWorkerFile() {
       // Check for required content
       allPassed &= logTest('Service Worker包含CACHE_NAME定义', content.includes('CACHE_NAME'));
       allPassed &= logTest('Service Worker包含LANGUAGE_FILES_CACHE定义', content.includes('LANGUAGE_FILES_CACHE'));
-      allPassed &= logTest('Service Worker包含install事件监听器', content.includes("self.addEventListener('install'"));
-      allPassed &= logTest('Service Worker包含activate事件监听器', content.includes("self.addEventListener('activate'"));
-      allPassed &= logTest('Service Worker包含fetch事件监听器', content.includes("self.addEventListener('fetch'"));
-      allPassed &= logTest('Service Worker包含message事件监听器', content.includes("self.addEventListener('message'"));
+      allPassed &= logTest('Service Worker包含install事件监听器', content.includes('self.addEventListener(\'install\''));
+      allPassed &= logTest('Service Worker包含activate事件监听器', content.includes('self.addEventListener(\'activate\''));
+      allPassed &= logTest('Service Worker包含fetch事件监听器', content.includes('self.addEventListener(\'fetch\''));
+      allPassed &= logTest('Service Worker包含message事件监听器', content.includes('self.addEventListener(\'message\''));
 
       // Check for language files
       const languageFileCount = (content.match(/\.\/assets\/lang\/[^']+/g) || []).length;
@@ -196,13 +196,13 @@ function testInitModifications() {
 
       // Check for Service Worker registration
       allPassed &= logTest('包含registerServiceWorker函数', content.includes('function registerServiceWorker()'));
-      allPassed &= logTest('包含Service Worker注册调用', content.includes("navigator.serviceWorker.register('/sw.js')"));
+      allPassed &= logTest('包含Service Worker注册调用', content.includes('navigator.serviceWorker.register(\'/sw.js\')'));
       allPassed &= logTest('包含showServiceWorkerUpdateNotification函数', content.includes('function showServiceWorkerUpdateNotification()'));
 
       // Check for update handling
-      allPassed &= logTest('包含updatefound事件监听器', content.includes("'updatefound'"));
-      allPassed &= logTest('包含controllerchange事件监听器', content.includes("'controllerchange'"));
-      allPassed &= logTest('包含SKIP_WAITING消息发送', content.includes("'SKIP_WAITING'"));
+      allPassed &= logTest('包含updatefound事件监听器', content.includes('\'updatefound\''));
+      allPassed &= logTest('包含controllerchange事件监听器', content.includes('\'controllerchange\''));
+      allPassed &= logTest('包含SKIP_WAITING消息发送', content.includes('\'SKIP_WAITING\''));
 
       // Check for immediate registration
       allPassed &= logTest('页面加载时立即注册Service Worker', content.includes('registerServiceWorker();'));

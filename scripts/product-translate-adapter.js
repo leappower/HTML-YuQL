@@ -3,21 +3,19 @@
  * 
  * 功能：
  * 1. 从Feishu读取中文产品数据
- * 2. 调用Google Translate API翻译成22种语言
+ * 2. 调用Gemini 3 API翻译成22种语言
  * 3. 生成i18n key和翻译数据
  * 4. 填充到translations所有语言文件
  * 
  * 使用方法：
- *   node scripts/product-translate-adapter.js --feishu-url <URL> --api-key <GOOGLE_API_KEY>
- *   或
- *   GOOGLE_TRANSLATE_API_KEY=xxx npm run translate:products
+ *   npm run translate:products
  */
 
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 const crypto = require('crypto');
 const { prepareForTranslation, postprocessText } = require('./product-translation-handler');
+const { translateWithRetry } = require('./gemini-translator');
 
 const TRANSLATIONS_DIR = path.join(process.cwd(), 'src/assets/translations');
 const PRODUCT_TABLE_PATH = path.join(process.cwd(), 'src/assets/product-data-table.js');
@@ -108,117 +106,39 @@ function generateI18nKey(category, subCategory, model, field) {
 }
 
 /**
- * 使用无需 API Key 的公共 Google Translate endpoint（client=gtx）进行翻译
- * 解析返回的数组结构，返回拼接后的翻译文本
+ * 使用 Gemini 3 API 进行翻译
  * @param {string} text
  * @param {string} targetLang
  * @returns {Promise<string>}
  */
-function translateWithGoogle(text, targetLang, timeout = 10000) {
-  return new Promise((resolve) => {
-    try {
-      // 输入验证
-      if (!text || typeof text !== 'string') {
-        resolve(text || '');
-        return;
-      }
-
-      const sourceLang = 'zh-CN';
-      const query = new URLSearchParams({
-        client: 'gtx',
-        sl: sourceLang,
-        tl: targetLang,
-        dt: 't',
-        q: String(text || '')
-      }).toString();
-
-      const options = {
-        hostname: 'translate.googleapis.com',
-        port: 443,
-        path: `/translate_a/single?${query}`,
-        method: 'GET',
-        headers: {
-          'User-Agent': 'HTML-YuQL-Translate/1.0'
-        },
-        timeout: timeout
-      };
-
-      let timeoutId = null;
-      let isResolved = false;
-      
-      const safeResolve = (value) => {
-        if (!isResolved) {
-          isResolved = true;
-          if (timeoutId) clearTimeout(timeoutId);
-          resolve(value);
-        }
-      };
-
-      // 设置超时
-      timeoutId = setTimeout(() => {
-        console.warn(`⏰ Translation timeout for ${targetLang}: "${text}"`);
-        safeResolve(text);
-      }, timeout);
-
-      const req = https.request(options, (res) => {
-        let raw = '';
-        res.on('data', (chunk) => { 
-          raw += chunk;
-          // 防止数据过大
-          if (raw.length > 50000) {
-            console.warn(`⚠️  Response too large for ${targetLang}: "${text}"`);
-            safeResolve(text);
-          }
-        });
-        res.on('end', () => {
-          try {
-            if (raw.length === 0) {
-              safeResolve(text);
-              return;
-            }
-            
-            const parsed = JSON.parse(raw);
-            // parsed is array like [[['译文','原文', ...], ...], null, 'zh-CN', ...]
-            if (!parsed || !Array.isArray(parsed) || !parsed[0]) {
-              safeResolve(text);
-              return;
-            }
-            
-            const parts = (parsed[0] || [])
-              .map(item => (item && typeof item === 'object' && item[0]) || '')
-              .filter(part => part && typeof part === 'string' && part.length > 0);
-            
-            const translated = parts.join('');
-            safeResolve(translated && translated.trim() !== '' ? translated : text);
-          } catch (err) {
-            console.warn(`⚠️  Parse error for ${targetLang}: ${err.message}`);
-            safeResolve(text);
-          }
-        });
-      });
-
-      req.on('error', (err) => {
-        console.warn(`⚠️  Request error for ${targetLang}: ${err.message}`);
-        safeResolve(text);
-      });
-
-      req.on('timeout', () => {
-        req.destroy();
-        console.warn(`⏰ Request timeout for ${targetLang}: "${text}"`);
-        safeResolve(text);
-      });
-
-      req.setTimeout(timeout);
-      req.end();
-    } catch (err) {
-      console.warn(`⚠️  Unexpected error for ${targetLang}: ${err.message}`);
-      resolve(text || '');
+async function translateWithGemini(text, targetLang) {
+  try {
+    // 输入验证
+    if (!text || typeof text !== 'string') {
+      return text || '';
     }
-  });
+
+    const trimmedText = text.trim();
+    if (trimmedText.length === 0) {
+      return text;
+    }
+
+    // 如果已经是目标语言，直接返回
+    if (targetLang === 'zh-CN' || targetLang === 'zh') {
+      return text;
+    }
+
+    // 调用 Gemini API（带重试机制）
+    const result = await translateWithRetry(trimmedText, targetLang);
+    return result;
+  } catch (error) {
+    console.warn(`⚠️  Translation failed for ${targetLang}: "${text}" - ${error.message}`);
+    return text; // 降级返回原文本
+  }
 }
 
 /**
- * 批量翻译（带延迟避免API限速）
+ * 批量翻译（使用 Gemini API）
  */
 async function translateTexts(texts, targetLang, apiKey, delayMs = 100) {
   // 防护性检查
@@ -240,7 +160,7 @@ async function translateTexts(texts, targetLang, apiKey, delayMs = 100) {
     return {};
   }
   
-  console.log(`🔤 Processing ${validTexts.length} valid texts for ${targetLang}...`);
+  console.log(`🔤 Processing ${validTexts.length} valid texts for ${targetLang} (using Gemini 3 API)...`);
   
   for (let i = 0; i < validTexts.length; i++) {
     const text = validTexts[i];
@@ -258,7 +178,8 @@ async function translateTexts(texts, targetLang, apiKey, delayMs = 100) {
         continue;
       }
       
-      results[text] = await translateWithGoogle(trimmedText, targetLang);
+      // 使用 Gemini API 翻译
+      results[text] = await translateWithGemini(trimmedText, targetLang);
       
       // 添加进度提示（每50个）
       if ((i + 1) % 50 === 0) {
@@ -266,7 +187,8 @@ async function translateTexts(texts, targetLang, apiKey, delayMs = 100) {
       }
       
       if (i < validTexts.length - 1) {
-        await new Promise(r => setTimeout(r, delayMs));
+        // Gemini API 本身有限速机制，但我们可以添加少量延迟
+        await new Promise(r => setTimeout(r, Math.min(delayMs, 200)));
       }
     } catch (err) {
       console.warn(`⚠️  Failed to translate: "${text}" to ${targetLang}: ${err.message}`);
@@ -446,7 +368,7 @@ function shouldAcceptTranslatedText(lang, sourceChinese, translatedText) {
  * 主工作流程
  */
 async function translateProducts(apiKey) {
-  console.log('\n🔄 Starting product translation process (no API key required)...\n');
+  console.log('\n🔄 Starting product translation process (using Gemini 3 API)...\n');
 
   // 1. 读取中文产品数据
   console.log('📖 Reading Chinese product data...');
@@ -502,7 +424,7 @@ async function translateProducts(apiKey) {
 
     translatePromises.push(
       (async () => {
-        const googleTranslations = await translateTexts(uniqueTexts, targetLang, apiKey);
+        const geminiTranslations = await translateTexts(uniqueTexts, targetLang, apiKey);
         
         // 为每个产品生成 i18nId 并写入翻译数据（结构：translations[lang][i18nId] = { name, highlights, ... }）
         for (const series of productSeries) {
@@ -516,7 +438,7 @@ async function translateProducts(apiKey) {
                 const { protected: protectedText, placeholderMap } = prepareForTranslation(chineseText, field);
                 
                 // 获取翻译结果
-                const rawTranslatedText = googleTranslations[protectedText] || googleTranslations[chineseText] || chineseText;
+                const rawTranslatedText = geminiTranslations[protectedText] || geminiTranslations[chineseText] || chineseText;
                 
                 // 恢复占位符：还原品牌、数字、表情等特殊内容
                 const { recovered: translatedText, warnings: recoveryWarnings } = postprocessText(rawTranslatedText, placeholderMap);
@@ -755,8 +677,9 @@ Options:
   --mock                    Run mock translation flow (no network, no file write)
 
 Notes:
-  This script uses the public Google Translate endpoint (client=gtx) and does not require an API key.
-  Be aware the public endpoint may enforce rate limits; use the --demo flag to inspect structure.
+  This script uses the Gemini 3 API for high-quality translation.
+  API configuration is in scripts/gemini-translator.js
+  Use --demo flag to inspect structure without making API calls.
   `);
     process.exit(0);
   }
@@ -797,7 +720,7 @@ Notes:
 
 module.exports = {
   generateI18nKey,
-  translateWithGoogle,
+  translateWithGemini,
   translateTexts,
   runMockTranslationFlow,
   LANGUAGE_MAP,
