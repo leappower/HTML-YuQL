@@ -270,7 +270,7 @@ class TranslationManager {
             animation: spin 1s linear infinite;
             margin: 0 auto 10px;
           "></div>
-          <p style="margin: 0; color: #333;">${this.t('loading') || '加载中...'}</p>
+          <p style="margin: 0; color: #333;">${this.uiText('loading', '加载中...')}</p>
         </div>
         <style>
           @keyframes spin {
@@ -325,7 +325,7 @@ class TranslationManager {
           height: 20px;
           animation: spin 1s linear infinite;
         "></div>
-        <span style="color: #333; font-size: 14px; font-weight: 500;">${this.t('loading_language') || 'Loading language...'}</span>
+        <span style="color: #333; font-size: 14px; font-weight: 500;">${this.uiText('loading_language', 'Loading language...')}</span>
         <style>
           @keyframes spin {
             0% { transform: rotate(0deg); }
