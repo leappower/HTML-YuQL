@@ -1049,7 +1049,7 @@ header nav a.active::after {
     scroll-snap-align: start;
     min-height: 400px !important;
     max-height: 440px !important;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   /* 移动端内容区域微调 */
