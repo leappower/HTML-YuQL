@@ -84,21 +84,54 @@ function normalizeProduct(product, fallbackCategory) {
     (product.i18n?.imageRecognitionKey?.['zh-CN']) ||
     null;
 
-  return new ProductEntity({
-    ...PRODUCT_DEFAULTS,
-    ...product,
-    category: toNullableString(product.category) || toNullableString(fallbackCategory),
-    subCategory: toNullableString(product.subCategory),
+
+  // 先取主字段，主字段为 null 时自动 fallback 到 i18n 下以 _fieldName 结尾的 key
+  function getFieldWithI18nKey(fieldName) {
+    const mainVal = toNullableString(product[fieldName]);
+    if (mainVal) return mainVal;
+    if (product.i18n && typeof product.i18n === 'object') {
+      // 1. 兼容编码型 key
+      const matchKey = Object.keys(product.i18n).find(k => k.endsWith('_' + fieldName));
+      if (matchKey) {
+        const i18nObj = product.i18n[matchKey];
+        if (typeof i18nObj === 'string') {
+          if (i18nObj.trim()) return i18nObj.trim();
+        }
+        if (i18nObj && typeof i18nObj === 'object') {
+          if (typeof i18nObj['zh-CN'] === 'string' && i18nObj['zh-CN'].trim()) return i18nObj['zh-CN'].trim();
+          if (typeof i18nObj['en'] === 'string' && i18nObj['en'].trim()) return i18nObj['en'].trim();
+          const first = Object.values(i18nObj).find(v => typeof v === 'string' && v.trim());
+          if (first) return String(first).trim();
+        }
+      }
+      // 2. 兼容标准字段名 key
+      if (fieldName in product.i18n) {
+        const i18nObj = product.i18n[fieldName];
+        if (typeof i18nObj === 'string') {
+          if (i18nObj.trim()) return i18nObj.trim();
+        }
+        if (i18nObj && typeof i18nObj === 'object') {
+          if (typeof i18nObj['zh-CN'] === 'string' && i18nObj['zh-CN'].trim()) return i18nObj['zh-CN'].trim();
+          if (typeof i18nObj['en'] === 'string' && i18nObj['en'].trim()) return i18nObj['en'].trim();
+          const first = Object.values(i18nObj).find(v => typeof v === 'string' && v.trim());
+          if (first) return String(first).trim();
+        }
+      }
+    }
+    return null;
+  }
+
+  const logFields = {
+    name: getFieldWithI18nKey('name'),
     model: toNullableString(product.model),
-    name: toNullableString(product.name),
-    highlights: toArrayValue(product.highlights),
-    scenarios: toNullableString(product.scenarios),
-    usage: toNullableString(product.usage),
+    category: toNullableString(product.category) || toNullableString(fallbackCategory),
+    scenarios: getFieldWithI18nKey('scenarios'),
+    usage: getFieldWithI18nKey('usage'),
     power: toNullableString(product.power),
     throughput: toNullableString(product.throughput),
     averageTime: toNullableString(product.averageTime),
     launchTime: toNullableString(product.launchTime),
-    status: toNullableString(product.status) || '在售',
+    status: toNullableString(product.status) || '',
     isActive: toBooleanOrDefault(product.isActive, true),
     badge: toNullableString(product.badge),
     badgeColor: toNullableString(product.badgeColor),
@@ -126,6 +159,50 @@ function normalizeProduct(product, fallbackCategory) {
     minimumOrderQuantity: toNullableString(product.minimumOrderQuantity),
     stockQuantity: toNullableString(product.stockQuantity),
     productImageKey: imageRecognitionKey
+  };
+  // ...existing code...
+  return new ProductEntity({
+    ...PRODUCT_DEFAULTS,
+    ...product,
+    category: logFields.category,
+    subCategory: toNullableString(product.subCategory),
+    model: logFields.model,
+    name: logFields.name,
+    highlights: toArrayValue(product.highlights),
+    scenarios: logFields.scenarios,
+    usage: logFields.usage,
+    power: logFields.power,
+    throughput: logFields.throughput,
+    averageTime: logFields.averageTime,
+    launchTime: logFields.launchTime,
+    status: logFields.status,
+    isActive: logFields.isActive,
+    badge: logFields.badge,
+    badgeColor: logFields.badgeColor,
+    imageRecognitionKey: logFields.imageRecognitionKey,
+    packingQuantity: logFields.packingQuantity,
+    productDimensions: logFields.productDimensions,
+    packageDimensions: logFields.packageDimensions,
+    outerBoxDimensions: logFields.outerBoxDimensions,
+    packageType: logFields.packageType,
+    color: logFields.color,
+    netWeight: logFields.netWeight,
+    grossWeight: logFields.grossWeight,
+    voltage: logFields.voltage,
+    frequency: logFields.frequency,
+    material: logFields.material,
+    warrantyPeriod: logFields.warrantyPeriod,
+    certification: logFields.certification,
+    temperatureRange: logFields.temperatureRange,
+    controlMethod: logFields.controlMethod,
+    energyEfficiencyGrade: logFields.energyEfficiencyGrade,
+    applicablePeople: logFields.applicablePeople,
+    origin: logFields.origin,
+    barcode: logFields.barcode,
+    referencePrice: logFields.referencePrice,
+    minimumOrderQuantity: logFields.minimumOrderQuantity,
+    stockQuantity: logFields.stockQuantity,
+    productImageKey: logFields.productImageKey
   });
 }
 
@@ -135,18 +212,32 @@ export class ProductEntity {
   }
 }
 
+
+function filterValidProducts(products) {
+  return (products || []).filter(
+    p => p && typeof p === 'object' && Object.keys(p).length > 0
+  );
+}
+
 const MOCK_PRODUCT_SERIES = MOCK_PRODUCT_SERIES_RAW.map((series) => ({
   ...series,
-  products: (series.products || []).map((product) =>
+  products: filterValidProducts(series.products).map((product) =>
     normalizeProduct(product, series.category)
   )
 }));
 
-const GENERATED_PRODUCT_SERIES = SAFE_PRODUCT_DATA_TABLE.map((series) => ({
+
+SAFE_PRODUCT_DATA_TABLE.forEach((series, idx) => {
+  console.log(`[分析] 第${idx+1}个series:`, series && series.category, 'products类型:', Array.isArray(series && series.products), 'products长度:', series && series.products && series.products.length);
+  // ...existing code...
+});
+
+const GENERATED_PRODUCT_SERIES = SAFE_PRODUCT_DATA_TABLE.map((series, idx) => ({
   ...series,
-  products: (series.products || []).map((product) =>
-    normalizeProduct(product, series.category)
-  )
+  products: filterValidProducts(series.products).map((product, i) => {
+    console.log(`[分析] [过滤后] series:`, series && series.category, `product[${i}] 类型:`, typeof product, '内容:', product);
+    return normalizeProduct(product, series.category);
+  })
 }));
 
 // FEISHU_SYNC_APPEND_START
@@ -155,7 +246,7 @@ export const APPENDED_PRODUCT_SERIES = [];
 
 const APPENDED_PRODUCT_SERIES_NORMALIZED = APPENDED_PRODUCT_SERIES.map((series) => ({
   ...series,
-  products: (series.products || []).map((product) =>
+  products: filterValidProducts(series.products).map((product) =>
     normalizeProduct(product, series.category)
   )
 }));
@@ -230,11 +321,12 @@ function mergeSeriesByIdentity(seriesList) {
 export function assembleProductSeries(options = {}) {
   const runtimeEnv = options.runtimeEnv || detectRuntimeEnv();
   const isDevelopment = runtimeEnv !== 'production';
+  
   const useTableData = hasTableData(GENERATED_PRODUCT_SERIES);
 
   const baseSeries = useTableData
     ? GENERATED_PRODUCT_SERIES
-    : (isDevelopment ? MOCK_PRODUCT_SERIES : []);
+    : [];
 
   const combined = [...baseSeries, ...APPENDED_PRODUCT_SERIES_NORMALIZED];
   return withImageUrl(mergeSeriesByIdentity(combined));

@@ -37,6 +37,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
           const category = series.category;
           const imageKey = product.imageRecognitionKey || `product_${category}`;
           const imageUrl = product.imageUrl || resolveImage(imageKey);
+          const scenarios = product.scenarios || 'null';
           return {
             ...PRODUCT_DEFAULTS,
             id: nextId++,
@@ -632,21 +633,18 @@ import { IMAGE_ASSETS } from './image-assets.js';
     }
 
     grid.innerHTML = pageProducts.map((p) => {
-      // 获取产品多语言文本（优先用i18n key，降级到原字段）
-      const nameI18n = getProductI18nField(p, 'name', p.name);
-
-      const categoryLabel = tr('category_' + p.category, p.category);
-      const displayName = nameI18n || `${categoryLabel} ${p.model || ''}`.trim();
+      // 获取产品多语言文本（已由数据层自动处理，无需降级）
+      const displayName = getProductI18nField(p, 'name', p.name) || `${tr('category_' + p.category, p.category)} ${p.model || ''}`.trim();
       const badgeColorClass = p.badgeColor || 'bg-primary';
-      const material = p.material;
-      const minimumOrderQuantity = p.minimumOrderQuantity;
-      const throughput = p.throughput;
-      const voltage = p.voltage;
-      const frequency = p.frequency;
-      const badge = p.badge;
+      const material = getProductI18nField(p, 'material', p.material);
+      const minimumOrderQuantity = getProductI18nField(p, 'minimumOrderQuantity', p.minimumOrderQuantity);
+      const throughput = getProductI18nField(p, 'throughput', p.throughput);
+      const voltage = getProductI18nField(p, 'voltage', p.voltage);
+      const frequency = getProductI18nField(p, 'frequency', p.frequency);
+      const badge = getProductI18nField(p, 'badge', p.badge);
       const imageRecognitionKey = p.imageRecognitionKey;
-      const launchDate = p.launchDate;
-      const scene = p.scene;
+      const launchDate = getProductI18nField(p, 'launchTime', p.launchTime) || p.launchDate;
+      const scene = getProductI18nField(p, 'scenarios', p.scenarios);
       return `
     <article class="product-card flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/10 group" data-category="${p.category}">
       <!-- 图片区域 (50-55%) -->
@@ -654,7 +652,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
         <img src="${p.productImage || resolveImage(imageRecognitionKey)}" alt="${displayName}" loading="lazy" decoding="async" class="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-500">
 
         ${badge ? `<span class="absolute top-2 left-2 ${badgeColorClass} text-white px-2 py-0.5 rounded-full text-[10px] font-bold shadow">${tr(badge, badge)}</span>` : ''}
-        ${p.status ? `<span class="absolute top-2 right-2 bg-slate-900/80 text-white px-2 py-0.5 rounded-full text-[10px]">${p.status}</span>` : ''}
+        ${p.status ? `<span class="absolute top-2 right-2 bg-slate-900/80 text-white px-2 py-0.5 rounded-full text-[10px]">${tr(p.status, p.status)}</span>` : ''}
       </div>
 
       <!-- 内容区域 (40%) -->
@@ -689,12 +687,12 @@ import { IMAGE_ASSETS } from './image-assets.js';
           <!-- MOQ -->
           <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
             <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_min_order_qty', 'MOQ') + ':'}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${minimumOrderQuantity || '-'}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${tr(minimumOrderQuantity || '-', minimumOrderQuantity || '-')}</p>
           </div>
           <!-- 上市时间 -->
           <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
             <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_launch_date', 'LaunchDate') + ':'}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${launchDate || '2025'}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${tr(launchDate || '2025', launchDate || '2025')}</p>
           </div>
         </div>
         <!-- 参数网格 (1x2) -->
@@ -702,12 +700,12 @@ import { IMAGE_ASSETS } from './image-assets.js';
         <div class="grid grid-cols-1 gap-1 mb-1.5 shrink-0">
           <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
             <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_material', 'Material') + ':'}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${material || '-'}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${tr(material || '-', material || '-')}</p>
           </div>
           <!-- 使用场景 -->
           <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
             <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_scene', 'Scene') + ':'}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${scene || '-'}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${tr(scene || '-', scene || '-')}</p>
           </div>
         </div>
         <!-- 按钮 (单行显示，固定高度) -->
