@@ -78,7 +78,11 @@ function toBooleanOrDefault(value, defaultValue = true) {
 }
 
 function normalizeProduct(product, fallbackCategory) {
-  const imageRecognitionKey = product.imageRecognitionKey || null;
+  // 提取 imageRecognitionKey，支持从 i18n 对象中提取
+  const imageRecognitionKey =
+    product.imageRecognitionKey ||
+    (product.i18n?.imageRecognitionKey?.['zh-CN']) ||
+    null;
 
   return new ProductEntity({
     ...PRODUCT_DEFAULTS,
@@ -166,7 +170,8 @@ function withImageUrl(seriesList) {
         ...product,
         imageRecognitionKey: imageKey || null,
         productImageKey: imageKey || null,
-        imageUrl
+        imageUrl,
+        productImage: imageUrl
       });
     })
   }));

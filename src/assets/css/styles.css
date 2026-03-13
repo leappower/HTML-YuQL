@@ -2051,7 +2051,7 @@ header nav a.active::after {
   }
 
   .product-grid-mobile .product-card > div:first-child {
-    height: 228px !important;
+    height: 268px !important;/*ee*/
   }
 }
 

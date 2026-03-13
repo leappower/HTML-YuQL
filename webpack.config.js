@@ -51,6 +51,11 @@ module.exports = (_, argv = {}) => {
                 noErrorOnMissing: true,
               },
               {
+                from: 'src/assets/images',
+                to: 'images',
+                noErrorOnMissing: true,
+              },
+              {
                 from: 'src/sw.js',
                 to: 'sw.js',
                 noErrorOnMissing: true,
@@ -73,6 +78,15 @@ module.exports = (_, argv = {}) => {
         {
           directory: path.join(__dirname, 'src/assets/lang'),
           publicPath: '/assets/lang',
+        },
+        // Serve image files from src/assets/images (development) or dist/images (production)
+        {
+          directory: path.join(__dirname, 'dist/images'),
+          publicPath: '/images',
+        },
+        {
+          directory: path.join(__dirname, 'src/assets/images'),
+          publicPath: '/src/assets/images',
         },
         {
           directory: path.join(__dirname, 'src/sw.js'),

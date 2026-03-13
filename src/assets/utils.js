@@ -97,7 +97,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
       const scrollableHeight = documentHeight - windowHeight;
-      
+
       // 手机端（< 768px）显示阈值为30%，桌面端为50%
       const isMobile = window.innerWidth < 768;
       const threshold = isMobile ? 0.3 : 0.5;
@@ -112,7 +112,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
 
     window.addEventListener('scroll', checkScrollPosition, { passive: true });
     window.addEventListener('resize', checkScrollPosition, { passive: true });
-    backToTopBtn.addEventListener('click', function(e) {
+    backToTopBtn.addEventListener('click', function (e) {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -120,15 +120,15 @@ import { IMAGE_ASSETS } from './image-assets.js';
     checkScrollPosition();
   }
 
-  document.getElementById('language-dropdown')?.addEventListener('click', function(event) {
+  document.getElementById('language-dropdown')?.addEventListener('click', function (event) {
     event.stopPropagation();
   });
 
   // ============================================
   // 导航栏滚动高亮系统
   // ============================================
-  document.addEventListener('DOMContentLoaded', function() {
-  // 初始化翻译系统（来自 translations.js）
+  document.addEventListener('DOMContentLoaded', function () {
+    // 初始化翻译系统（来自 translations.js）
     if (typeof window.setupLanguageSystem === 'function') {
       window.setupLanguageSystem();
     }
@@ -186,23 +186,23 @@ import { IMAGE_ASSETS } from './image-assets.js';
     calculateSectionPositions();
 
     let scrollTimeout;
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
       if (scrollTimeout) clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(updateActiveNavLink, 100);
     });
 
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function () {
       calculateSectionPositions();
       updateActiveNavLink();
     });
 
-    setTimeout(function() {
+    setTimeout(function () {
       calculateSectionPositions();
       updateActiveNavLink();
     }, 100);
 
     navLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
+      link.addEventListener('click', function (e) {
         e.preventDefault();
         const targetId = this.getAttribute('href');
         if (!targetId.startsWith('#')) return;
@@ -218,7 +218,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
 
     const mobileNavLinks = document.querySelectorAll('#mobile-menu nav a[href^="#"]');
     mobileNavLinks.forEach(link => {
-      link.addEventListener('click', function() {
+      link.addEventListener('click', function () {
         setTimeout(() => {
           navLinks.forEach(navLink => {
             if (navLink.getAttribute('href') === this.getAttribute('href')) {
@@ -637,7 +637,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
       const usageI18n = getProductI18nField(p, 'usage', p.usage);
       const scenariosI18n = getProductI18nField(p, 'scenarios', p.scenarios);
       const highlightsI18n = getProductI18nField(p, 'highlights', p.highlights ? (Array.isArray(p.highlights) ? p.highlights.join('; ') : String(p.highlights)) : '');
-      
+
       // 处理highlights为标签数组
       let highlightsItems = [];
       if (highlightsI18n) {
@@ -647,7 +647,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
         highlightsItems = p.highlights.slice(0, 3);
       }
       const highlights = highlightsItems.map((item) => `<span class="px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">${item}</span>`).join('');
-      
+
       const categoryLabel = tr('category_' + p.category, p.category);
       const displayName = nameI18n || `${categoryLabel} ${p.model || ''}`.trim();
       const badgeColorClass = p.badgeColor || 'bg-primary';
@@ -659,6 +659,8 @@ import { IMAGE_ASSETS } from './image-assets.js';
       const frequency = p.frequency;
       const badge = p.badge;
       const imageRecognitionKey = p.imageRecognitionKey;
+      const launchDate = p.launchDate;
+      const scene = p.scene;
 
       const detailRows = [
         [tr('product_label_usage', 'Usage'), usageI18n],
@@ -666,15 +668,10 @@ import { IMAGE_ASSETS } from './image-assets.js';
         [tr('product_label_material', 'Material'), material],
         [tr('product_label_min_order_qty', 'Minimum Order Quantity'), minimumOrderQuantity],
       ].filter(([, value]) => value && String(value).trim());
-
-      const detailHtml = detailRows.length > 0
-        ? detailRows.slice(0, 2).map(([label, value]) => `<div class="truncate"><strong>${label}:</strong> <span class="truncate inline">${value}</span></div>`).join('')
-        : `<div class="truncate"><strong>${tr('product_label_usage', 'Usage')}:</strong> <span class="truncate inline">${tr('product_not_specified', 'To be confirmed')}</span></div>`;
-
       return `
     <article class="product-card flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/10 group" data-category="${p.category}">
       <!-- 图片区域 (60%) -->
-      <div class="relative h-[228px] sm:h-[252px] lg:h-[276px] w-full overflow-hidden bg-slate-50 dark:bg-slate-800/60 shrink-0">
+      <div class="relative h-[230px] sm:h-[240px] lg:h-[260px] w-full overflow-hidden bg-slate-50 dark:bg-slate-800/60 shrink-0">
         <img src="${p.productImage || resolveImage(imageRecognitionKey)}" alt="${displayName}" loading="lazy" decoding="async" class="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-500">
 
         ${badge ? `<span class="absolute top-2 left-2 ${badgeColorClass} text-white px-2 py-0.5 rounded-full text-[10px] font-bold shadow">${tr(badge, badge)}</span>` : ''}
@@ -688,7 +685,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
           <div class="flex-1 min-w-0">
             <h3 class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight line-clamp-1">${displayName}</h3>
           </div>
-          <div class="shrink-0 w-14 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-1 py-0.5 text-center">
+          <div class="shrink-0 w-20 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-1 py-0.5 text-center">
             <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_model', 'Model')}</p>
             <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${p.model || '-'}</p>
           </div>
@@ -696,34 +693,44 @@ import { IMAGE_ASSETS } from './image-assets.js';
 
         <!-- 参数网格 (2x2) -->
         <div class="grid grid-cols-2 gap-1 mb-2 shrink-0">
-          <div class="rounded-md bg-slate-50 dark:bg-slate-800/70 p-1">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_price', 'Price')}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${referencePrice || '-'}</p>
+          <!-- 容量 -->
+          <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_capacity_throughput', 'Capacity') + ':'}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${throughput || '-'}</p>
           </div>
-          <div class="rounded-md bg-slate-50 dark:bg-slate-800/70 p-1">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_min_order_qty', 'MOQ')}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${minimumOrderQuantity || '-'}</p>
+          <!-- 电压/频率 -->
+          <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">
+              ${tr('product_label_voltage_frequency', 'Voltage') + ':'}
+            </p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">
+              ${voltage || frequency ? `${voltage || '-'} / ${frequency || '-'}` : '-'}
+            </p>
           </div>
-          <div class="rounded-md bg-slate-50 dark:bg-slate-800/70 p-1">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_capacity_throughput', 'Capacity')}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${throughput || '-'}</p>
+          <!-- MOQ -->
+          <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_min_order_qty', 'MOQ') + ':'}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${minimumOrderQuantity || '-'}</p>
           </div>
-          <div class="rounded-md bg-slate-50 dark:bg-slate-800/70 p-1">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_voltage_frequency', 'Voltage')}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${voltage || frequency ? `${voltage || '-'} / ${frequency || '-'}` : '-'}</p>
+          <!-- 上市时间 -->
+          <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_launch_date', 'LaunchDate') + ':'}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${launchDate || '2025'}</p>
           </div>
         </div>
-
-        <!-- 标签 (最多3个，不减少) -->
-        <div class="flex flex-wrap gap-1 mb-2 overflow-hidden shrink-0">
-          ${highlights || `<span class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] truncate">${tr('product_label_scene', 'Scene')}: ${scenariosI18n || '-'}</span>`}
+        <!-- 参数网格 (1x2) -->
+          <!-- 材质 -->
+        <div class="grid grid-cols-1 gap-0 mb-2 shrink-0">
+          <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_material', 'Material') + ':'}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${material || '-'}</p>
+          </div>
+          <!-- 使用场景 -->
+          <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_scene', 'Scene') + ':'}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${scene || '-'}</p>
+          </div>
         </div>
-
-        <!-- 详情 (2行) -->
-        <div class="text-[10px] text-slate-600 dark:text-slate-300 mb-2 line-clamp-2 overflow-hidden shrink-0">
-          ${detailHtml}
-        </div>
-
         <!-- 按钮 (单行显示，固定高度) -->
         <div class="mt-auto grid grid-cols-2 gap-1 shrink-0">
           <button onclick="showSmartPopupManual()" class="inline-flex h-[32px] items-center justify-center gap-1 rounded-lg border border-primary/20 bg-primary/5 px-2 py-1.5 text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
