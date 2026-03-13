@@ -725,8 +725,23 @@ header nav a.active::after {
 
 /* Product Cards - 新样式 */
 .product-card {
-  height: 390px; /* Mobile: 图片228px + 内容162px */
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
   transition: all 0.3s ease;
+}
+
+/* 确保内容区域正确布局 */
+.product-card > div:nth-child(2) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* 确保按钮区域始终在底部 */
+.product-card button {
+  flex-shrink: 0;
 }
 
 .product-card:hover {
@@ -738,16 +753,16 @@ header nav a.active::after {
   aspect-ratio: 4/3;
 }
 
-/* 响应式卡片固定高度 */
+/* 响应式卡片最小高度 */
 @media (width >= 640px) {
   .product-card {
-    height: 440px; /* Tablet: 图片252px + 内容188px */
+    min-height: 420px;
   }
 }
 
 @media (width >= 1024px) {
   .product-card {
-    height: 490px; /* Desktop: 图片276px + 内容214px */
+    min-height: 460px;
   }
 }
 
@@ -1032,16 +1047,15 @@ header nav a.active::after {
     flex: 0 0 min(88vw, 315px);
     max-width: min(88vw, 315px);
     scroll-snap-align: start;
-    height: 390px !important;
-  }
-
-  .product-grid-mobile .product-card > div:first-child {
-    height: 228px !important;
+    min-height: 400px !important;
+    max-height: 440px !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   /* 移动端内容区域微调 */
   .product-grid-mobile .product-card > div:last-child {
-    padding: 0.625rem;
+    padding: 0.625rem 0.625rem 1rem;
+    overflow: hidden;
   }
 
   .product-grid-mobile .product-card h3 {
@@ -1049,7 +1063,7 @@ header nav a.active::after {
   }
 
   .product-grid-mobile .product-card button {
-    height: 30px;
+    height: 38px;
     font-size: 11px;
   }
 
@@ -2047,11 +2061,6 @@ header nav a.active::after {
   .product-grid-mobile .product-card {
     flex-basis: min(88vw, 315px);
     max-width: min(88vw, 315px);
-    height: 390px !important;
-  }
-
-  .product-grid-mobile .product-card > div:first-child {
-    height: 268px !important;/* ee */
   }
 }
 

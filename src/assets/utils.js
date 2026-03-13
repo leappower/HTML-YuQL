@@ -317,7 +317,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
   function getItemsPerPage() {
     if (window.matchMedia('(max-width: 640px)').matches) return 3;
     if (window.matchMedia('(min-width: 1024px)').matches) return 8;
-    if (window.matchMedia('(min-width: 768px)').matches) return 6;
+    if (window.matchMedia('(min-width: 768px)').matches) return 9;
     return 4;
   }
 
@@ -649,8 +649,8 @@ import { IMAGE_ASSETS } from './image-assets.js';
       const scene = p.scene;
       return `
     <article class="product-card flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/10 group" data-category="${p.category}">
-      <!-- 图片区域 (60%) -->
-      <div class="relative h-[230px] sm:h-[240px] lg:h-[260px] w-full overflow-hidden bg-slate-50 dark:bg-slate-800/60 shrink-0">
+      <!-- 图片区域 (50-55%) -->
+      <div class="relative h-[200px] sm:h-[210px] lg:h-[230px] w-full overflow-hidden bg-slate-50 dark:bg-slate-800/60 shrink-0">
         <img src="${p.productImage || resolveImage(imageRecognitionKey)}" alt="${displayName}" loading="lazy" decoding="async" class="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-500">
 
         ${badge ? `<span class="absolute top-2 left-2 ${badgeColorClass} text-white px-2 py-0.5 rounded-full text-[10px] font-bold shadow">${tr(badge, badge)}</span>` : ''}
@@ -660,7 +660,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
       <!-- 内容区域 (40%) -->
       <div class="p-3 flex flex-col">
         <!-- 产品名称 + 型号 -->
-        <div class="flex items-start justify-between gap-2 mb-2 shrink-0">
+        <div class="flex items-start justify-between gap-2 mb-1.5 shrink-0">
           <div class="flex-1 min-w-0">
             <h3 class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight line-clamp-1">${displayName}</h3>
           </div>
@@ -671,7 +671,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
         </div>
 
         <!-- 参数网格 (2x2) -->
-        <div class="grid grid-cols-2 gap-1 mb-2 shrink-0">
+        <div class="grid grid-cols-2 gap-1 mb-1.5 shrink-0">
           <!-- 容量 -->
           <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
             <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_capacity_throughput', 'Capacity') + ':'}</p>
@@ -699,7 +699,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
         </div>
         <!-- 参数网格 (1x2) -->
           <!-- 材质 -->
-        <div class="grid grid-cols-1 gap-0 mb-2 shrink-0">
+        <div class="grid grid-cols-1 gap-1 mb-1.5 shrink-0">
           <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
             <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_material', 'Material') + ':'}</p>
             <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${material || '-'}</p>
@@ -712,11 +712,11 @@ import { IMAGE_ASSETS } from './image-assets.js';
         </div>
         <!-- 按钮 (单行显示，固定高度) -->
         <div class="mt-auto grid grid-cols-2 gap-1 shrink-0">
-          <button onclick="showSmartPopupManual()" class="inline-flex h-[32px] items-center justify-center gap-1 rounded-lg border border-primary/20 bg-primary/5 px-2 py-1.5 text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
+          <button onclick="showSmartPopupManual()" class="inline-flex h-[36px] items-center justify-center gap-1 rounded-lg border border-primary/20 bg-primary/5 px-2 py-1.5 text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
             <span class="material-symbols-outlined text-[10px]">tune</span>
             <span class="truncate">${tr('product_optional_specs', 'Optional')}</span>
           </button>
-          <button onclick="showSmartPopupManual()" class="inline-flex h-[32px] items-center justify-center gap-1 rounded-lg bg-primary px-2 py-1.5 text-xs font-bold text-white hover:bg-primary/90 transition-colors">
+          <button onclick="showSmartPopupManual()" class="inline-flex h-[36px] items-center justify-center gap-1 rounded-lg bg-primary px-2 py-1.5 text-xs font-bold text-white hover:bg-primary/90 transition-colors">
             <span class="material-symbols-outlined text-[10px]">request_page</span>
             <span class="truncate">${tr('product_request', 'Request')}</span>
           </button>
