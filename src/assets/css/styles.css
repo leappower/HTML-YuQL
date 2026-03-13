@@ -739,13 +739,13 @@ header nav a.active::after {
 }
 
 /* 响应式卡片固定高度 */
-@media (min-width: 640px) {
+@media (width >= 640px) {
   .product-card {
     height: 440px; /* Tablet: 图片252px + 内容188px */
   }
 }
 
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
   .product-card {
     height: 490px; /* Desktop: 图片276px + 内容214px */
   }
@@ -2051,7 +2051,7 @@ header nav a.active::after {
   }
 
   .product-grid-mobile .product-card > div:first-child {
-    height: 268px !important;/*ee*/
+    height: 268px !important;/* ee */
   }
 }
 

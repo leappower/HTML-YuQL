@@ -634,26 +634,12 @@ import { IMAGE_ASSETS } from './image-assets.js';
     grid.innerHTML = pageProducts.map((p) => {
       // 获取产品多语言文本（优先用i18n key，降级到原字段）
       const nameI18n = getProductI18nField(p, 'name', p.name);
-      const usageI18n = getProductI18nField(p, 'usage', p.usage);
-      const scenariosI18n = getProductI18nField(p, 'scenarios', p.scenarios);
-      const highlightsI18n = getProductI18nField(p, 'highlights', p.highlights ? (Array.isArray(p.highlights) ? p.highlights.join('; ') : String(p.highlights)) : '');
-
-      // 处理highlights为标签数组
-      let highlightsItems = [];
-      if (highlightsI18n) {
-        // 将多语言highlights按分号或换行分割
-        highlightsItems = highlightsI18n.split(/[;\n]/).map(h => h.trim()).filter(Boolean).slice(0, 3);
-      } else if (Array.isArray(p.highlights) && p.highlights.length > 0) {
-        highlightsItems = p.highlights.slice(0, 3);
-      }
-      const highlights = highlightsItems.map((item) => `<span class="px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">${item}</span>`).join('');
 
       const categoryLabel = tr('category_' + p.category, p.category);
       const displayName = nameI18n || `${categoryLabel} ${p.model || ''}`.trim();
       const badgeColorClass = p.badgeColor || 'bg-primary';
       const material = p.material;
       const minimumOrderQuantity = p.minimumOrderQuantity;
-      const referencePrice = p.referencePrice;
       const throughput = p.throughput;
       const voltage = p.voltage;
       const frequency = p.frequency;
@@ -661,13 +647,6 @@ import { IMAGE_ASSETS } from './image-assets.js';
       const imageRecognitionKey = p.imageRecognitionKey;
       const launchDate = p.launchDate;
       const scene = p.scene;
-
-      const detailRows = [
-        [tr('product_label_usage', 'Usage'), usageI18n],
-        [tr('product_label_scene', 'Application Scenario'), scenariosI18n],
-        [tr('product_label_material', 'Material'), material],
-        [tr('product_label_min_order_qty', 'Minimum Order Quantity'), minimumOrderQuantity],
-      ].filter(([, value]) => value && String(value).trim());
       return `
     <article class="product-card flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/10 group" data-category="${p.category}">
       <!-- 图片区域 (60%) -->
