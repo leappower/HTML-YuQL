@@ -20,7 +20,11 @@ const languageNames = {
   'zh-TW': '中文 (繁體)',
   'fil': 'Filipino',
   'id': 'Bahasa Indonesia',
-  'ms': 'Bahasa Melayu'
+  'ms': 'Bahasa Melayu',
+  'hi': 'हिन्दी',
+  'km': 'ភាសាខ្មែរ',
+  'my': 'မြန်မာဘာသာ',
+  'lo': 'ພາສາລາວ'
 };
 
 class TranslationManager {

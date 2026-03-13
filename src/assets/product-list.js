@@ -235,7 +235,6 @@ SAFE_PRODUCT_DATA_TABLE.forEach((series, idx) => {
 const GENERATED_PRODUCT_SERIES = SAFE_PRODUCT_DATA_TABLE.map((series, idx) => ({
   ...series,
   products: filterValidProducts(series.products).map((product, i) => {
-    console.log(`[分析] [过滤后] series:`, series && series.category, `product[${i}] 类型:`, typeof product, '内容:', product);
     return normalizeProduct(product, series.category);
   })
 }));
