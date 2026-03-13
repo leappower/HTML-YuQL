@@ -12,24 +12,35 @@ class App {
   async initialize() {
     if (this.initialized) return;
 
+    let hasErrors = false;
+
     try {
       // Initialize all modules
       for (const [, module] of this.modules) {
         if (typeof module.init === 'function') {
-          await module.init();
+          try {
+            await module.init();
+          } catch (moduleError) {
+            console.error('Failed to initialize module:', moduleError);
+            hasErrors = true;
+          }
         }
       }
 
-      // Mark main content as loaded to prevent FOUC
-      const main = document.querySelector('main');
-      if (main) {
-        main.classList.add('loaded');
-      }
+      // Only mark as initialized if no errors occurred
+      if (!hasErrors) {
+        // Mark main content as loaded to prevent FOUC
+        const main = document.querySelector('main');
+        if (main) {
+          main.classList.add('loaded');
+        }
 
-      this.initialized = true;
-      console.log('App initialized successfully');
+        this.initialized = true;
+        console.log('App initialized successfully');
+      }
     } catch (error) {
       console.error('Failed to initialize app:', error);
+      hasErrors = true;
     }
   }
 }

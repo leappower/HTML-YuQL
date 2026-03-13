@@ -10,8 +10,18 @@ const localStorageMock = {
 };
 global.localStorage = localStorageMock;
 
-// Mock fetch
-global.fetch = jest.fn();
+// Mock fetch with proper implementation
+global.fetch = jest.fn((url) => {
+  // Return a valid response for any URL
+  return Promise.resolve({
+    ok: true,
+    status: 200,
+    statusText: 'OK',
+    json: () => Promise.resolve({}),
+    text: () => Promise.resolve('{}'),
+    headers: new Map(),
+  });
+});
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {

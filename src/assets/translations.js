@@ -122,12 +122,23 @@ class TranslationManager {
     }
 
     try {
+      // Check if fetch is available
+      if (typeof fetch !== 'function') {
+        throw new Error('Fetch is not available');
+      }
+
       const response = await fetch(`./assets/lang/${lang}-ui.json?ts=${Date.now()}`, {
         cache: 'no-store'
       });
+
+      if (!response) {
+        throw new Error('Failed to fetch translations: response is undefined');
+      }
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
+
       const uiTranslations = await response.json();
       const normalizedData = this.normalizeTranslationKeys(uiTranslations);
       this.translationsCache.set(cacheKey, normalizedData);
@@ -1216,6 +1227,9 @@ function filterLanguages(query) {
 function setupLanguageSystem() {
   return translationManager.initialize();
 }
+
+// Export TranslationManager class for testing
+export { TranslationManager };
 
 // Expose modern API
 window.translationManager = translationManager;

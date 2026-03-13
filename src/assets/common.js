@@ -60,7 +60,9 @@ export function isValidEmail(email) {
  * Validate phone number
  */
 export function isValidPhone(phone) {
-  const re = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/;
+  // Allow: +[country code] [numbers], [numbers] with spaces, dashes, parentheses
+  // Examples: +86 138 1234 5678, +1 555 123 4567, +44-20-1234-5678
+  const re = /^\+?[0-9]{1,4}[-\s]?[0-9]{1,4}[-\s]?[0-9]{3,9}([-\s]?[0-9]+)*$/;
   return re.test(phone);
 }
 
@@ -68,7 +70,15 @@ export function isValidPhone(phone) {
  * Format currency
  */
 export function formatCurrency(amount, currency = 'CNY') {
-  return new Intl.NumberFormat('zh-CN', {
+  const localeMap = {
+    'USD': 'en-US',
+    'CNY': 'zh-CN',
+    'EUR': 'en-US',  // Use US locale for EUR to get €1,234.56 format
+    'GBP': 'en-GB',
+    'JPY': 'ja-JP'
+  };
+  const locale = localeMap[currency] || 'en-US';
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currency,
   }).format(amount);
@@ -78,11 +88,22 @@ export function formatCurrency(amount, currency = 'CNY') {
  * Format date
  */
 export function formatDate(date, locale = 'zh-CN') {
-  return new Intl.DateTimeFormat(locale, {
+  const options = {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }).format(new Date(date));
+  };
+
+  // For en-US, use short numeric format
+  if (locale === 'en-US') {
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    }).format(new Date(date));
+  }
+
+  return new Intl.DateTimeFormat(locale, options).format(new Date(date));
 }
 
 /**
@@ -343,6 +364,40 @@ export function downloadFile(content, filename, type = 'text/plain') {
  */
 export function generateId(prefix = '') {
   return `${prefix}${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+/**
+ * LocalStorage helper functions (for testing)
+ */
+export function getLocalStorageItem(key, parseJson = false) {
+  try {
+    const item = localStorage.getItem(key);
+    if (item === null) {
+      return null;
+    }
+    if (parseJson) {
+      try {
+        return JSON.parse(item);
+      } catch {
+        return item;
+      }
+    }
+    return item;
+  } catch (error) {
+    console.error('Failed to get from localStorage:', error);
+    return null;
+  }
+}
+
+export function setLocalStorageItem(key, value, stringify = false) {
+  try {
+    const item = (stringify || typeof value === 'object') ? JSON.stringify(value) : value;
+    localStorage.setItem(key, item);
+    return true;
+  } catch (error) {
+    console.error('Failed to set to localStorage:', error);
+    return false;
+  }
 }
 
 /**

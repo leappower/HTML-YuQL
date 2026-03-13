@@ -123,6 +123,9 @@ describe('TranslationManager', () => {
       const translations = { key: 'value' };
 
       jest.spyOn(global, 'fetch').mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
         json: () => Promise.resolve(translations),
       });
 
