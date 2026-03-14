@@ -133,7 +133,8 @@ app.use(express.static(path.join(__dirname, 'dist'), {
 
 // SPA fallback with proper 404 handling
 app.get('*', (req, res) => {
-  const filePath = path.join(__dirname, req.path);
+  // Only look inside dist/ — never expose project root files (scripts/, .env, etc.)
+  const filePath = path.join(__dirname, 'dist', req.path);
 
   // Check if file exists
   if (require('fs').existsSync(filePath) && require('fs').statSync(filePath).isFile()) {

@@ -88,7 +88,8 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
   // Handle language file requests
-  if (url.pathname.startsWith('/assets/lang/') && url.pathname.endsWith('.json')) {
+  // Match both absolute (/assets/lang/...) and relative (./assets/lang/...) URL forms
+  if ((url.pathname.startsWith('/assets/lang/') || url.pathname.includes('/assets/lang/')) && url.pathname.endsWith('.json')) {
     event.respondWith(
       caches.open(LANGUAGE_FILES_CACHE).then((cache) => {
         // Normalize cache key: strip query string so pre-cached entries always hit
@@ -190,8 +191,8 @@ async function cacheLanguageFile(language) {
   try {
     const cache = await caches.open(LANGUAGE_FILES_CACHE);
     const urls = [
-      `./assets/lang/${language}-ui.json`,
-      `./assets/lang/${language}-product.json`,
+      `/assets/lang/${language}-ui.json`,
+      `/assets/lang/${language}-product.json`,
     ];
 
     const results = await Promise.allSettled(

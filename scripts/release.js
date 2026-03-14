@@ -58,6 +58,7 @@ const opts = {
 
 // ─── 工具函数 ─────────────────────────────────────────────────────────────────
 const ROOT = path.resolve(__dirname, '..');
+const tmpDir = path.join(ROOT, '.release-tmp');
 
 /** 执行命令，返回 stdout 字符串（失败时抛出） */
 function run(cmd, options = {}) {
@@ -99,6 +100,16 @@ function bumpVersion(current, type) {
   if (type === 'minor') return formatVersion({ major: v.major, minor: v.minor + 1, patch: 0 });
   return formatVersion({ major: v.major, minor: v.minor, patch: v.patch + 1 }); // patch
 }
+
+/** 清理临时 worktree（SIGINT/SIGTERM 时也调用）*/
+function cleanupWorktree() {
+  try { run(`git worktree remove --force "${tmpDir}"`, { silent: true }); } catch (_) { /* ignore */ }
+  try { if (fs.existsSync(tmpDir)) run(`rm -rf "${tmpDir}"`, { silent: true }); } catch (_) { /* ignore */ }
+}
+
+// 捕获 Ctrl+C / kill 信号，确保 worktree 被清理
+process.on('SIGINT',  () => { warn('\n中断信号，正在清理...'); cleanupWorktree(); process.exit(130); });
+process.on('SIGTERM', () => { warn('\n终止信号，正在清理...'); cleanupWorktree(); process.exit(143); });
 
 // ─── Step 1: 读取远端最新 release 版本 ───────────────────────────────────────
 title('Step 1  读取远端 release 版本');
@@ -169,9 +180,24 @@ try {
     fail(`远端分支 ${releaseBranch} 已存在，请指定更高版本或使用 --version 覆盖`);
     process.exit(1);
   }
-} catch (_) {}
+} catch (_) { /* 无法读取远端分支列表，跳过检查 */ }
 
 ok(`目标发布分支: ${c.bold}${releaseBranch}${c.reset}`);
+
+// ─── Step 2b: 同步更新 package.json 版本号 ───────────────────────────────────
+if (!opts.dryRun) {
+  try {
+    const pkgPath = path.join(ROOT, 'package.json');
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+    if (pkg.version !== newVersion) {
+      pkg.version = newVersion;
+      fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf8');
+      ok(`package.json version 已更新 → ${newVersion}`);
+    }
+  } catch (e) {
+    warn(`无法更新 package.json version: ${e.message}（不影响发布流程）`);
+  }
+}
 
 if (opts.dryRun) {
   drylog('─────────────────────────────────────────');
@@ -244,12 +270,9 @@ try {
   if (status) {
     warn('工作区有未提交改动，发布产物时将不影响 main 分支');
   }
-} catch (_) {}
+} catch (_) { /* 无法读取工作区状态，忽略 */ }
 
-// 使用临时目录来存放产物并创建孤立分支
-const tmpDir = path.join(ROOT, '.release-tmp');
-const releaseGitDir = path.join(ROOT, '.git');
-
+// 使用临时目录来存放产物并创建孤立分支（tmpDir 已在顶部声明）
 try {
   // 清理旧的临时目录
   if (fs.existsSync(tmpDir)) {
@@ -257,14 +280,14 @@ try {
   }
 
   // 创建临时工作区
-  log(`初始化临时发布工作区...`);
+  log('初始化临时发布工作区...');
   fs.mkdirSync(tmpDir, { recursive: true });
 
   // 在临时目录里用 worktree 方式操作（避免污染主工作区）
   // 先删除已有同名 worktree（如果有遗留）
   try {
     run(`git worktree remove --force "${tmpDir}"`, { silent: true });
-  } catch (_) {}
+  } catch (_) { /* ignore existing worktree records */ }
 
   // 创建孤立分支并 checkout 到 worktree
   log(`创建孤立分支 ${releaseBranch}...`);
@@ -276,7 +299,7 @@ try {
       run(`git branch -D "${releaseBranch}"`, { silent: true });
       log(`已删除旧的本地分支 ${releaseBranch}`);
     }
-  } catch (_) {}
+  } catch (_) { /* ignore if branch listing fails */ }
 
   // 添加 worktree（孤立分支）
   run(`git worktree add --orphan -b "${releaseBranch}" "${tmpDir}"`, { silent: false });
@@ -330,19 +353,12 @@ try {
 
 } catch (e) {
   fail('发布过程出错', e);
-  // 清理 worktree
-  try { run(`git worktree remove --force "${tmpDir}"`, { silent: true }); } catch (_) {}
-  try { if (fs.existsSync(tmpDir)) run(`rm -rf "${tmpDir}"`, { silent: true }); } catch (_) {}
+  cleanupWorktree();
   process.exit(1);
 } finally {
-  // 清理 worktree
-  try {
-    run(`git worktree remove --force "${tmpDir}"`, { silent: true });
-    ok('临时 worktree 已清理');
-  } catch (_) {}
-  if (fs.existsSync(tmpDir)) {
-    try { run(`rm -rf "${tmpDir}"`, { silent: true }); } catch (_) {}
-  }
+  // 清理 worktree（无论成败均执行）
+  cleanupWorktree();
+  ok('临时 worktree 已清理');
 }
 
 // ─── 完成摘要 ─────────────────────────────────────────────────────────────────

@@ -1272,6 +1272,7 @@ header nav a.active::after {
   box-shadow: 0 20px 60px rgb(0, 0, 0, 0.3);
   max-width: 500px;
   width: 100%;
+
   /* 只限最大高度，内容少时自然收缩，不留白 */
   max-height: calc(100dvh - 32px);
   overflow: hidden;
@@ -1300,8 +1301,7 @@ header nav a.active::after {
 /* ── Body：内容自然高度，超出时滚动 ── */
 .smart-popup-body {
   padding: 14px 16px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
 }
 
 /* form 正常纵向堆叠 */

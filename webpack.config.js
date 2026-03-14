@@ -10,8 +10,12 @@ module.exports = (_, argv = {}) => {
     mode: isProduction ? 'production' : 'development',
     entry: './src/index.js',
     output: {
-      filename: 'bundle.js',
+      // Add contenthash so browsers bust cache after each release
+      filename: isProduction ? 'bundle.[contenthash:8].js' : 'bundle.js',
       path: path.resolve(__dirname, 'dist'),
+      // Explicit root-relative publicPath — prevents 'auto' mis-detection
+      // when the page is served from a non-root path (Nginx, Docker, etc.)
+      publicPath: '/',
       clean: true,
     },
     module: {
@@ -58,6 +62,17 @@ module.exports = (_, argv = {}) => {
               {
                 from: 'src/sw.js',
                 to: 'sw.js',
+                noErrorOnMissing: true,
+              },
+              // Copy factory tour video if it exists in project root or src/assets/
+              {
+                from: 'factory-tour.mp4',
+                to: 'factory-tour.mp4',
+                noErrorOnMissing: true,
+              },
+              {
+                from: 'src/assets/factory-tour.mp4',
+                to: 'factory-tour.mp4',
                 noErrorOnMissing: true,
               },
             ],

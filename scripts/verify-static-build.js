@@ -135,7 +135,8 @@ function checkHTML() {
   
   const content = fs.readFileSync(htmlPath, 'utf-8');
   const checks = {
-    'bundle.js referenced': content.includes('bundle.js'),
+    // Match both bundle.js (dev) and bundle.<hash>.js (production)
+    'bundle JS referenced': /bundle(\.[a-f0-9]+)?\.js/.test(content),
     'CSS file referenced': content.includes('styles.'),
     'lang attribute': content.includes('lang='),
     'UTF-8 charset': content.includes('charset="utf-8"')
@@ -156,12 +157,17 @@ function checkHTML() {
 }
 
 function checkBundleSize() {
-  const bundlePath = path.resolve(__dirname, '..', 'dist', 'bundle.js');
+  const distPath = path.resolve(__dirname, '..', 'dist');
   
-  if (!fs.existsSync(bundlePath)) {
+  // Support both bundle.js (dev) and bundle.<hash>.js (production)
+  const distFiles = fs.existsSync(distPath) ? fs.readdirSync(distPath) : [];
+  const bundleFile = distFiles.find(f => /^bundle(\.[a-f0-9]+)?\.js$/.test(f));
+  
+  if (!bundleFile) {
     return false;
   }
   
+  const bundlePath = path.join(distPath, bundleFile);
   const stats = fs.statSync(bundlePath);
   const sizeKB = (stats.size / 1024).toFixed(2);
   const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
@@ -183,10 +189,15 @@ function main() {
   log('🔍 Static Deployment Build Verification', 'blue');
   log('='.repeat(60) + '\n', 'blue');
   
+  // Dynamically locate bundle file (supports hash suffix in production)
+  const distPath = path.resolve(__dirname, '..', 'dist');
+  const distFiles = fs.existsSync(distPath) ? fs.readdirSync(distPath) : [];
+  const bundleFile = distFiles.find(f => /^bundle(\.[a-f0-9]+)?\.js$/.test(f)) || 'bundle.js';
+  
   const results = {
     coreFiles: [
       checkFile('dist/index.html', 'HTML file'),
-      checkFile('dist/bundle.js', 'JavaScript bundle'),
+      checkFile(`dist/${bundleFile}`, 'JavaScript bundle'),
       checkDirectory('dist/assets', 'Assets directory')
     ],
     languageFiles: checkLanguageFiles(),

@@ -8,7 +8,7 @@ function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     console.log('[Init] Service Worker is supported, attempting registration...');
 
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('./sw.js')
       .then((registration) => {
         console.log('[Init] Service Worker registered successfully:', registration);
         serviceWorkerRegistration = registration;
