@@ -350,19 +350,21 @@
     <!-- Hero Section -->
     <section id="hero" class="relative px-4 py-10 lg:py-16 mt-16 animate-fadeIn" data-bg-image-key="hero_bg"
       style="background-size: cover; background-position: center; background-repeat: no-repeat;">
-      <div id="hero-container" class="mx-auto max-w-7xl">
+      <!-- 方案C：左侧渐变遮罩，只覆盖文字区，右侧透出背景图 -->
+      <div class="absolute inset-0 bg-gradient-to-r from-black/65 via-black/40 to-transparent pointer-events-none"></div>
+      <div id="hero-container" class="relative mx-auto max-w-7xl">
         <div id="hero-flex" class="flex min-h-[480px] flex-col lg:flex-row gap-8 lg:gap-12 items-center">
           <div id="hero-content" class="flex-1 flex flex-col gap-5 text-center lg:text-left">
             <span id="hero-badge"
-              class="bg-white/10 backdrop-blur-sm text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest w-fit mx-auto lg:mx-0"
+              class="bg-primary text-white px-5 py-2 rounded-full text-sm font-extrabold uppercase tracking-widest w-fit mx-auto lg:mx-0 shadow-lg border border-white/30"
               data-i18n="hero_badge">自2004年以来的质量保证</span>
             <h1 id="hero-title"
-              class="bg-white/10 backdrop-blur-sm text-white px-6 py-4 rounded-lg text-3xl lg:text-5xl xl:text-6xl font-black leading-[1.1] tracking-tight inline-block max-w-max"
+              class="text-white text-3xl lg:text-5xl xl:text-6xl font-black leading-[1.1] tracking-tight drop-shadow-lg"
               data-i18n="hero_title">
               专业商用厨房-20年经验，帮助您的餐饮企业
             </h1>
             <p id="hero-desc"
-              class="bg-white/10 backdrop-blur-sm text-slate-200 px-6 py-4 rounded-lg text-base lg:text-xl font-normal leading-relaxed max-w-xl inline-block"
+              class="text-slate-100 text-base lg:text-xl font-normal leading-relaxed max-w-xl drop-shadow-md"
               data-i18n="hero_desc">
               凭借20多年的ODM和OEM服务经验，专业和严格的质量控制确保了卓越的质量。
             </p>
@@ -373,22 +375,28 @@
                 免费查询
               </button>
               <a id="hero-btn-secondary" href="#products"
-                class="inline-flex items-center justify-center bg-white/10 backdrop-blur-md text-white border border-white/30 rounded-lg px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-base font-bold hover:bg-white/20 transition-all"
+                class="inline-flex items-center justify-center bg-white/20 backdrop-blur-md text-white border-2 border-white/60 rounded-lg px-6 lg:px-8 py-3 lg:py-4 text-sm lg:text-base font-bold hover:bg-white/30 transition-all"
                 data-i18n="btn_hero_secondary">产品目录</a>
             </div>
           </div>
-          <div id="hero-image-area" class="flex-1 w-full max-w-xl">
-            <div id="hero-image-card" class="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img id="hero-img" alt="Professional fermentation cabinet" class="w-full h-auto"
+          <div id="hero-image-area" class="flex-1 w-full max-w-xl flex flex-col shadow-2xl rounded-2xl overflow-hidden">
+            <div id="hero-image-card" class="max-h-[300px] overflow-hidden">
+              <img id="hero-img" alt="Professional fermentation cabinet" class="w-full h-full object-cover block"
                 data-image-key="hero_main"
-                src="images/WORKSHOP_BGM.png">
-              <div id="hero-trust-overlay" class="absolute bottom-4 left-4 right-4 bg-white/95 rounded-lg p-4">
-                <div id="hero-trust-overlay-div-1" class="flex items-center gap-2 text-primary">
-                  <span id="hero-trust-overlay-div-1-material-symbols-outlined-text"
-                    class="material-symbols-outlined">verified</span>
-                  <span id="hero-trust-overlay-div-1-hero-trust-text" class="font-bold text-sm"
-                    data-i18n="hero_trust">20+年经验•500+满意客户</span>
-                </div>
+                src="https://img0.baidu.com/it/u=3626245982,2742441385&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500">
+            </div>
+            <div id="hero-trust-overlay" class="w-full bg-white/95 p-4 flex flex-col gap-2">
+              <div id="hero-trust-overlay-div-1" class="flex items-center gap-2 text-primary">
+                <span id="hero-trust-overlay-div-1-material-symbols-outlined-text"
+                  class="material-symbols-outlined">verified</span>
+                <span id="hero-trust-overlay-div-1-hero-trust-text" class="font-bold text-sm"
+                  data-i18n="hero_trust">20+年经验•500+满意客户</span>
+              </div>
+              <div id="hero-trust-overlay-div-2" class="flex items-center gap-2 text-primary border-t border-primary/10 pt-2">
+                <span id="hero-trust-overlay-div-2-icon"
+                  class="material-symbols-outlined">restaurant</span>
+                <span id="hero-trust-overlay-div-2-text" class="font-bold text-sm"
+                  data-i18n="hero_trust_2">智能商厨解决专家</span>
               </div>
             </div>
           </div>

@@ -118,8 +118,8 @@ for (const [key, filename] of Object.entries(IMAGE_FILES)) {
 export const IMAGE_ASSETS = {
   logo: `${IMAGE_PATH_PREFIX}/LOGO_HTML.png`,
   logo_dark: `${IMAGE_PATH_PREFIX}/LOGO_HTML_2.png`,
-  hero_bg: 'https://img0.baidu.com/it/u=3626245982,2742441385&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500',
-  hero_main: `${IMAGE_PATH_PREFIX}/WORKSHOP_BGM.png`,
+  hero_bg: `${IMAGE_PATH_PREFIX}/WORKSHOP_BGM.png`,
+  hero_main: 'https://img0.baidu.com/it/u=3626245982,2742441385&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500',
   factory_video_poster: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
   factory_gallery_1: 'https://img2.baidu.com/it/u=168332913,1085575385&fm=253&fmt=auto&app=120&f=JPEG?w=1067&h=800',
   factory_gallery_2: 'https://img1.baidu.com/it/u=3546157132,670778482&fm=253&fmt=auto&app=120&f=JPEG?w=889&h=500',
