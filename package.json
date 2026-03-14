@@ -39,7 +39,12 @@
     "product:sync:source": "node scripts/product-sync-i18n.js --source-only",
     "split:lang": "node scripts/split-by-language.js",
     "product:collect": "node scripts/split-by-language.js --collect",
-    "build:i18n": "node scripts/build-i18n.js"
+    "build:i18n": "node scripts/build-i18n.js",
+    "release": "node scripts/release.js",
+    "release:minor": "node scripts/release.js --minor",
+    "release:major": "node scripts/release.js --major",
+    "release:dry": "node scripts/release.js --dry-run",
+    "release:version": "node scripts/release.js --version"
   },
   "dependencies": {
     "compression": "^1.7.4",
