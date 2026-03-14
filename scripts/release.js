@@ -3,22 +3,35 @@
  * release.js — 打包发布脚本
  *
  * 用法：
- *   node scripts/release.js                  # 默认 patch 递增（1.0.0 → 1.0.1）
- *   node scripts/release.js --minor          # minor 递增（1.0.0 → 1.1.0）
- *   node scripts/release.js --major          # major 递增（1.0.0 → 2.0.0）
- *   node scripts/release.js --version=1.2.3  # 指定版本
- *   node scripts/release.js --dry-run        # 预演：只打印计划，不执行任何操作
- *   node scripts/release.js --skip-build     # 跳过打包（已有 dist 时调试用）
- *   node scripts/release.js --skip-lint      # 跳过 lint 检查
+ *   node scripts/release.js                        # 默认 patch 递增，完整飞书+翻译流程
+ *   node scripts/release.js --minor                # minor 递增（1.0.0 → 1.1.0）
+ *   node scripts/release.js --major                # major 递增（1.0.0 → 2.0.0）
+ *   node scripts/release.js --version=1.2.3        # 指定版本
+ *   node scripts/release.js --dry-run              # 预演：只打印计划，不执行任何操作
+ *   node scripts/release.js --skip-build           # 跳过打包（已有 dist 时调试用）
+ *   node scripts/release.js --skip-lint            # 跳过 lint 检查
+ *   node scripts/release.js --skip-feishu          # 跳过飞书数据拉取（保留翻译步骤）
+ *   node scripts/release.js --skip-translate       # 跳过多语言翻译（仅用已有翻译数据打包）
+ *   node scripts/release.js --no-feishu            # 同 --skip-feishu（别名）
+ *   node scripts/release.js --no-translate         # 同 --skip-translate（别名）
+ *   node scripts/release.js --full-translate       # 全量翻译（默认为增量翻译）
+ *
+ * 构建模式（由 --skip-feishu / --skip-translate 组合决定）：
+ *   完整模式（默认）：飞书拉取 → i18n提取 → 增量翻译 → webpack → 验证
+ *   跳过翻译：       飞书拉取 → i18n提取 → webpack → 验证（复用已有翻译数据）
+ *   跳过飞书：       i18n提取 → 增量翻译 → webpack → 验证
+ *   仅打包：         webpack → 验证（最快，适合纯前端改动）
  *
  * 流程：
  *   1. 从远端读取最新 release 分支，解析当前版本号
  *   2. 计算新版本号
  *   3. lint 检查（--skip-lint 可跳过）
- *   4. 执行打包（--skip-build 可跳过）
- *   5. 创建新的 release/vX.Y.Z 分支（孤立分支，仅含产物）
- *   6. 提交产物并推送到远端
- *   7. 打印发布摘要
+ *   4. 飞书数据同步（--skip-feishu 可跳过）
+ *   5. 多语言翻译（--skip-translate 可跳过）
+ *   6. webpack 打包 + 验证（--skip-build 可跳过）
+ *   7. 创建新的 release/vX.Y.Z 分支（孤立分支，仅含产物）
+ *   8. 提交产物并推送到远端
+ *   9. 打印发布摘要
  */
 
 'use strict';
@@ -48,12 +61,18 @@ const drylog=(msg)        => console.log(`${c.yellow}[dry-run]${c.reset} ${msg}`
 // ─── 参数解析 ─────────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
 const opts = {
-  major:     args.includes('--major'),
-  minor:     args.includes('--minor'),
-  dryRun:    args.includes('--dry-run'),
-  skipBuild: args.includes('--skip-build'),
-  skipLint:  args.includes('--skip-lint'),
-  version:   (args.find(a => a.startsWith('--version=')) || '').replace('--version=', ''),
+  major:         args.includes('--major'),
+  minor:         args.includes('--minor'),
+  dryRun:        args.includes('--dry-run'),
+  skipBuild:     args.includes('--skip-build'),
+  skipLint:      args.includes('--skip-lint'),
+  // 飞书数据拉取：--skip-feishu 或 --no-feishu
+  skipFeishu:    args.includes('--skip-feishu') || args.includes('--no-feishu'),
+  // 多语言翻译：--skip-translate 或 --no-translate
+  skipTranslate: args.includes('--skip-translate') || args.includes('--no-translate'),
+  // 全量翻译（默认增量）：--full-translate
+  fullTranslate: args.includes('--full-translate'),
+  version:       (args.find(a => a.startsWith('--version=')) || '').replace('--version=', ''),
 };
 
 // ─── 工具函数 ─────────────────────────────────────────────────────────────────
@@ -204,7 +223,13 @@ if (opts.dryRun) {
   drylog(`当前版本: v${currentVersion}`);
   drylog(`新版本:   v${newVersion}`);
   drylog(`目标分支: ${releaseBranch}`);
-  drylog('后续步骤: lint → build → 推送产物');
+  drylog('');
+  drylog('构建模式:');
+  drylog(`  飞书数据拉取: ${opts.skipFeishu    ? '跳过 (--skip-feishu)'    : '执行'}`);
+  drylog(`  多语言翻译:   ${opts.skipTranslate ? '跳过 (--skip-translate)' : opts.fullTranslate ? '全量翻译 (--full-translate)' : '增量翻译（默认）'}`);
+  drylog(`  webpack 打包: ${opts.skipBuild     ? '跳过 (--skip-build)'     : '执行'}`);
+  drylog('');
+  drylog('后续步骤: lint → feishu → translate → build → 推送产物');
   drylog('dry-run 模式，不执行任何实际操作');
   drylog('─────────────────────────────────────────');
   process.exit(0);
@@ -225,8 +250,64 @@ if (opts.skipLint) {
   }
 }
 
-// ─── Step 4: 打包构建 ─────────────────────────────────────────────────────────
-title('Step 4  打包构建');
+// ─── Step 4: 飞书数据同步 ─────────────────────────────────────────────────────
+title('Step 4  飞书数据同步');
+
+if (opts.skipFeishu || opts.skipBuild) {
+  warn(opts.skipBuild ? '已跳过飞书同步（--skip-build 包含此步骤）' : '已跳过飞书同步（--skip-feishu）');
+} else {
+  try {
+    log('拉取飞书产品数据表...');
+    runLive('node scripts/ensure-product-data-table.js');
+    ok('飞书数据同步完成');
+
+    log('提取 i18n key...');
+    runLive('npm run i18n:extract');
+
+    log('同步中文源文件...');
+    runLive('npm run product:sync:source');
+
+    log('合并翻译...');
+    runLive('npm run merge:i18n');
+    ok('i18n 处理完成');
+  } catch (e) {
+    fail('飞书数据同步失败，请检查网络和飞书配置（或使用 --skip-feishu 跳过）', e);
+    process.exit(1);
+  }
+}
+
+// ─── Step 5: 多语言翻译 ───────────────────────────────────────────────────────
+title('Step 5  多语言翻译');
+
+if (opts.skipTranslate || opts.skipBuild) {
+  warn(opts.skipBuild ? '已跳过翻译（--skip-build 包含此步骤）' : '已跳过多语言翻译（--skip-translate），使用现有翻译数据');
+} else {
+  const translateCmd = opts.fullTranslate
+    ? 'npm run translate:products'
+    : 'npm run translate:products:incremental';
+
+  const translateLabel = opts.fullTranslate ? '全量翻译' : '增量翻译';
+  log(`执行${translateLabel}（${translateCmd}）...`);
+  log('提示：如需全量翻译请使用 --full-translate；跳过翻译请使用 --skip-translate');
+
+  try {
+    runLive(translateCmd);
+    ok(`${translateLabel}完成`);
+
+    log('同步多语言产品数据...');
+    runLive('npm run product:sync');
+
+    log('收集语言包...');
+    runLive('npm run product:collect');
+    ok('多语言数据收集完成');
+  } catch (e) {
+    fail(`${translateLabel}失败，请检查翻译配置（或使用 --skip-translate 跳过）`, e);
+    process.exit(1);
+  }
+}
+
+// ─── Step 6: 打包构建 ─────────────────────────────────────────────────────────
+title('Step 6  打包构建');
 
 if (opts.skipBuild) {
   warn('已跳过打包（--skip-build），使用现有 dist/');
@@ -236,6 +317,8 @@ if (opts.skipBuild) {
   }
 } else {
   try {
+    // split:lang → webpack → copy-translations → build-i18n → verify
+    // 飞书同步和翻译已在 Step 4/5 完成，这里只跑打包链
     runLive('npm run build:static');
     ok('打包完成');
   } catch (e) {
@@ -253,8 +336,8 @@ if (!fs.existsSync(distDir)) {
 const distFiles = fs.readdirSync(distDir);
 ok(`dist/ 产物: ${distFiles.join(', ')}`);
 
-// ─── Step 5 & 6: 推送到 release 分支 ─────────────────────────────────────────
-title('Step 5  创建并推送 release 分支');
+// ─── Step 7: 推送到 release 分支 ──────────────────────────────────────────────
+title('Step 7  创建并推送 release 分支');
 
 // 记录当前所在分支，操作结束后回来
 let originalBranch;

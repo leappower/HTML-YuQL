@@ -44,7 +44,11 @@
     "release:minor": "node scripts/release.js --minor",
     "release:major": "node scripts/release.js --major",
     "release:dry": "node scripts/release.js --dry-run",
-    "release:version": "node scripts/release.js --version"
+    "release:version": "node scripts/release.js --version",
+    "release:no-translate": "node scripts/release.js --skip-translate",
+    "release:no-feishu": "node scripts/release.js --skip-feishu",
+    "release:pack-only": "node scripts/release.js --skip-feishu --skip-translate",
+    "release:full-translate": "node scripts/release.js --full-translate"
   },
   "dependencies": {
     "compression": "^1.7.4",
