@@ -1763,6 +1763,71 @@ header nav a.active::after {
 }
 
 /* ============================================
+   Contact Section 多屏适配
+   ============================================ */
+
+/* 桌面：左右两栏等高对齐 */
+#contact-grid {
+  align-items: start;
+}
+
+/* 联系信息卡片四格 grid，小屏降为一列 */
+@media (width <= 480px) {
+  #contact-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* 地图高度限制，防止移动端过高 */
+  #contact-map-wrapper {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* 表单名称/邮箱行降为单列 */
+  #form-row-name,
+  #form-row-email {
+    grid-template-columns: 1fr;
+  }
+
+  /* 快捷联系按钮间距收紧 */
+  #contact-quick-links-div-1 {
+    gap: 12px;
+  }
+}
+
+/* 平板（481px ~ 1023px）：卡片保持两列，表单双列 */
+@media (width >= 481px) and (width <= 1023px) {
+  #contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #contact-map-wrapper {
+    aspect-ratio: 16 / 6;
+  }
+}
+
+/* 超小屏（≤360px）：进一步压缩内边距 */
+@media (width <= 360px) {
+  #contact {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  #contact-address-card,
+  #contact-phone-card,
+  #contact-email-card,
+  #contact-whatsapp-card {
+    padding: 8px;
+  }
+
+  #contact-quick-whatsapp .w-11,
+  #contact-quick-tiktok .w-11,
+  #contact-quick-email .w-11 {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ============================================
    Responsive hardening (tablet/mobile)
    ============================================ */
 @media (width <= 1024px) {
