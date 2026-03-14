@@ -1,7 +1,5 @@
-// 图片路径配置：根据环境自动选择
-const IMAGE_PATH_PREFIX = process.env.NODE_ENV === 'production'
-  ? 'images'                    // 生产环境：dist/images/
-  : 'src/assets/images';        // 开发环境：源目录
+// 图片路径配置：统一使用 /images 前缀（dev/production 均通过 webpack 映射到 src/assets/images）
+const IMAGE_PATH_PREFIX = 'images';
 
 // 图片文件名映射（不带路径）
 const IMAGE_FILES = {
@@ -108,11 +106,7 @@ const IMAGE_FILES = {
   'ESL-TGQ40_1': 'ESL-TGQ40_1.png',
   'ESL-GQ40_1': 'ESL-GQ40_1.png',
   'ESL-TGD369_1': 'ESL-TGD369_1.png',
-  'ESL-GD369_1': 'ESL-GD369_1.png',
-  'ESL-TGQ36J9_1': 'ESL-TGQ36J9_1.png',
-  'ESL-GQ36J9_1': 'ESL-GQ36J9_1.png',
   'ESL-GB50_1': 'ESL-GB50_1.png',
-  'ESL-GQ50_1': 'ESL-GQ50_1.png'
 };
 
 // 生成完整的图片路径
@@ -122,6 +116,8 @@ for (const [key, filename] of Object.entries(IMAGE_FILES)) {
 }
 
 export const IMAGE_ASSETS = {
+  logo: `${IMAGE_PATH_PREFIX}/LOGO_HTML.png`,
+  logo_dark: `${IMAGE_PATH_PREFIX}/LOGO_HTML_2.png`,
   hero_bg: 'https://img0.baidu.com/it/u=837002806,797265044&fm=253&fmt=auto&app=120&f=JPEG?w=1023&h=682',
   hero_main: 'https://img0.baidu.com/it/u=3626245982,2742441385&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500',
   factory_video_poster: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',

@@ -1051,11 +1051,11 @@ import { IMAGE_ASSETS } from './image-assets.js';
     const body = encodeURIComponent(tr('contact_email_body', 'Hello,\n\nI am interested in your products.\n\nPlease contact me.\n\nBest regards'));
     window.location.href = `mailto:support@yukoli.com?subject=${subject}&body=${body}`;
   }
-  function startFacebook() { window.open('https://facebook.com/baeckereitechnikprofi', '_blank'); }
+  function startFacebook() { window.open('https://www.facebook.com/people/Yukoli-Technology-Co-Ltd/61579549730250/', '_blank'); }
   function startInstagram() { window.open('https://instagram.com/baeckerei.profi', '_blank'); }
   function startTwitter() { window.open('https://twitter.com/baeckerei_profi', '_blank'); }
   function startLinkedIn() { window.open('https://linkedin.com/company/baeckereitechnik-profi', '_blank'); }
-  function startTikTok() { window.open('https://tiktok.com/@baeckerei.profi', '_blank'); }
+  function startTikTok() { showNotification('Coming Soon', 'success'); }
 
   // ============================================
   // NOTIFICATION SYSTEM

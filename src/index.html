@@ -46,11 +46,9 @@
     <header id="main-header"
       class="fixed-header flex items-center justify-between whitespace-nowrap px-4 py-3 lg:px-10">
       <div id="header-logo" class="flex items-center gap-3 text-primary dark:text-slate-100">
-        <span id="header-logo-material-symbols-outlined-text"
-          class="material-symbols-outlined text-2xl lg:text-3xl">oven_gen</span>
+        <img id="header-logo-img" src="images/LOGO_HTML.png" alt="LOGO" class="h-8 lg:h-10 inline-block align-middle" />
         <h2 id="header-logo-company-name-title" class="text-base lg:text-lg font-bold leading-tight tracking-tight"
-          data-i18n="company_name">Foshan YuKoLi
-          Technology Co., Ltd.</h2>
+          data-i18n="company_name">Foshan YuKoLi Technology Co., Ltd.</h2>
       </div>
 
       <div id="header-actions" class="flex items-center gap-2 sm:gap-3 md:gap-4">
@@ -1469,11 +1467,10 @@
         class="footer-main-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
         <!-- Company Info -->
         <div id="footer-grid-footer-company-info-block" class="footer-company-info">
-          <div id="footer-grid-footer-company-info-block-div-1" class="flex items-center gap-2 mb-4">
-            <span id="footer-grid-footer-company-info-block-div-1-material-symbols-outlined-text"
-              class="material-symbols-outlined text-white">oven_gen</span>
+          <div id="footer-grid-footer-company-info-block-div-1" class="flex flex-col items-center gap-0 mb-1 text-center">
+            <img id="footer-logo-img" src="images/LOGO_HTML_2.png" alt="LOGO" class="h-20 inline-block align-middle" />
             <h3 id="footer-grid-footer-company-info-block-div-1-company-name-title" class="text-white font-bold"
-              data-i18n="company_name">Foshan YuKoLi Technology Co., Ltd.</h3>
+              data-i18n="company_name">佛山市跃迁力科技有限公司</h3>
           </div>
           <p id="footer-grid-footer-company-info-block-footer-about-text" class="text-slate-300 text-sm mb-4"
             data-i18n="footer_about">Ihr zuverlässiger Partner für professionelle
@@ -1483,17 +1480,20 @@
         <!-- Products -->
         <div id="footer-grid-footer-products-block" class="footer-products">
           <h4 id="footer-grid-footer-products-block-footer-products-title-title" class="text-white font-bold mb-4"
-            data-i18n="footer_products_title">Produkte</h4>
+            data-i18n="footer_products_title">Products</h4>
           <ul id="footer-grid-footer-products-block-ul-1" class="space-y-2 text-sm">
             <li id="footer-grid-footer-products-block-ul-1-li-1"><a
                 id="footer-grid-footer-products-block-ul-1-li-1-footer-product-1-link" href="#products"
-                class="hover:text-white transition-colors" data-i18n="footer_product_1">Kompakt-Serie</a></li>
+                class="hover:text-white transition-colors" data-i18n="footer_product_1">Advantages</a></li>
             <li id="footer-grid-footer-products-block-ul-1-li-2"><a
                 id="footer-grid-footer-products-block-ul-1-li-2-footer-product-2-link" href="#products"
-                class="hover:text-white transition-colors" data-i18n="footer_product_2">Professionell-Serie</a></li>
+                class="hover:text-white transition-colors" data-i18n="footer_product_2">Products</a></li>
             <li id="footer-grid-footer-products-block-ul-1-li-3"><a
                 id="footer-grid-footer-products-block-ul-1-li-3-footer-product-3-link" href="#products"
-                class="hover:text-white transition-colors" data-i18n="footer_product_3">Industrie-Serie</a></li>
+                class="hover:text-white transition-colors" data-i18n="footer_product_3">Trust</a></li>
+            <li id="footer-grid-footer-products-block-ul-1-li-4"><a
+                id="footer-grid-footer-products-block-ul-1-li-4-footer-product-4-link" href="#contact"
+                class="hover:text-white transition-colors" data-i18n="nav_contact">Contact</a></li>
           </ul>
         </div>
 
@@ -1577,7 +1577,7 @@
     </button>
 
     <button id="jump-btn-4" class="primary-contact-btn phone-btn jump-btn" onclick="startPhone()" aria-label="Call"
-      data-i18n-aria="contact_tooltip_call">
+      data-i18n-aria="contact_tooltip_call" style="display:none">
       <span id="jump-btn-4-contact-tooltip-call-text" class="contact-tooltip"
         data-i18n="contact_tooltip_call">Call</span>
       <span id="jump-btn-4-material-symbols-outlined-text" class="material-symbols-outlined text-lg">phone</span>
@@ -1620,19 +1620,9 @@
       <span id="expand-btn-material-symbols-outlined-text" class="material-symbols-outlined">expand_more</span>
       <span id="expand-btn-sidebar-expand-text" class="contact-tooltip" data-i18n="sidebar_expand">更多联系人</span>
     </button>
-    
-    <button onclick="startLine()" class="flex flex-col items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors group">
-      <div class="w-11 h-11 rounded-full bg-green-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
-        <span class="text-white font-bold text-xs">LINE</span>
-      </div>
-      <span class="text-xs">LINE</span>
-    </button>
-    
-    <button onclick="startEmail()" class="flex flex-col items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors group">
-      <div class="w-11 h-11 rounded-full bg-red-500 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-white text-sm">mail</span>
-      </div>
-      <span class="text-xs">Email</span>
+    <button id="back-to-top" class="back-to-top-btn hide" aria-label="Back to top" data-i18n-aria="back_to_top">
+      <span id="back-to-top-material-symbols-outlined-text" class="material-symbols-outlined">arrow_upward</span>
+      <span id="back-to-top-text" class="back-to-top-tooltip" data-i18n="back_to_top">回到顶部</span>
     </button>
   </div>
 </div>
@@ -1662,13 +1652,13 @@
       </div>
 
       <div id="smart-popup-body" class="smart-popup-body">
-        <form class="space-y-4" id="smart-popup-form" onsubmit="submitSmartPopupForm(event); return false;">
+        <form class="" id="smart-popup-form" onsubmit="submitSmartPopupForm(event); return false;">
           <div id="smart-popup-form-div-1">
             <label id="smart-popup-form-div-1-smart-form-name-label"
               class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="smart_form_name">Name
               *</label>
             <input id="smart-popup-form-div-1-form-name-placeholder-input" type="text" name="name" required
-              class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all"
+              class="w-full px-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all"
               data-i18n-placeholder="form_name_placeholder" placeholder="Your name">
           </div>
           <div id="smart-popup-form-div-2">
@@ -1676,8 +1666,8 @@
               class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
               data-i18n="smart_form_email">E-Mail *</label>
             <input id="smart-popup-form-div-2-form-email-placeholder-input" type="email" name="email" required
-              class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all"
-              data-i18n-placeholder="form_email_placeholder" placeholder="email@example.com">
+              class="w-full px-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all"
+              data-i18n-placeholder="form_email_placeholder" placeholder="support@yukoli.com">
           </div>
 
           <div id="smart-popup-form-div-3">
@@ -1685,7 +1675,7 @@
               class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
               data-i18n="smart_form_phone">Telefon (optional)</label>
             <input id="smart-popup-form-div-3-form-phone-placeholder-input" type="tel" name="phone"
-              class="w-full px-4 py-4 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all"
+              class="w-full px-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all"
               data-i18n-placeholder="form_phone_placeholder" placeholder="+49 123 456789">
           </div>
 
@@ -1747,34 +1737,24 @@
               <option id="popup-countries-list-colombia-option" value="哥伦比亚">Colombia</option>
             </datalist>
           </div>
+
           <div id="smart-popup-form-div-5">
             <label id="smart-popup-form-div-5-smart-form-message-label"
               class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
               data-i18n="smart_form_message">Ihre Nachricht</label>
-            <textarea id="smart-popup-form-div-5-form-message-placeholder-textarea" name="message" rows="3"
-              class="w-full px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all resize-none"
+            <textarea id="smart-popup-form-div-5-form-message-placeholder-textarea" name="message" rows="2"
+              class="w-full px-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary transition-all resize-none"
               data-i18n-placeholder="form_message_placeholder" placeholder="How can we help you?"></textarea>
           </div>
 
-    <div class="border-t border-white/20 pt-8">
-      <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-        <p>© 2024 <span data-i18n="company_name">Foshan YuKoLi Technology Co., Ltd.</span> <span data-i18n="footer_rights">Alle Rechte vorbehalten.</span></p>
-        <div class="flex gap-6">
-          <a href="#" class="hover:text-white transition-colors" data-i18n="footer_legal_1">AGB</a>
-          <a href="#" class="hover:text-white transition-colors" data-i18n="footer_legal_2">Datenschutz</a>
-          <a href="#" class="hover:text-white transition-colors" data-i18n="footer_legal_3">Impressum</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-
-          <div id="smart-popup-form-div-6" class="flex items-start gap-3">
+          <div id="smart-popup-form-div-6" style="display:flex;align-items:center;gap:8px;">
             <input type="checkbox" required checked id="smart-popup-form-div-6-smart-popup-privacy-agree" name="privacy"
-              class="mt-1 w-4 h-4 text-primary focus:ring-primary rounded">
+              style="flex-shrink:0;width:16px;height:16px;margin:0;vertical-align:middle;"
+              class="text-primary focus:ring-primary rounded">
             <label id="smart-popup-form-div-6-privacy-agree-label"
               for="smart-popup-form-div-6-smart-popup-privacy-agree"
-              class="text-xs text-slate-600 dark:text-slate-400 h-full" data-i18n="privacy_agree">
+              style="margin:0;line-height:1.4;"
+              class="text-xs text-slate-600 dark:text-slate-400" data-i18n="privacy_agree">
               我同意根据隐私政策处理我的数据。 *
             </label>
           </div>
@@ -1795,7 +1775,7 @@
         </form>
       </div>
     </div>
-  `).join('');
+  </div>
 
   <!-- Sidebar Indicator -->
   <div class="sidebar-indicator" id="sidebar-indicator">
@@ -1825,749 +1805,4 @@
   <script id="translations-script" defer src="./assets/translations.js"></script>
   <script id="init-script" defer src="./assets/init.js"></script>
 
-function renderPagination(totalPages) {
-  const pagination = document.getElementById('pagination');
-  if (totalPages <= 1) {
-    pagination.innerHTML = '';
-    return;
-  }
-  let html = '';
-  html += `<button onclick="goToPage(${currentPage - 1})" class="pagination-btn px-3 py-2 rounded-lg text-sm ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}" ${currentPage === 1 ? 'disabled' : ''}>
-    <span class="material-symbols-outlined text-lg">chevron_left</span>
-  </button>`;
-  for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-      html += `<button onclick="goToPage(${i})" class="pagination-btn px-4 py-2 rounded-lg text-sm font-medium ${i === currentPage ? 'bg-primary text-white' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}">${i}</button>`;
-    } else if (i === currentPage - 2 || i === currentPage + 2) {
-      html += `<span class="px-2">...</span>`;
-    }
-  }
-  html += `<button onclick="goToPage(${currentPage + 1})" class="pagination-btn px-3 py-2 rounded-lg text-sm ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700'}" ${currentPage === totalPages ? 'disabled' : ''}>
-    <span class="material-symbols-outlined text-lg">chevron_right</span>
-  </button>`;
-  pagination.innerHTML = html;
-}
-
-function goToPage(page) {
-  const filtered = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
-  if (page >= 1 && page <= totalPages) {
-    currentPage = page;
-    renderProducts();
-    document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
-  }
-}
-
-// ============================================
-// USER TRACKING
-// ============================================
-const userState = {
-  firstVisit: Date.now(), visitCount: 0, scrollDepth: 0, timeOnPage: 0,
-  productViews: [], formInteractions: 0, popupShown: false,
-  popupCount: { header: 0, hero: 0, custom: 0, product: {} },
-  lastPopupTime: 0, maxScrollReached: 0
-};
-
-function loadUserState() {
-  const saved = localStorage.getItem('userState');
-  if (saved) {
-    const parsed = JSON.parse(saved);
-    Object.assign(userState, parsed);
-    userState.visitCount++;
-    userState.timeOnPage = 0;
-    userState.scrollDepth = 0;
-  } else {
-    userState.visitCount = 1;
-  }
-  saveUserState();
-}
-
-function saveUserState() {
-  localStorage.setItem('userState', JSON.stringify(userState));
-}
-
-function trackScrollDepth() {
-  const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-  userState.scrollDepth = Math.max(userState.scrollDepth, scrollPercent);
-  userState.maxScrollReached = Math.max(userState.maxScrollReached, scrollPercent);
-}
-
-function trackTimeOnPage() {
-  userState.timeOnPage++;
-  saveUserState();
-}
-
-// ============================================
-// SIDEBAR SYSTEM
-// ============================================
-let secondaryExpanded = false;
-
-function toggleSecondaryContacts() {
-  secondaryExpanded = !secondaryExpanded;
-  const secondary = document.getElementById('secondary-contacts');
-  const btn = document.getElementById('expand-btn');
-  const btnIcon = document.getElementById('expand-btn-icon');
-  const tooltip = btn.querySelector('.contact-tooltip');
-  if (secondaryExpanded) {
-    secondary.classList.add('expanded');
-    if (btnIcon) btnIcon.textContent = 'expand_less';
-    if (tooltip) tooltip.setAttribute('data-i18n', 'sidebar_collapse');
-    btn.classList.add('expanded');
-  } else {
-    secondary.classList.remove('expanded');
-    if (btnIcon) btnIcon.textContent = 'expand_more';
-    if (tooltip) tooltip.setAttribute('data-i18n', 'sidebar_expand');
-    btn.classList.remove('expanded');
-  }
-  applyTranslations();
-}
-
-function showIndicator() {
-  const indicator = document.getElementById('sidebar-indicator');
-  indicator.classList.add('visible');
-  setTimeout(hideIndicator, 15000);
-}
-
-function hideIndicator() {
-  document.getElementById('sidebar-indicator').classList.remove('visible');
-}
-
-function startWhatsApp() { window.open('https://wa.me/4975112345678?text=' + encodeURIComponent('Hallo! Ich interessiere mich für Ihre Gärschränke.'), '_blank'); }
-function startLine() { window.open('https://line.me/ti/p/@baeckerei-profi', '_blank'); }
-function startPhone() { window.location.href = 'tel:+497511234567'; }
-function startTelegram() { window.open('https://t.me/baeckerei-profi', '_blank'); }
-function startEmail() {
-  const subject = encodeURIComponent('Anfrage zu Gärschränken');
-  const body = encodeURIComponent('Sehr geehrte Damen und Herren,\n\nich interessiere mich für Ihre Gärschränke.\n\nBitte kontaktieren Sie mich.\n\nMit freundlichen Grüßen');
-  window.location.href = `mailto:info@baeckereitechnik-profi.de?subject=${subject}&body=${body}`;
-}
-function startFacebook() { window.open('https://facebook.com/baeckereitechnikprofi', '_blank'); }
-function startInstagram() { window.open('https://instagram.com/baeckerei.profi', '_blank'); }
-function startTwitter() { window.open('https://twitter.com/baeckerei_profi', '_blank'); }
-function startLinkedIn() { window.open('https://linkedin.com/company/baeckereitechnik-profi', '_blank'); }
-function startTikTok() { window.open('https://tiktok.com/@baeckerei.profi', '_blank'); }
-
-// ============================================
-// NOTIFICATION SYSTEM
-// ============================================
-function showNotification(message, type = 'success') {
-  const container = document.getElementById('notification-container') || createNotificationContainer();
-  const notification = document.createElement('div');
-  notification.className = `notification flex items-center gap-3 p-4 rounded-lg shadow-lg mb-3 transform translate-x-full transition-transform duration-300 ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`;
-  notification.innerHTML = `<span class="material-symbols-outlined">${type === 'success' ? 'check_circle' : 'error'}</span><span class="text-sm font-medium">${message}</span>`;
-  container.appendChild(notification);
-  setTimeout(() => notification.classList.remove('translate-x-full'), 10);
-  setTimeout(() => {
-    notification.classList.add('translate-x-full');
-    setTimeout(() => notification.remove(), 300);
-  }, 4000);
-}
-
-function createNotificationContainer() {
-  const container = document.createElement('div');
-  container.id = 'notification-container';
-  container.className = 'fixed top-20 right-4 z-[9999] max-w-sm';
-  document.body.appendChild(container);
-  return container;
-}
-
-// ============================================
-// DARK MODE TOGGLE
-// ============================================
-function initDarkMode() {
-  const isDark = localStorage.getItem('darkMode') === 'true';
-  if (isDark) document.documentElement.classList.add('dark');
-}
-
-// ============================================
-// MOBILE MENU
-// ============================================
-function toggleMobileMenu() {
-  const overlay = document.getElementById('mobile-menu-overlay');
-  const menu = document.getElementById('mobile-menu');
-  overlay.classList.toggle('hidden');
-  if (menu.classList.contains('translate-x-full')) {
-    menu.classList.remove('translate-x-full');
-    menu.classList.add('translate-x-0');
-    document.body.style.overflow = 'hidden';
-  } else {
-    menu.classList.add('translate-x-full');
-    menu.classList.remove('translate-x-0');
-    document.body.style.overflow = '';
-  }
-}
-
-// ============================================
-// 测试环境判断 (localhost / 127.0.0.1)
-// ============================================
-function isTestEnvironment() {
-  const host = window.location.hostname;
-  return host === 'localhost' || host === '127.0.0.1' || host.includes('.local') || host.includes('test');
-}
-
-function setupJumpingAnimation() {
-  const jumpButtons = [
-    document.getElementById('jump-btn-1'),
-    document.getElementById('jump-btn-2'),
-    document.getElementById('jump-btn-3'),
-    document.getElementById('jump-btn-4')
-  ];
-  if (jumpButtons.some(btn => !btn)) return;
-  let currentIndex = 0, animationTimer = null, isAnimating = false;
-  const originalStyles = jumpButtons.map(btn => ({
-    transform: btn.style.transform, boxShadow: btn.style.boxShadow,
-    zIndex: btn.style.zIndex, animation: btn.style.animation
-  }));
-
-  function stopAllJumping() {
-    jumpButtons.forEach((btn, index) => {
-      if (btn) {
-        btn.classList.remove('jump-active');
-        btn.style.transform = originalStyles[index].transform || '';
-        btn.style.boxShadow = originalStyles[index].boxShadow || '';
-        btn.style.zIndex = originalStyles[index].zIndex || '';
-        btn.style.animation = '';
-      }
-    });
-    isAnimating = false;
-  }
-
-  function gentleStopButton(btn, index) {
-    if (!btn) return;
-    btn.style.transition = 'all 0.3s ease-out';
-    setTimeout(() => {
-      btn.classList.remove('jump-active');
-      btn.style.transform = originalStyles[index].transform || '';
-      btn.style.boxShadow = originalStyles[index].boxShadow || '';
-      btn.style.zIndex = originalStyles[index].zIndex || '';
-      setTimeout(() => { btn.style.transition = ''; }, 300);
-    }, 100);
-  }
-
-  function startNextJump() {
-    if (isAnimating) return;
-    isAnimating = true;
-    if (jumpButtons[currentIndex]) gentleStopButton(jumpButtons[currentIndex], currentIndex);
-
-    let nextIndex = currentIndex, attempts = 0;
-    do {
-      nextIndex = (nextIndex + 1) % jumpButtons.length;
-      attempts++;
-      if (attempts > jumpButtons.length) { isAnimating = false; return; }
-      const nextBtn = jumpButtons[nextIndex];
-      if (nextBtn) {
-        const rect = nextBtn.getBoundingClientRect();
-        const isVisible = (rect.top >= -100 && rect.left >= -100 && rect.bottom <= window.innerHeight + 100 && rect.right <= window.innerWidth + 100);
-        if (isVisible && !nextBtn.matches(':hover')) {
-          currentIndex = nextIndex;
-
-  // ============================================
-  // Products sticky compact filter (desktop only)
-  // - 当 products 区域滚动到 header 底部时，显示压缩的 title + filters
-  // - 仅在桌面 (>=1024px) 生效，直到离开 products 区域才隐藏
-  // ============================================
-  function setupProductsSticky() {
-    const productsSection = document.getElementById('products');
-    const filterBarId = 'product-filter-bar';
-    if (!productsSection) return;
-
-    let sticky = document.getElementById('products-sticky');
-    if (!sticky) {
-      sticky = document.createElement('div');
-      sticky.id = 'products-sticky';
-      sticky.className = 'hidden lg:block fixed left-0 right-0 z-50 transition-transform';
-      document.body.appendChild(sticky);
-    }
-
-    function isDesktop() { return window.matchMedia('(min-width: 1024px)').matches; }
-
-    function buildStickyContent() {
-      sticky.innerHTML = '';
-      const header = document.querySelector('header');
-      const topOffset = header ? header.getBoundingClientRect().height : 0;
-      sticky.style.top = topOffset + 'px';
-      sticky.style.pointerEvents = 'auto';
-
-      const container = document.createElement('div');
-      container.className = 'mx-auto max-w-7xl px-4 py-2 flex items-center justify-between gap-4 bg-white/80 dark:bg-slate-900/75 border-b border-primary/10 backdrop-blur-sm';
-
-      // title (compact)
-      const title = productsSection.querySelector('h2');
-      const titleClone = title ? title.cloneNode(true) : document.createElement('h2');
-      titleClone.className = 'text-sm font-bold text-primary dark:text-slate-100 truncate';
-      titleClone.style.margin = '0';
-      titleClone.style.maxWidth = '45%';
-
-      // filters (compact)
-      const filterBar = document.getElementById(filterBarId);
-      const filtersClone = filterBar ? filterBar.cloneNode(true) : document.createElement('div');
-      filtersClone.className = 'flex items-center gap-2 overflow-x-auto';
-      filtersClone.style.maxWidth = '55%';
-      // compress buttons inside cloned filter bar
-      filtersClone.querySelectorAll && filtersClone.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('px-5','py-2','text-sm');
-        btn.classList.add('px-3','py-1','text-xs');
-      });
-
-      container.appendChild(titleClone);
-      container.appendChild(filtersClone);
-      sticky.appendChild(container);
-    }
-
-    let ticking = false;
-    function onScroll() {
-      if (!isDesktop()) { sticky.classList.add('hidden'); return; }
-      if (ticking) return; ticking = true;
-      window.requestAnimationFrame(() => {
-        const header = document.querySelector('header');
-        const headerHeight = header ? header.getBoundingClientRect().height : 0;
-        const productsTop = productsSection.getBoundingClientRect().top + window.scrollY;
-        const productsBottom = productsTop + productsSection.offsetHeight;
-        const scrollY = window.scrollY || window.pageYOffset;
-        // show when we've scrolled past the products top to the header line, and hide after products bottom
-        const showAt = productsTop - headerHeight - 4; // small offset
-        const hideAt = productsBottom - headerHeight - 8;
-        const shouldShow = scrollY >= showAt && scrollY < hideAt;
-        if (shouldShow) {
-          buildStickyContent();
-          sticky.classList.remove('hidden');
-          sticky.classList.add('show');
-        } else {
-          sticky.classList.add('hidden');
-          sticky.classList.remove('show');
-        }
-        // dev logging when not in production (helps debug "no change")
-        try {
-          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            console.debug('products-sticky:', { scrollY, productsTop, productsBottom, headerHeight, showAt, hideAt, shouldShow });
-          }
-        } catch (e) {}
-        ticking = false;
-      });
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    // ensure sticky updates after filters re-render or language change
-    document.addEventListener('DOMContentLoaded', onScroll);
-    window.addEventListener('languageChanged', onScroll);
-    // when product filters re-rendered by utils, trigger update
-    const origRender = window.renderProductFilters;
-    if (typeof origRender === 'function') {
-      window.renderProductFilters = function() { const res = origRender(); setTimeout(onScroll, 50); return res; };
-    }
-    // initial check
-    setTimeout(onScroll, 300);
-  }
-
-  setupProductsSticky();
-          break;
-        }
-      }
-    } while (true);
-
-    const currentBtn = jumpButtons[currentIndex];
-    if (!currentBtn) { isAnimating = false; return; }
-
-    originalStyles[currentIndex] = {
-      transform: currentBtn.style.transform, boxShadow: currentBtn.style.boxShadow,
-      zIndex: currentBtn.style.zIndex, animation: currentBtn.style.animation
-    };
-    currentBtn.classList.add('jump-active');
-    const rect = currentBtn.getBoundingClientRect();
-    if (rect.top < 0 || rect.bottom > window.innerHeight) {
-      currentBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    setTimeout(() => {
-      if (currentBtn && currentBtn.classList.contains('jump-active')) gentleStopButton(currentBtn, currentIndex);
-      isAnimating = false;
-    }, 800);
-  }
-
-  function startAnimationCycle() {
-    stopAllJumping();
-    if (animationTimer) clearInterval(animationTimer);
-    setTimeout(startNextJump, 1000);
-    animationTimer = setInterval(startNextJump, 1200);
-  }
-
-  function stopAnimationCycle() {
-    if (animationTimer) { clearInterval(animationTimer); animationTimer = null; }
-    stopAllJumping();
-  }
-
-  function setupButtonInteractions() {
-    jumpButtons.forEach((btn, index) => {
-      if (btn) {
-        btn.addEventListener('mouseenter', () => {
-          btn.classList.remove('jump-active');
-          btn.style.transform = 'scale(1.05)';
-          btn.style.transition = 'transform 0.2s ease-out';
-        });
-        btn.addEventListener('mouseleave', () => {
-          btn.style.transform = '';
-          btn.style.transition = '';
-        });
-        btn.addEventListener('click', (e) => {
-          btn.style.transform = 'scale(0.95)';
-          setTimeout(() => { btn.style.transform = ''; }, 150);
-          btn.dataset.lastClicked = Date.now();
-          stopAnimationCycle();
-          setTimeout(startAnimationCycle, 2000);
-        });
-      }
-    });
-  }
-
-  function setupVisibilityHandler() {
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) stopAnimationCycle();
-      else setTimeout(startAnimationCycle, 500);
-    });
-  }
-
-  function init() {
-    if (document.readyState !== 'complete') {
-      window.addEventListener('load', () => setTimeout(init, 500));
-      return;
-    }
-    setupButtonInteractions();
-    setupVisibilityHandler();
-    setTimeout(startAnimationCycle, 3000);
-    let lastActivity = Date.now();
-    const activityCheck = setInterval(() => {
-      if (Date.now() - lastActivity > 30000 && animationTimer) {
-        clearInterval(animationTimer);
-        animationTimer = setInterval(startNextJump, 5000);
-      }
-    }, 10000);
-    ['mousemove', 'click', 'keydown', 'scroll'].forEach(event => {
-      window.addEventListener(event, () => { lastActivity = Date.now(); }, { passive: true });
-    });
-  }
-  init();
-  return { start: startAnimationCycle, stop: stopAnimationCycle, next: startNextJump };
-}
-
-// ============================================
-// 智能弹窗系统 (优化版)
-// ============================================
-const smartPopup = {
-  state: {
-    popupShownThisSession: 0, maxPopupsPerSession: 4, lastPopupTime: null,
-    popupCooldown: 60000,
-    conditions: {
-      initialLoadTime: { triggered: false, threshold: 20 },
-      productSectionTime: { triggered: false, threshold: 15 },
-      nonLinkClick: { triggered: false },
-      nonHeroScrollTime: { triggered: false, threshold: 20 }
-    },
-    hasScrolledPastHero: false
-  },
-  init() {
-    this.setupTracking();
-    this.checkConditionsLoop();
-  },
-  setupTracking() {
-    document.addEventListener('click', (e) => {
-      const isLink = e.target.closest('a, button, [role="button"]');
-      const isInput = e.target.closest('input, textarea, select');
-      if (!isLink && !isInput) {
-        this.state.conditions.nonLinkClick.triggered = true;
-      }
-    });
-    this.setupScrollTracking();
-    this.setupProductSectionObserver();
-  },
-  setupScrollTracking() {
-    let nonHeroTimer = 0, nonHeroInterval = null;
-    window.addEventListener('scroll', () => {
-      const heroSection = document.querySelector('section:first-of-type');
-      if (heroSection) {
-        const heroRect = heroSection.getBoundingClientRect();
-        const isPastHero = window.scrollY > heroRect.height;
-        if (isPastHero && !this.state.hasScrolledPastHero) {
-          this.state.hasScrolledPastHero = true;
-        }
-      }
-      if (this.state.hasScrolledPastHero) {
-        if (!nonHeroInterval) {
-          nonHeroTimer = 0;
-          nonHeroInterval = setInterval(() => {
-            nonHeroTimer++;
-            if (nonHeroTimer >= this.state.conditions.nonHeroScrollTime.threshold) {
-              this.state.conditions.nonHeroScrollTime.triggered = true;
-              clearInterval(nonHeroInterval);
-            }
-          }, 1000);
-        }
-      } else if (nonHeroInterval) {
-        clearInterval(nonHeroInterval);
-        nonHeroInterval = null;
-      }
-    });
-  },
-  setupProductSectionObserver() {
-    const productSection = document.getElementById('products');
-    if (!productSection) return;
-    let productTimer = 0, productInterval = null;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          productTimer = 0;
-          productInterval = setInterval(() => {
-            productTimer++;
-            if (productTimer >= this.state.conditions.productSectionTime.threshold) {
-              this.state.conditions.productSectionTime.triggered = true;
-              clearInterval(productInterval);
-            }
-          }, 1000);
-        } else {
-          if (productInterval) { clearInterval(productInterval); productInterval = null; }
-        }
-      });
-    }, { threshold: 0.3 });
-    observer.observe(productSection);
-  },
-  checkConditionsLoop() {
-    let initialTimer = 0;
-    const initialInterval = setInterval(() => {
-      initialTimer++;
-      if (initialTimer >= this.state.conditions.initialLoadTime.threshold) {
-        this.state.conditions.initialLoadTime.triggered = true;
-        clearInterval(initialInterval);
-      }
-    }, 1000);
-    setInterval(() => this.evaluateConditions(), 1000);
-  },
-  evaluateConditions() {
-    if (this.state.popupShownThisSession >= this.state.maxPopupsPerSession) return;
-    if (this.state.lastPopupTime && (Date.now() - this.state.lastPopupTime) < this.state.popupCooldown) return;
-    const shouldTrigger = this.shouldTriggerPopup();
-    if (shouldTrigger) this.showPopup(shouldTrigger.reason);
-  },
-  shouldTriggerPopup() {
-    if (this.state.conditions.initialLoadTime.triggered) return { reason: 'initial-time' };
-    if (this.state.conditions.productSectionTime.triggered) return { reason: 'product-section' };
-    if (this.state.conditions.nonLinkClick.triggered) return { reason: 'non-link-click' };
-    if (this.state.conditions.nonHeroScrollTime.triggered) return { reason: 'non-hero-scroll' };
-    return null;
-  },
-  showPopup(triggerReason) {
-    this.state.popupShownThisSession++;
-    this.state.lastPopupTime = Date.now();
-    this.updateSessionCount();
-    this.updateTriggerReason(triggerReason);
-    applyPopupVisibility();
-
-    const overlay = document.getElementById('smart-popup-overlay');
-    if (overlay) {
-      // 滚动条补偿
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.paddingRight = scrollbarWidth + 'px';
-      document.body.style.overflow = 'hidden';
-
-      overlay.classList.add('show');
-      this.resetTrigger(triggerReason);
-    }
-  },
-  updateSessionCount() {
-    const countElement = document.getElementById('today-popup-count');
-    if (countElement) {
-      countElement.textContent = `${this.state.popupShownThisSession}/${this.state.maxPopupsPerSession}`;
-    }
-  },
-  updateTriggerReason(triggerReason) {
-    const reasonElement = document.getElementById('trigger-reason');
-    if (reasonElement) {
-      let message = '我们注意到您对我们的产品感兴趣';
-      if (triggerReason === 'initial-time') message = '您已在此页面停留超过20秒';
-      if (triggerReason === 'product-section') message = '您在产品区域停留超过15秒';
-      if (triggerReason === 'non-link-click') message = '您对页面进行了非链接点击';
-      if (triggerReason === 'non-hero-scroll') message = '您在非首屏区域停留超过20秒';
-      reasonElement.innerHTML = `<span class="material-symbols-outlined">info</span><span>${message}</span>`;
-    }
-  },
-  resetTrigger(triggerReason) {
-    if (triggerReason === 'initial-time') this.state.conditions.initialLoadTime.triggered = false;
-    if (triggerReason === 'product-section') this.state.conditions.productSectionTime.triggered = false;
-    if (triggerReason === 'non-link-click') this.state.conditions.nonLinkClick.triggered = false;
-    if (triggerReason === 'non-hero-scroll') this.state.conditions.nonHeroScrollTime.triggered = false;
-  },
-  closePopup() {
-    const overlay = document.getElementById('smart-popup-overlay');
-    if (!overlay) return;
-    
-    overlay.classList.add('closing');
-    setTimeout(() => {
-      overlay.classList.remove('show', 'closing');
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-    }, 200);
-  }
-};
-
-// 控制弹窗中测试环境才显示的元素
-function applyPopupVisibility() {
-  const isTest = isTestEnvironment();
-  const countEl = document.getElementById('popup-today-count');
-  const reasonEl = document.getElementById('trigger-reason');
-  if (countEl) countEl.style.display = isTest ? 'flex' : 'none';
-  if (reasonEl) reasonEl.style.display = isTest ? 'flex' : 'none';
-}
-
-function showSmartPopupManual() {
-  const overlay = document.getElementById('smart-popup-overlay');
-  if (!overlay) return;
-  if (window.smartPopup && smartPopup.state.popupShownThisSession >= smartPopup.state.maxPopupsPerSession) return;
-  if (window.smartPopup && smartPopup.state.lastPopupTime && (Date.now() - smartPopup.state.lastPopupTime) < smartPopup.state.popupCooldown) return;
-  if (window.smartPopup) {
-    smartPopup.state.popupShownThisSession++;
-    smartPopup.state.lastPopupTime = Date.now();
-  }
-  const countElement = document.getElementById('today-popup-count');
-  if (countElement) countElement.textContent = `${smartPopup.state.popupShownThisSession}/${smartPopup.state.maxPopupsPerSession}`;
-  const reasonElement = document.getElementById('trigger-reason');
-  if (reasonElement) reasonElement.innerHTML = `<span class="material-symbols-outlined">info</span><span>您点击了咨询按钮</span>`;
-  // 同样应用环境可见性
-  applyPopupVisibility();
-  overlay.classList.add('show');
-  // 在显示弹窗前，获取滚动条宽度并设置 padding
-  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-  document.body.style.paddingRight = scrollbarWidth + 'px';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeSmartPopup() {
-  smartPopup.closePopup();
-}
-
-// ============================================
-// 邮件发送功能 - 发送到指定邮箱 (增强数据收集)
-// ============================================
-async function submitSmartPopupForm(event) {
-  event.preventDefault();
-  const form = document.getElementById('smart-popup-form');
-  if (!form) { showNotification("表单未找到", "error"); return; }
-  const formData = {
-    formType: 'smart_popup',
-    name: form.querySelector('input[name="name"]')?.value,
-    email: form.querySelector('input[name="email"]')?.value,
-    phone: form.querySelector('input[name="phone"]')?.value,
-    country: form.querySelector('input[name="country"]')?.value,
-    message: form.querySelector('textarea[name="message"]')?.value,
-    language: currentLanguage,
-    browserLanguage: navigator.language,
-    screenWidth: window.screen.width,
-    screenHeight: window.screen.height,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    pageUrl: window.location.href,
-    timeOnPage: userState?.timeOnPage || 0,
-    scrollDepth: userState?.scrollDepth || 0,
-    userAgent: navigator.userAgent
-  };
-  showNotification("正在提交您的信息...", "success");
-  try {
-    await fetch('https://script.google.com/macros/s/AKfycbyikM1ArEFhJhQUSAp6l4DHJcGzDDK1cckL-KOrVbjipoMGSKsOOlhFWJGTPB6qOys/exec', {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
-    showNotification("提交成功！", "success");
-    form.reset();
-    setTimeout(closeSmartPopup, 500);
-  } catch (error) {
-    console.error('提交失败:', error);
-    showNotification("提交成功！我们已收到您的信息。", "success");
-    form.reset();
-    setTimeout(closeSmartPopup, 500);
-  }
-}
-
-async function submitContactForm(event) {
-  event.preventDefault();
-  const form = document.getElementById('contact-form');
-  if (!form) { showNotification('表单未找到', 'error'); return; }
-  const formData = {
-    formType: 'contact_page',
-    name: form.querySelector('input[name="name"]')?.value || '',
-    company: form.querySelector('input[name="company"]')?.value || '',
-    email: form.querySelector('input[name="email"]')?.value || '',
-    phone: form.querySelector('input[name="phone"]')?.value || '',
-    country: form.querySelector('input[name="country"]')?.value || '',
-    message: form.querySelector('textarea[name="message"]')?.value || '',
-    language: currentLanguage,
-    browserLanguage: navigator.language,
-    screenWidth: window.screen.width,
-    screenHeight: window.screen.height,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    pageUrl: window.location.href,
-    timeOnPage: userState?.timeOnPage || 0,
-    scrollDepth: userState?.scrollDepth || 0,
-    userAgent: navigator.userAgent
-  };
-  showNotification('正在发送您的咨询...', 'success');
-  try {
-    await fetch('https://script.google.com/macros/s/AKfycbyikM1ArEFhJhQUSAp6l4DHJcGzDDK1cckL-KOrVbjipoMGSKsOOlhFWJGTPB6qOys/exec', {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
-    showNotification("提交成功！", "success");
-  } catch (error) {
-    console.warn('Fetch 失败，降级到 mailto 备用方案', error);
-    submitViaMailto(formData, 'contact_page');
-  }
-}
-
-function submitViaMailto(formData, formType) {
-  const subject = encodeURIComponent(`${formType === 'smart_popup' ? '智能弹窗' : '联系表单'}咨询 - ${formData.name}`);
-  const body = encodeURIComponent(`
-姓名：${formData.name}
-邮箱：${formData.email}
-电话：${formData.phone}
-公司：${formData.company || '未提供'}
-国家：${formData.country || '未提供'}
-留言：${formData.message}
-
------------- 用户信息 ------------
-IP地址：正在获取中...
-用户语言：${currentLanguage}
-浏览器语言：${navigator.language}
-屏幕分辨率：${window.screen.width}x${window.screen.height}
-时区：${Intl.DateTimeFormat().resolvedOptions().timeZone}
-页面URL：${window.location.href}
-提交时间：${new Date().toLocaleString()}
-页面停留时间：${userState.timeOnPage || 0}秒
-滚动深度：${userState.scrollDepth || 0}%
-产品兴趣点击：0次
------------- 浏览器信息 ------------
-用户代理：${navigator.userAgent}
-语言：${navigator.language}
-分辨率：${window.screen.width}x${window.screen.height}
-  `);
-  window.location.href = `mailto:179564128@qq.com?subject=${subject}&body=${body}`;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => smartPopup.init(), 1000);
-  setTimeout(setupJumpingAnimation, 1000);
-});
-
-window.addEventListener('beforeunload', () => {
-  const jumpAnimations = setupJumpingAnimation();
-  if (jumpAnimations && jumpAnimations.stop) jumpAnimations.stop();
-});
-
-let jumpAnimationSystem = null;
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => jumpAnimationSystem = setupJumpingAnimation(), 1000);
-});
-
-</script>
-
-<!-- External JavaScript Files -->
-<script defer src="./assets/main.js"></script>
-<script defer src="./assets/translations.js"></script>
-<script defer src="./assets/init.js"></script>
 </html>

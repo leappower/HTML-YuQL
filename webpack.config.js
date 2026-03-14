@@ -88,7 +88,7 @@ module.exports = (_, argv = {}) => {
         },
         {
           directory: path.join(__dirname, 'src/assets/images'),
-          publicPath: '/src/assets/images',
+          publicPath: '/images',
         },
       ],
       compress: true,
