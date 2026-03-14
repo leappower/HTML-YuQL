@@ -112,7 +112,7 @@
   "indcustom": "Niestandardowa przemysłowa komora garownicza",
   "indicator_desc": "Skontaktuj się z nami bezpośrednio poprzez pasek boczny!",
   "indicator_title": "Potrzebujesz pomocy?",
-  "lang_group_asian": "Azjatycki",
+  "lang_group_asian": "Azja",
   "lang_group_europe": "Europa",
   "lang_group_europe_global": "Europa i globalnie",
   "lang_group_global": "Globalne",
@@ -265,5 +265,7 @@
   "vorteile_machinery": "Maszyny do przetwórstwa spożywczego obejmują sprzęt do przetwórstwa mięsa (takie jak maszynki do mięsa, nadziewarki do kiełbas i mieszalniki), sprzęt do napojów (takie jak komercyjne blendery, sokowirówki i ekspresy do kawy) oraz specjalistyczny sprzęt przetwórczy (takie jak kostkarki do lodu, czajniki do wody i szafy grzewcze).",
   "vorteile_stats": "Nasza fabryka dysponuje ponad 5000 metrów kwadratowych hal produkcyjnych, ponad 50 doświadczonymi inżynierami i technikami, oferując Państwu wysokiej jakości produkty i profesjonalne usługi.",
   "vorteile_subtitle": "Nasza technologia gwarantuje stabilne wyniki, czyniąc Twoje rzemiosło wyjątkowym.",
-  "vorteile_title": "Dlaczego klienci wybierają nas"
+  "vorteile_title": "Dlaczego klienci wybierają nas",
+  "lang_group_common": "Popularne",
+  "lang_group_southeast_asia": "Azja Południowo-Wschodnia"
 }

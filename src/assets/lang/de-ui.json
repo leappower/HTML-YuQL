@@ -112,7 +112,7 @@
   "indcustom": "Maßgefertigter Industrie-Gärschrank",
   "indicator_desc": "Kontaktieren Sie uns direkt über die Seitenleiste!",
   "indicator_title": "Brauchen Sie Hilfe?",
-  "lang_group_asian": "asiatisch",
+  "lang_group_asian": "Asien",
   "lang_group_europe": "Europa",
   "lang_group_europe_global": "Europa und Global",
   "lang_group_global": "Global",
@@ -265,5 +265,7 @@
   "vorteile_machinery": "Lebensmittelverarbeitungsmaschinen umfassen Fleischverarbeitungsgeräte (wie Fleischwölfe, Wurstfüller und Kutter), Getränkegeräte (wie gewerbliche Mixer, Entsafter und Kaffeemaschinen) und spezielle Verarbeitungsgeräte (wie Eismaschinen, Wasserkocher und Wärmehalte-Schränke).",
   "vorteile_stats": "Unser Werk verfügt über mehr als 5.000 m² Produktionsfläche und über 50 erfahrene Ingenieure und Techniker, die Ihnen hochwertige Produkte und professionelle Dienstleistungen bieten.",
   "vorteile_subtitle": "Unsere Technologie garantiert stabile Ergebnisse und macht Ihr Handwerk noch besser.",
-  "vorteile_title": "Warum Kunden uns wählen"
+  "vorteile_title": "Warum Kunden uns wählen",
+  "lang_group_common": "Häufig verwendet",
+  "lang_group_southeast_asia": "Südostasien"
 }

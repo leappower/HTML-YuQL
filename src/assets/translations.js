@@ -1,6 +1,6 @@
 // assets/translations.js - Internationalization Module
 const languageNames = {
-  'zh-CN': '中文 (简体)',
+  'zh-CN': '中文（简体）',
   'de': 'Deutsch',
   'en': 'English',
   'es': 'Español',
@@ -13,11 +13,11 @@ const languageNames = {
   'ru': 'Русский',
   'tr': 'Türkçe',
   'ko': '한국어',
-  'th': 'ไทย',
+  'th': 'ภาษาไทย',
   'vi': 'Tiếng Việt',
   'ar': 'العربية',
   'he': 'עברית',
-  'zh-TW': '中文 (繁體)',
+  'zh-TW': '中文（繁體）',
   'fil': 'Filipino',
   'id': 'Bahasa Indonesia',
   'ms': 'Bahasa Melayu',

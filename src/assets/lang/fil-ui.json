@@ -112,7 +112,7 @@
   "indcustom": "Custom Industrial Proofer",
   "indicator_desc": "Makipag-ugnayan sa amin nang direkta sa pamamagitan ng sidebar!",
   "indicator_title": "Kailangan ng tulong?",
-  "lang_group_asian": "Asyano",
+  "lang_group_asian": "Asya",
   "lang_group_europe": "Europa",
   "lang_group_europe_global": "Europa at Pandaigdig",
   "lang_group_global": "Pandaigdig",
@@ -265,5 +265,7 @@
   "vorteile_machinery": "Kasama sa makinarya sa pagpoproseso ng pagkain ang kagamitan sa pagpoproseso ng karne (tulad ng mga gilingan ng karne, sausage stuffer, at mixer), kagamitan sa inumin (tulad ng mga komersyal na blender, juicer, at coffee machine), at espesyal na kagamitan sa pagpoproseso (tulad ng mga ice machine, water boiler, at insulated cabinet).",
   "vorteile_stats": "Ang aming pabrika ay may higit sa 5,000 metro kuwadrado ng mga production workshop, higit sa 50 may karanasang inhinyero at teknisyan, na nagbibigay sa iyo ng mataas na kalidad na mga produkto at propesyonal na serbisyo.",
   "vorteile_subtitle": "Ginagarantiya ng aming teknolohiya ang matatag na resulta, na ginagawang katangi-tangi ang iyong gawa.",
-  "vorteile_title": "Bakit pumipili ang mga customer sa amin"
+  "vorteile_title": "Bakit pumipili ang mga customer sa amin",
+  "lang_group_common": "Karaniwan",
+  "lang_group_southeast_asia": "Timog-silangang Asya"
 }

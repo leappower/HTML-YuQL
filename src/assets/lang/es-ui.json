@@ -112,7 +112,7 @@
   "indcustom": "Cámara de Fermentación Industrial Personalizada",
   "indicator_desc": "¡Contáctenos directamente a través de la barra lateral!",
   "indicator_title": "¿Necesita Ayuda?",
-  "lang_group_asian": "asiático",
+  "lang_group_asian": "Asia",
   "lang_group_europe": "Europa",
   "lang_group_europe_global": "Europa y global",
   "lang_group_global": "Global",
@@ -265,5 +265,7 @@
   "vorteile_machinery": "Las máquinas de transformación de alimentos incluyen equipos de transformación de carne (como picadoras de carne, embutidoras y mezcladoras), equipos para bebidas (como mezcladores comerciales, extractores de jugo y máquinas de café) y equipos de transformación especializados (como máquinas de hielo, hervidores y armarios térmicos).",
   "vorteile_stats": "Nuestra fábrica cuenta con más de 5.000 metros cuadrados de talleres de producción, más de 50 ingenieros y técnicos experimentados, ofreciéndole productos de alta calidad y servicios profesionales.",
   "vorteile_subtitle": "Nuestra tecnología asegura resultados estables, haciendo que su oficio sea excepcional.",
-  "vorteile_title": "Por qué los clientes nos eligen"
+  "vorteile_title": "Por qué los clientes nos eligen",
+  "lang_group_common": "Más usados",
+  "lang_group_southeast_asia": "Sudeste Asiático"
 }

@@ -112,7 +112,7 @@
   "indcustom": "Ruang Fermentasi Perindustrian Tersuai",
   "indicator_desc": "Hubungi kami secara langsung melalui bar sisi!",
   "indicator_title": "Perlu bantuan?",
-  "lang_group_asian": "orang Asia",
+  "lang_group_asian": "Asia",
   "lang_group_europe": "Eropah",
   "lang_group_europe_global": "Eropah dan Global",
   "lang_group_global": "Global",
@@ -265,5 +265,7 @@
   "vorteile_machinery": "Jentera pemprosesan makanan termasuk peralatan pemprosesan daging (seperti pengisar daging, penyumbat sosej, dan pengadun), peralatan minuman (seperti pengisar komersial, pemerah jus, dan mesin kopi), dan peralatan pemprosesan khusus (seperti mesin ais, pemanas air, dan kabin berpenebat).",
   "vorteile_stats": "Kilang kami mempunyai lebih 5,000 meter persegi bengkel pengeluaran, lebih 50 jurutera dan juruteknik berpengalaman, memberikan anda produk berkualiti tinggi dan perkhidmatan profesional.",
   "vorteile_subtitle": "Teknologi kami menjamin hasil yang stabil, menjadikan kemahiran anda lebih luar biasa.",
-  "vorteile_title": "Mengapa pelanggan memilih kami"
+  "vorteile_title": "Mengapa pelanggan memilih kami",
+  "lang_group_common": "Umum",
+  "lang_group_southeast_asia": "Asia Tenggara"
 }
