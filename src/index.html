@@ -1704,9 +1704,14 @@ function setupJumpingAnimation() {
       if (ticking) return; ticking = true;
       window.requestAnimationFrame(() => {
         const header = document.querySelector('header');
-        const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
-        const secRect = productsSection.getBoundingClientRect();
-        const shouldShow = secRect.top <= headerBottom && secRect.bottom > headerBottom + 10;
+        const headerHeight = header ? header.getBoundingClientRect().height : 0;
+        const productsTop = productsSection.getBoundingClientRect().top + window.scrollY;
+        const productsBottom = productsTop + productsSection.offsetHeight;
+        const scrollY = window.scrollY || window.pageYOffset;
+        // show when we've scrolled past the products top to the header line, and hide after products bottom
+        const showAt = productsTop - headerHeight - 4; // small offset
+        const hideAt = productsBottom - headerHeight - 8;
+        const shouldShow = scrollY >= showAt && scrollY < hideAt;
         if (shouldShow) {
           buildStickyContent();
           sticky.classList.remove('hidden');
@@ -1715,6 +1720,12 @@ function setupJumpingAnimation() {
           sticky.classList.add('hidden');
           sticky.classList.remove('show');
         }
+        // dev logging when not in production (helps debug "no change")
+        try {
+          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.debug('products-sticky:', { scrollY, productsTop, productsBottom, headerHeight, showAt, hideAt, shouldShow });
+          }
+        } catch (e) {}
         ticking = false;
       });
     }
