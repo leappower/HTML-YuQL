@@ -657,13 +657,13 @@ import { IMAGE_ASSETS } from './image-assets.js';
       <!-- 内容区域 (40%) -->
       <div class="p-3 flex flex-col">
         <!-- 产品名称 + 型号 -->
-        <div class="flex items-start justify-between gap-2 mb-1.5 shrink-0">
+        <div class="flex items-center justify-between gap-2 mb-1.5 shrink-0">
           <div class="flex-1 min-w-0">
-            <h3 class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight line-clamp-1">${displayName}</h3>
+            <h3 class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight line-clamp-2">${displayName}</h3>
           </div>
-          <div class="shrink-0 w-20 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-1 py-0.5 text-center">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${tr('product_label_model', 'Model')}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${p.model || '-'}</p>
+          <div class="shrink-0 w-20 h-full min-h-[36px] flex flex-col items-center justify-center rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-1 py-1 text-center self-stretch">
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate leading-none mb-0.5">${tr('product_label_model', 'Model')}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-none">${p.model || '-'}</p>
           </div>
         </div>
 
@@ -699,12 +699,12 @@ import { IMAGE_ASSETS } from './image-assets.js';
         <div class="grid grid-cols-1 gap-1 mb-1.5 shrink-0">
           <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
             <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_material', 'Material') + ':'}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${tr(material || '-', material || '-')}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${material || '-'}</p>
           </div>
           <!-- 使用场景 -->
           <div class="flex items-center rounded-md bg-slate-50 dark:bg-slate-800/70 p-1 min-w-0">
             <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate flex-shrink-0">${tr('product_label_scene', 'Scene') + ':'}</p>
-            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${tr(scene || '-', scene || '-')}</p>
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate flex-1 min-w-0 ml-1">${scene || '-'}</p>
           </div>
         </div>
         <!-- 按钮 (单行显示，固定高度) -->
