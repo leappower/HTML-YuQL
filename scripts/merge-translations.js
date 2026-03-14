@@ -1,33 +1,13 @@
 const fs = require('fs');
 const path = require('path');
+const { getSortedCodes } = require(path.join(__dirname, '../src/lang-registry'));
 
 const translationsDir = path.resolve(__dirname, '../src/assets/lang');
-const outputPath = path.resolve(__dirname, '../src/assets/i18n.json');
+// 输出合并后的 UI 翻译（供调试/审查用，build pipeline 不依赖此文件）
+const outputPath = path.resolve(__dirname, '../src/assets/ui-i18n-merged.json');
 
-const languageOrder = [
-  'zh',      // 中文
-  'zh-CN',   // 简体中文
-  'zh-TW',   // 繁体中文
-  'en',      // English
-  'ar',      // Arabic
-  'de',      // German
-  'es',      // Spanish
-  'fil',     // Filipino
-  'fr',      // French
-  'he',      // Hebrew
-  'id',      // Indonesian
-  'it',      // Italian
-  'ja',      // Japanese
-  'ko',      // Korean
-  'ms',      // Malay
-  'nl',      // Dutch
-  'pl',      // Polish
-  'pt',      // Portuguese
-  'ru',      // Russian
-  'th',      // Thai
-  'tr',      // Turkish
-  'vi'       // Vietnamese
-];
+// 语言合并顺序 — 由 src/lang-registry.js 统一管理（按 sortOrder 升序）
+const languageOrder = getSortedCodes();
 
 /**
  * Clean up hex-prefixed keys from translations
@@ -72,10 +52,10 @@ function mergeTranslations(options = {}) {
   console.log('🔄 Merging translations...\n');
 
   languageOrder.forEach(lang => {
-    const filePath = path.join(translationsDir, `${lang}.json`);
+    const filePath = path.join(translationsDir, `${lang}-ui.json`);
 
     if (!fs.existsSync(filePath)) {
-      console.log(`⚠️  Warning: ${lang}.json not found, skipping...`);
+      console.log(`⚠️  Warning: ${lang}-ui.json not found, skipping...`);
       return;
     }
 
@@ -84,7 +64,7 @@ function mergeTranslations(options = {}) {
       if (cleanupHex) {
         const stats = cleanupHexIds(filePath);
         if (stats.removed > 0) {
-          console.log(`   🔍 Cleaned ${stats.removed} hex-prefixed keys from ${lang}.json`);
+          console.log(`   🔍 Cleaned ${stats.removed} hex-prefixed keys from ${lang}-ui.json`);
           totalHexRemoved += stats.removed;
         }
       }
@@ -99,7 +79,7 @@ function mergeTranslations(options = {}) {
 
       console.log(`✅ ${lang.padEnd(6)} - ${keyCount} keys`);
     } catch (error) {
-      console.error(`❌ Error reading ${lang}.json:`, error.message);
+      console.error(`❌ Error reading ${lang}-ui.json:`, error.message);
     }
   });
 

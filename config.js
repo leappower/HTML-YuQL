@@ -1,4 +1,6 @@
 // config.js - Application configuration
+const { getSupportedCodes } = require('./src/lang-registry');
+
 const config = {
   // Server configuration
   server: {
@@ -29,13 +31,10 @@ const config = {
   },
 
   // Translation configuration
+  // supportedLanguages 由 src/lang-registry.js 统一管理，此处直接派生
   i18n: {
     defaultLanguage: 'zh-CN',
-    supportedLanguages: [
-      'zh-CN', 'zh-TW', 'en', 'de', 'es', 'fr', 'it', 'pt',
-      'ja', 'ko', 'nl', 'pl', 'ru', 'tr', 'th', 'vi',
-      'ar', 'he', 'fil', 'id', 'ms'
-    ],
+    supportedLanguages: getSupportedCodes(), // 仅含 hasTranslation: true 的语言
     fallbackLanguage: 'zh-CN'
   },
 

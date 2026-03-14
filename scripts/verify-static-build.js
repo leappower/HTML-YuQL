@@ -56,25 +56,30 @@ function checkLanguageFiles() {
   log('\n📊 Language Files Summary:', 'blue');
   log(`   Total files: ${jsonFiles.length}`, 'blue');
   
-  // Expected languages
+  // Expected languages — keep in sync with src/lang-registry.js (hasTranslation: true)
   const expectedLanguages = [
-    'zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'es', 'fr', 'de', 'it', 'pt',
-    'ru', 'ar', 'he', 'th', 'vi', 'id', 'ms', 'fil', 'nl', 'pl', 'tr'
+    'zh-CN', 'zh-TW', 'en', 'ar', 'he',
+    'de', 'es', 'fr', 'it', 'nl', 'pl', 'pt', 'ru', 'tr',
+    'ja', 'ko', 'id', 'ms', 'fil', 'th', 'vi', 'hi', 'my', 'km', 'lo'
   ];
   
   let allPresent = true;
   expectedLanguages.forEach(lang => {
-    const fileName = `${lang}.json`;
-    const filePath = path.join(langDir, fileName);
-    
-    if (fs.existsSync(filePath)) {
-      const stats = fs.statSync(filePath);
-      const size = (stats.size / 1024).toFixed(2);
-      const icon = size > 200 ? '⚠' : '✓';
-      const color = size > 200 ? 'yellow' : 'green';
-      log(`   ${icon} ${fileName}: ${size} KB`, color);
+    const uiFile    = `${lang}-ui.json`;
+    const prodFile  = `${lang}-product.json`;
+    const uiPath    = path.join(langDir, uiFile);
+    const prodPath  = path.join(langDir, prodFile);
+
+    const uiExists   = fs.existsSync(uiPath);
+    const prodExists = fs.existsSync(prodPath);
+
+    if (uiExists && prodExists) {
+      const uiSize   = (fs.statSync(uiPath).size   / 1024).toFixed(2);
+      const prodSize = (fs.statSync(prodPath).size  / 1024).toFixed(2);
+      log(`   ✓ ${lang}: ui=${uiSize} KB  product=${prodSize} KB`, 'green');
     } else {
-      log(`   ✗ ${fileName}: NOT FOUND`, 'red');
+      if (!uiExists)   { log(`   ✗ ${uiFile}: NOT FOUND`,   'red'); }
+      if (!prodExists) { log(`   ✗ ${prodFile}: NOT FOUND`, 'red'); }
       allPresent = false;
     }
   });
@@ -97,9 +102,11 @@ function checkServiceWorker() {
   const checks = {
     'CACHE_NAME': content.includes('CACHE_NAME'),
     'LANGUAGE_FILES': content.includes('LANGUAGE_FILES'),
-    'install event': content.includes('addEventListener(\'install\''),
-    'fetch event': content.includes('addEventListener(\'fetch\''),
-    'Cache-First strategy': content.includes('cache.match')
+    // webpack minifier may convert single quotes → double quotes; check both forms
+    'install event': content.includes('addEventListener(\'install\'') || content.includes('addEventListener("install"'),
+    'fetch event': content.includes('addEventListener(\'fetch\'') || content.includes('addEventListener("fetch"'),
+    // webpack minifier may rename the cache variable (e.g. s.match); check generic .match( pattern
+    'Cache-First strategy': content.includes('cache.match') || content.includes('.match(')
   };
   
   log('\n📋 Service Worker Content Check:', 'blue');

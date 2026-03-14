@@ -89,9 +89,97 @@ function main() {
   }
 }
 
-// 运行主函数
-if (require.main === module) {
-  main();
+/**
+ * 反向聚合：从各语言 {lang}-product.json 重建 src/assets/product-i18n.json
+ *
+ * 这是 translate:products[:incremental] 之后必须运行的步骤：
+ *   翻译脚本将产品译文写到 lang/{lang}-product.json
+ *   split:lang 需要读 src/assets/product-i18n.json（按语言聚合的大文件）
+ *   本函数将两者桥接起来，确保翻译结果能被 split:lang 消费
+ *
+ * 运行方式：
+ *   node scripts/split-by-language.js --collect
+ *   npm run product:collect            （由 build:withFeishu 系列自动调用）
+ */
+function collectProductTranslations() {
+  console.log('\n========================================');
+  console.log('  聚合产品翻译 → product-i18n.json');
+  console.log('========================================\n');
+
+  const langDir = config.outputLangDir;
+  const outputFile = config.inputProductFile;
+
+  if (!fs.existsSync(langDir)) {
+    console.error(`❌ 语言目录不存在: ${langDir}`);
+    process.exit(1);
+  }
+
+  // 找到所有 {lang}-product.json 文件
+  const productFiles = fs.readdirSync(langDir)
+    .filter(f => f.endsWith('-product.json'))
+    .sort();
+
+  if (productFiles.length === 0) {
+    console.warn('⚠️  未找到任何 -product.json 文件，跳过聚合');
+    return;
+  }
+
+  console.log(`找到 ${productFiles.length} 个产品翻译文件\n`);
+
+  // 读取现有的 product-i18n.json（若存在，用于保留未重新翻译的语言）
+  let existingData = {};
+  if (fs.existsSync(outputFile)) {
+    try {
+      existingData = JSON.parse(fs.readFileSync(outputFile, 'utf-8'));
+      console.log(`  ✓ 读取现有 product-i18n.json（${Object.keys(existingData).length} 种语言）`);
+    } catch (err) {
+      console.warn(`  ⚠️  解析现有 product-i18n.json 失败，将重新生成: ${err.message}`);
+    }
+  }
+
+  // 聚合：各语言文件 → { lang: { key: value } }
+  const aggregated = { ...existingData };
+  let totalKeys = 0;
+
+  for (const file of productFiles) {
+    const lang = file.replace(/-product\.json$/, '');
+    const filePath = path.join(langDir, file);
+    try {
+      const content = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      const keyCount = Object.keys(content).length;
+      aggregated[lang] = content;
+      totalKeys += keyCount;
+      console.log(`  ✓ ${lang.padEnd(8)}: ${keyCount} 个键`);
+    } catch (err) {
+      console.error(`  ❌ ${lang}: 读取失败 — ${err.message}`);
+    }
+  }
+
+  // 写回 product-i18n.json（语言 key 排序）
+  const sorted = {};
+  Object.keys(aggregated).sort().forEach(lang => { sorted[lang] = aggregated[lang]; });
+
+  try {
+    fs.writeFileSync(outputFile, JSON.stringify(sorted, null, 2) + '\n', 'utf-8');
+    console.log(`\n✅ 聚合完成 → ${outputFile}`);
+    console.log(`   ${Object.keys(sorted).length} 种语言，共 ${totalKeys} 个键`);
+  } catch (err) {
+    console.error(`❌ 写入 product-i18n.json 失败: ${err.message}`);
+    process.exit(1);
+  }
+
+  console.log('\n========================================');
+  console.log('  完成!');
+  console.log('========================================\n');
 }
 
-module.exports = { splitByLanguage };
+// 运行主函数
+if (require.main === module) {
+  if (process.argv.includes('--collect')) {
+    collectProductTranslations();
+  } else {
+    main();
+  }
+}
+
+module.exports = { splitByLanguage, collectProductTranslations };

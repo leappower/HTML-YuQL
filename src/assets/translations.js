@@ -1,31 +1,11 @@
 // assets/translations.js - Internationalization Module
-const languageNames = {
-  'zh-CN': '中文（简体）',
-  'de': 'Deutsch',
-  'en': 'English',
-  'es': 'Español',
-  'fr': 'Français',
-  'it': 'Italiano',
-  'pt': 'Português',
-  'ja': '日本語',
-  'nl': 'Nederlands',
-  'pl': 'Polski',
-  'ru': 'Русский',
-  'tr': 'Türkçe',
-  'ko': '한국어',
-  'th': 'ภาษาไทย',
-  'vi': 'Tiếng Việt',
-  'ar': 'العربية',
-  'he': 'עברית',
-  'zh-TW': '中文（繁體）',
-  'fil': 'Filipino',
-  'id': 'Bahasa Indonesia',
-  'ms': 'Bahasa Melayu',
-  'hi': 'हिन्दी',
-  'km': 'ភាសាខ្មែរ',
-  'my': 'မြန်မာဘာသာ',
-  'lo': 'ພາສາລາວ'
-};
+//
+// languageNames 从 src/lang-registry.js 统一管理，此处直接派生
+// 包含全部 25 种语言（含 hi/km/my/lo 等待翻译语言）
+const langRegistry = (typeof window !== 'undefined' && window.LANG_REGISTRY)
+  ? window.LANG_REGISTRY
+  : require('../lang-registry');
+const languageNames = langRegistry.getNativeNames();
 
 class TranslationManager {
   constructor() {
@@ -131,8 +111,8 @@ class TranslationManager {
         throw new Error('Fetch is not available');
       }
 
-      const response = await fetch(`./assets/lang/${lang}-ui.json?ts=${Date.now()}`, {
-        cache: 'no-store'
+      const response = await fetch(`./assets/lang/${lang}-ui.json`, {
+        cache: 'no-cache'
       });
 
       if (!response) {
@@ -169,13 +149,20 @@ class TranslationManager {
     }
 
     try {
-      const response = await fetch(`./assets/lang/${lang}-product.json?ts=${Date.now()}`, {
-        cache: 'no-store'
+      const response = await fetch(`./assets/lang/${lang}-product.json`, {
+        cache: 'no-cache'
       });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const productTranslations = await response.json();
+
+      // If the product file is empty ({}), fall back to zh-CN rather than serving blank content
+      if (Object.keys(productTranslations).length === 0 && lang !== 'zh-CN') {
+        console.warn(`⚠️  Empty product translations for ${lang}, falling back to zh-CN`);
+        return this.loadProductTranslations('zh-CN');
+      }
+
       const normalizedData = this.normalizeTranslationKeys(productTranslations);
       this.translationsCache.set(cacheKey, normalizedData);
       console.log(`✅ Loaded product translations for ${lang} (${Object.keys(productTranslations).length} keys)`);
@@ -1074,7 +1061,7 @@ class TranslationManager {
 
     if (currentTranslations) {
       const keyCount = Object.keys(currentTranslations).length;
-      const sizeKB = Math.round(Buffer.byteLength(JSON.stringify(currentTranslations)) / 1024);
+      const sizeKB = Math.round(new TextEncoder().encode(JSON.stringify(currentTranslations)).byteLength / 1024);
       console.log(`- Current Language Size: ${keyCount} keys, ${sizeKB} KB`);
 
       console.log('- Sample Translations:');

@@ -1,6 +1,5 @@
 import { IMAGE_ASSETS } from './image-assets.js';
 import { PRODUCT_DATA_TABLE } from './product-data-table.js';
-import { MOCK_PRODUCT_SERIES_RAW } from './product-list.mock.js';
 
 const SAFE_PRODUCT_DATA_TABLE = Array.isArray(PRODUCT_DATA_TABLE) ? PRODUCT_DATA_TABLE : [];
 
@@ -219,22 +218,16 @@ function filterValidProducts(products) {
   );
 }
 
-const MOCK_PRODUCT_SERIES = MOCK_PRODUCT_SERIES_RAW.map((series) => ({
-  ...series,
-  products: filterValidProducts(series.products).map((product) =>
-    normalizeProduct(product, series.category)
-  )
-}));
 
 
-SAFE_PRODUCT_DATA_TABLE.forEach((series, idx) => {
-  console.log(`[分析] 第${idx+1}个series:`, series && series.category, 'products类型:', Array.isArray(series && series.products), 'products长度:', series && series.products && series.products.length);
+SAFE_PRODUCT_DATA_TABLE.forEach((series) => {
+  console.log('[分析] series:', series && series.category, 'products类型:', Array.isArray(series && series.products), 'products长度:', series && series.products && series.products.length);
   // ...existing code...
 });
 
-const GENERATED_PRODUCT_SERIES = SAFE_PRODUCT_DATA_TABLE.map((series, idx) => ({
+const GENERATED_PRODUCT_SERIES = SAFE_PRODUCT_DATA_TABLE.map((series) => ({
   ...series,
-  products: filterValidProducts(series.products).map((product, i) => {
+  products: filterValidProducts(series.products).map((product) => {
     return normalizeProduct(product, series.category);
   })
 }));
@@ -319,7 +312,7 @@ function mergeSeriesByIdentity(seriesList) {
 
 export function assembleProductSeries(options = {}) {
   const runtimeEnv = options.runtimeEnv || detectRuntimeEnv();
-  const isDevelopment = runtimeEnv !== 'production';
+  void runtimeEnv; // runtimeEnv 供调试/扩展保留，当前通过 hasTableData 决策
   
   const useTableData = hasTableData(GENERATED_PRODUCT_SERIES);
 

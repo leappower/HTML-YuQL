@@ -2754,7 +2754,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "行星搅拌刮底刮边；数码显示屏；8组记忆菜谱；旋钮调节"
           },
           "scenarios": {
-            "zh-CN": "餐饮连锁、外卖、小食店等小型场所, 家庭厨房"
+            "zh-CN": "餐饮连锁、外卖、小食店等小型场所,家庭厨房"
           },
           "usage": {
             "zh-CN": "自动烹饪炒菜、炒饭、炒粉、炒面、辣子鸡、麻辣香锅等"
@@ -7636,7 +7636,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "bg-red-500"
           },
           "imageRecognitionKey": {
-            "zh-CN": "ESL-TGD36/9_1"
+            "zh-CN": "ESL-TGD369_1"
           },
           "productDimensions": {
             "zh-CN": "690×560×710mm"
@@ -7739,7 +7739,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "bg-red-500"
           },
           "imageRecognitionKey": {
-            "zh-CN": "ESL-GD36/9_1"
+            "zh-CN": "ESL-GD369_1"
           },
           "productDimensions": {
             "zh-CN": "610×850×1400mm"
@@ -8156,7 +8156,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "bg-red-500"
           },
           "imageRecognitionKey": {
-            "zh-CN": "ESL-TGQ36J/9_1"
+            "zh-CN": "ESL-TGQ36J9_1"
           },
           "productDimensions": {
             "zh-CN": "720×600×710mm"
@@ -8259,7 +8259,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "bg-red-500"
           },
           "imageRecognitionKey": {
-            "zh-CN": "ESL-GQ36J/9_1"
+            "zh-CN": "ESL-GQ36J9_1"
           },
           "productDimensions": {
             "zh-CN": "640×850×1400mm"
@@ -10503,7 +10503,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "行星搅拌无死角；7寸触摸屏；电控翻锅；多档火力调节"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪10-20kg，焖炖烹饪50-150kg，多功能用途"
@@ -10600,7 +10600,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "行星搅拌无死角；7寸触摸屏；电控翻锅；多档火力调节"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪10-20kg，焖炖烹饪50-150kg，多功能用途"
@@ -10697,7 +10697,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "自动四路定量喷料；10寸智能触屏；800菜谱存储；一键清洗"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪10-20kg，焖炖烹饪50-150kg，全自动操作"
@@ -10794,7 +10794,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "自动四路定量喷料；10寸智能触屏；800菜谱存储；一键清洗"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪10-20kg，焖炖烹饪50-150kg，全自动操作"
@@ -10891,7 +10891,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "行星搅拌无死角；7寸触摸屏；电控翻锅；大容量设计"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪20-50kg，焖炖烹饪100-200kg，大容量多功能"
@@ -10988,7 +10988,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "行星搅拌无死角；7寸触摸屏；电控翻锅；大容量设计"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪20-50kg，焖炖烹饪100-200kg，大容量多功能"
@@ -11085,7 +11085,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "自动四路定量喷料；10寸智能触屏；800菜谱存储；大容量智能"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪20-50kg，焖炖烹饪100-200kg，全自动大容量"
@@ -11182,7 +11182,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "自动四路定量喷料；10寸智能触屏；800菜谱存储；大容量智能"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪20-50kg，焖炖烹饪100-200kg，全自动大容量"
@@ -11279,7 +11279,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "行星搅拌无死角；7寸触摸屏；电控翻锅；超大容量设计"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪50-100kg，焖炖烹饪200-400kg，超大容量多功能"
@@ -11376,7 +11376,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "行星搅拌无死角；7寸触摸屏；电控翻锅；超大容量设计"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪50-100kg，焖炖烹饪200-400kg，超大容量多功能"
@@ -11473,7 +11473,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "自动四路定量喷料；10寸智能触屏；800菜谱存储；超大容量智能"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪50-100kg，焖炖烹饪200-400kg，全自动超大容量"
@@ -11570,7 +11570,7 @@ export const PRODUCT_DATA_TABLE = [
             "zh-CN": "自动四路定量喷料；10寸智能触屏；800菜谱存储；超大容量智能"
           },
           "scenarios": {
-            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所, 食品厂炒制酱料馅料"
+            "zh-CN": "院校企业机关食堂、中央厨房团膳等场所,食品厂炒制酱料馅料"
           },
           "usage": {
             "zh-CN": "煸炒烹饪50-100kg，焖炖烹饪200-400kg，全自动超大容量"

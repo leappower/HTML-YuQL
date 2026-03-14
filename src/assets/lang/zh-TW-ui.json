@@ -112,7 +112,7 @@
   "indcustom": "定制工業發酵箱",
   "indicator_desc": "通過側邊欄直接聯繫我們！",
   "indicator_title": "需要幫助？",
-  "lang_group_asian": "亞洲人",
+  "lang_group_asian": "亞洲",
   "lang_group_europe": "歐洲",
   "lang_group_europe_global": "歐洲與全球",
   "lang_group_global": "全球",
@@ -265,5 +265,6 @@
   "vorteile_machinery": "食品加工機械包括肉類加工設備（如絞肉機、灌腸機和攪拌機）、飲料設備（如商用攪拌機、榨汁機和咖啡機）和專用加工設備（如冰機、開水器和隔熱櫃）。",
   "vorteile_stats": "我們的工廠擁有超過5000平方米的生產車間，50多名經驗豐富的工程師和技術人員，為您提供高質量的產品和專業的服務。",
   "vorteile_subtitle": "我們的技術保證穩定的結果，讓您的工藝更加出色。",
-  "vorteile_title": "用戶選擇我們的理由"
+  "vorteile_title": "用戶選擇我們的理由",
+  "lang_group_common": "常用"
 }

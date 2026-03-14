@@ -4,24 +4,18 @@
  * 产品i18n同步脚本
  *
  * 功能：
- * 1. 同时检测 producti18n.json、zh-CN.json 两个文件
- * 2. 找出所有产品相关的key（hash_field格式）
- * 3. 补全这两个文件间的缺失key
- * 4. 将补全后的数据映射到其他20个语言文件
- *
- * 工作流程：
- * Step 1: 加载两个源文件（zh-CN.json、producti18n.json）
- * Step 2: 提取产品key（hash_\w+格式）
- * Step 3: 补全zh-CN.json中的缺失key
- * Step 4: 补全producti18n.json中的缺失key
- * Step 5: 将产品翻译映射到其他20个语言文件
+ * 1. 加载 producti18n.json（中文原始）和 zh-CN.json 两个源文件
+ * 2. 互相补全两文件中缺失的产品 key（hash_field 格式）
+ * 3. 将已有中文译文同步到其他所有语言文件（缺失的 key 用中文占位）
  *
  * 使用方法：
- *   node scripts/product-sync-i18n.js
+ *   node scripts/product-sync-i18n.js             # 完整同步（含其他语言）
+ *   node scripts/product-sync-i18n.js --source-only  # 仅同步 zh-CN ↔ producti18n
  */
 
 const fs = require('fs');
 const path = require('path');
+const { getSupportedCodes } = require(path.join(__dirname, '../src/lang-registry'));
 
 const TRANSLATIONS_DIR = path.join(process.cwd(), 'src/assets/lang');
 const PRODUCT_I18N_PATH = path.join(process.cwd(), 'scripts/producti18n.json');
@@ -32,11 +26,9 @@ const PRODUCT_KEY_PATTERN = /^[0-9a-f]{8}_[a-z0-9_]+$/;
 // --source-only 模式：仅同步三个中文源文件，不写入其他语言（翻译前使用）
 const SOURCE_ONLY = process.argv.includes('--source-only');
 
-// 支持的所有语言（注意：zh.json 已删除，只保留 zh-CN）
-const SUPPORTED_LANGS = [
-  'ar', 'de', 'en', 'es', 'fil', 'fr', 'he', 'id', 'it', 'ja', 'ko', 'ms', 'nl',
-  'pl', 'pt', 'ru', 'th', 'tr', 'vi', 'zh-CN', 'zh-TW'
-];
+// 支持的所有语言（由 lang-registry.js 统一管理，hasTranslation:true 的语言）
+// 注意：zh.json 已删除，只保留 zh-CN
+const SUPPORTED_LANGS = getSupportedCodes();
 
 /**
  * 加载JSON文件
@@ -63,10 +55,11 @@ function saveJSON(filePath, data) {
 }
 
 /**
- * 获取翻译文件路径
+ * 获取产品翻译文件路径（{lang}-product.json）
+ * 产品翻译与 UI 翻译隔离存储，避免 key 命名空间冲突
  */
 function getTranslationPath(lang) {
-  return path.join(TRANSLATIONS_DIR, `${lang}.json`);
+  return path.join(TRANSLATIONS_DIR, `${lang}-product.json`);
 }
 
 /**
@@ -133,7 +126,7 @@ function previewSync(allKeys, productI18nData) {
   let totalMissing = 0;
 
   for (const lang of SUPPORTED_LANGS) {
-    if (lang === 'zh' || lang === 'zh-CN') continue;
+    if (lang === 'zh-CN') continue;
 
     const langFile = loadJSON(getTranslationPath(lang));
     const missingKeys = [...allKeys].filter(key => !langFile[key]);
@@ -222,7 +215,7 @@ async function main() {
       previewSync(synced.allKeys, synced.productI18nData);
 
       // Step 3: 同步其他 20 种语言（翻译后兜底，缺失的用中文占位）
-      syncOtherLanguages(synced.producti18nData, synced.allKeys, synced.zhCNData);
+      syncOtherLanguages(synced.productI18nData, synced.allKeys, synced.zhCNData);
     }
 
     console.log('='.repeat(50));

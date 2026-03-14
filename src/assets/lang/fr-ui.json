@@ -112,7 +112,7 @@
   "indcustom": "Chambre de pousse industrielle sur mesure",
   "indicator_desc": "Contactez-nous directement via la barre latérale !",
   "indicator_title": "Besoin d'aide ?",
-  "lang_group_asian": "asiatique",
+  "lang_group_asian": "Asie",
   "lang_group_europe": "Europe",
   "lang_group_europe_global": "Europe et mondial",
   "lang_group_global": "Mondial",
@@ -265,5 +265,6 @@
   "vorteile_machinery": "Les machines de transformation alimentaire comprennent les équipements de transformation de la viande (tels que les hachoirs à viande, les poussoirs à saucisses et les mélangeurs), les équipements pour boissons (tels que les mélangeurs commerciaux, les extracteurs de jus et les machines à café) et les équipements de transformation spécialisés (tels que les machines à glace, les bouilloires et les armoires chauffantes).",
   "vorteile_stats": "Notre usine dispose de plus de 5 000 mètres carrés d'ateliers de production, de plus de 50 ingénieurs et techniciens expérimentés, vous offrant des produits de haute qualité et des services professionnels.",
   "vorteile_subtitle": "Notre technologie garantit des résultats stables, rendant votre artisanat exceptionnel.",
-  "vorteile_title": "Pourquoi les clients nous choisissent"
+  "vorteile_title": "Pourquoi les clients nous choisissent",
+  "lang_group_common": "Populaires"
 }

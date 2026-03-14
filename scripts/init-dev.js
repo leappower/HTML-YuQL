@@ -11,7 +11,6 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const config = {
-  distLangDir: path.join(__dirname, '../dist/assets/lang'),
   srcLangDir: path.join(__dirname, '../src/assets/lang'),
   srcAssetsDir: path.join(__dirname, '../src/assets'),
   uiFile: path.join(__dirname, '../src/assets/ui-i18n.json'),
@@ -79,36 +78,9 @@ function main() {
       console.log('✅ 所有文件都存在\n');
     }
 
-    // 2. 确保dist/assets/lang目录存在
-    console.log('📁 检查输出目录...');
-    if (!fs.existsSync(config.distLangDir)) {
-      fs.mkdirSync(config.distLangDir, { recursive: true });
-      console.log('✅ 创建目录:', config.distLangDir);
-    } else {
-      console.log('✅ 目录存在:', config.distLangDir);
-    }
-
-    // 3. 生成分离的语言文件到dist/assets/lang
+    // 2. 生成分离的语言文件到 src/assets/lang
     console.log('\n🔨 生成分离的语言文件...');
     runScript('split:lang');
-
-    // 4. 复制到src/assets/lang（用于旧格式兼容）
-    console.log('\n📋 复制到src/assets/lang（兼容旧格式）...');
-    const files = fs.readdirSync(config.distLangDir);
-    let copiedCount = 0;
-    
-    files.forEach(file => {
-      if (file.endsWith('.json') && file !== 'languages.json') {
-        const srcFile = path.join(config.distLangDir, file);
-        const destFile = path.join(config.srcLangDir, file);
-        
-        // 复制文件
-        fs.copyFileSync(srcFile, destFile);
-        copiedCount++;
-      }
-    });
-    
-    console.log(`✅ 复制了 ${copiedCount} 个文件到 ${config.srcLangDir}`);
 
     console.log('\n========================================');
     console.log('  开发模式初始化完成!');

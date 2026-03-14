@@ -2,32 +2,40 @@
 // Implements offline caching and intelligent cache management
 
 const CACHE_NAME = 'language-cache-v1';
-const LANGUAGE_FILES_CACHE = 'language-files-v1';
+const LANGUAGE_FILES_CACHE = 'language-files-v2';
 
-// List of language files to cache
-const LANGUAGE_FILES = [
-  './assets/lang/zh-CN.json',
-  './assets/lang/zh-TW.json',
-  './assets/lang/en.json',
-  './assets/lang/ja.json',
-  './assets/lang/ko.json',
-  './assets/lang/es.json',
-  './assets/lang/fr.json',
-  './assets/lang/de.json',
-  './assets/lang/it.json',
-  './assets/lang/pt.json',
-  './assets/lang/ru.json',
-  './assets/lang/ar.json',
-  './assets/lang/he.json',
-  './assets/lang/th.json',
-  './assets/lang/vi.json',
-  './assets/lang/id.json',
-  './assets/lang/ms.json',
-  './assets/lang/fil.json',
-  './assets/lang/nl.json',
-  './assets/lang/pl.json',
-  './assets/lang/tr.json'
+// UI translation files (small, ~16KB each) — cached on install for instant first render
+// Product translation files (large, ~130KB each) — cached on first use
+const UI_LANGUAGE_FILES = [
+  './assets/lang/zh-CN-ui.json',
+  './assets/lang/zh-TW-ui.json',
+  './assets/lang/en-ui.json',
+  './assets/lang/ar-ui.json',
+  './assets/lang/he-ui.json',
+  './assets/lang/de-ui.json',
+  './assets/lang/es-ui.json',
+  './assets/lang/fr-ui.json',
+  './assets/lang/it-ui.json',
+  './assets/lang/nl-ui.json',
+  './assets/lang/pl-ui.json',
+  './assets/lang/pt-ui.json',
+  './assets/lang/ru-ui.json',
+  './assets/lang/tr-ui.json',
+  './assets/lang/ja-ui.json',
+  './assets/lang/ko-ui.json',
+  './assets/lang/id-ui.json',
+  './assets/lang/ms-ui.json',
+  './assets/lang/fil-ui.json',
+  './assets/lang/th-ui.json',
+  './assets/lang/vi-ui.json',
+  './assets/lang/hi-ui.json',
+  './assets/lang/my-ui.json',
+  './assets/lang/km-ui.json',
+  './assets/lang/lo-ui.json',
 ];
+
+// Keep a flat list for install-time pre-caching (UI files only — fast to cache)
+const LANGUAGE_FILES = UI_LANGUAGE_FILES;
 
 // Install event - cache language files
 self.addEventListener('install', (event) => {
@@ -83,8 +91,12 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/assets/lang/') && url.pathname.endsWith('.json')) {
     event.respondWith(
       caches.open(LANGUAGE_FILES_CACHE).then((cache) => {
-        // Try to get from cache first
-        return cache.match(event.request).then((cachedResponse) => {
+        // Normalize cache key: strip query string so pre-cached entries always hit
+        // (fetch may carry ?ts= or other params that must not create separate cache entries)
+        const normalizedRequest = new Request(url.origin + url.pathname, { headers: event.request.headers });
+
+        // Try to get from cache first (ignoreSearch as extra safety net)
+        return cache.match(normalizedRequest, { ignoreSearch: true }).then((cachedResponse) => {
           if (cachedResponse) {
             console.log('[SW] Serving language file from cache:', url.pathname);
             return cachedResponse;
@@ -102,8 +114,8 @@ self.addEventListener('fetch', (event) => {
             // Clone response
             const responseToCache = networkResponse.clone();
 
-            // Cache fetched resource
-            cache.put(event.request, responseToCache).catch(err => {
+            // Store with normalized key (no query string) to match pre-cached entries
+            cache.put(normalizedRequest, responseToCache).catch(err => {
               console.warn('[SW] Failed to cache language file:', err);
             });
 
@@ -112,18 +124,24 @@ self.addEventListener('fetch', (event) => {
           }).catch((error) => {
             console.error('[SW] Network fetch failed, trying fallback:', error);
 
-            // Fallback: try to serve Chinese (zh-CN) as universal fallback
-            if (!url.pathname.includes('/zh-CN.json')) {
-              const fallbackUrl = url.pathname.replace(/\/[^/]+\.json$/, '/zh-CN.json');
-              const fallbackRequest = new Request(fallbackUrl, event.request);
+            // Fallback: try to serve Chinese (zh-CN) ui file as universal fallback
+            if (!url.pathname.includes('/zh-CN-ui.json')) {
+              const lang = url.pathname.match(/\/([^/]+?)(?:-ui|-product)?\.json$/);
+              const fallbackUrl = lang
+                ? url.pathname.replace(/\/[^/]+\.json$/, '/zh-CN-ui.json')
+                : null;
 
-              return cache.match(fallbackRequest).then((fallbackResponse) => {
-                if (fallbackResponse) {
-                  console.log('[SW] Serving fallback language (zh-CN) from cache');
-                  return fallbackResponse;
-                }
-                throw error;
-              });
+              if (fallbackUrl) {
+                const fallbackRequest = new Request(fallbackUrl, event.request);
+
+                return cache.match(fallbackRequest).then((fallbackResponse) => {
+                  if (fallbackResponse) {
+                    console.log('[SW] Serving fallback language (zh-CN-ui) from cache');
+                    return fallbackResponse;
+                  }
+                  throw error;
+                });
+              }
             }
 
             throw error;
@@ -167,19 +185,28 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// Helper function to cache a specific language file
+// Helper function to cache UI + product files for a specific language
 async function cacheLanguageFile(language) {
   try {
     const cache = await caches.open(LANGUAGE_FILES_CACHE);
-    const url = `./assets/lang/${language}.json`;
+    const urls = [
+      `./assets/lang/${language}-ui.json`,
+      `./assets/lang/${language}-product.json`,
+    ];
 
-    const response = await fetch(url);
-    if (response.ok) {
-      await cache.put(url, response);
-      console.log('[SW] Successfully cached language:', language);
-      return true;
-    }
-    return false;
+    const results = await Promise.allSettled(
+      urls.map(async (url) => {
+        const response = await fetch(url);
+        if (response.ok) {
+          await cache.put(url, response);
+          console.log('[SW] Successfully cached:', url);
+          return true;
+        }
+        return false;
+      })
+    );
+
+    return results.some(r => r.status === 'fulfilled' && r.value === true);
   } catch (error) {
     console.error('[SW] Error caching language file:', error);
     return false;
@@ -211,7 +238,8 @@ async function getCacheStatus() {
       totalLanguages: LANGUAGE_FILES.length,
       cachedLanguages: cachedFiles.length,
       cachedFiles: cachedFiles.map(file => {
-        const match = file.match(/\/([^/]+)\.json$/);
+        // Match both {lang}-ui.json and {lang}-product.json formats
+        const match = file.match(/\/([^/]+?)(?:-ui|-product)?\.json$/);
         return match ? match[1] : file;
       }),
       cacheSize: keys.reduce((total, key) => {

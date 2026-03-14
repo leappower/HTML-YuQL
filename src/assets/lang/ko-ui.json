@@ -112,7 +112,7 @@
   "indcustom": "맞춤형 산업용 발효기",
   "indicator_desc": "측면 패널을 통해 직접 저희에게 연락하세요!",
   "indicator_title": "도움이 필요하십니까?",
-  "lang_group_asian": "아시아 사람",
+  "lang_group_asian": "아시아",
   "lang_group_europe": "유럽",
   "lang_group_europe_global": "유럽 및 글로벌",
   "lang_group_global": "글로벌",
@@ -265,5 +265,6 @@
   "vorteile_machinery": "식품 가공 기계에는 육류 가공 장비(예: 그라인더, 소시지 스터퍼 및 믹서), 음료 장비(예: 상업용 블렌더, 쥬서 및 커피 머신) 및 특수 가공 장비(예: 아이스 메이커, 워터 히터 및 워밍 캐비넷)가 포함됩니다.",
   "vorteile_stats": "저희 공장은 5000제곱미터 이상의 생산 면적을 보유하고 있으며, 50명 이상의 숙련된 엔지니어와 기술 전문가가 귀하에게 고품질 제품과 전문 서비스를 제공합니다.",
   "vorteile_subtitle": "우리의 기술은 안정적인 결과를 보장하여 귀하의 프로세스를 더욱 개선합니다.",
-  "vorteile_title": "고객들이 우리를 선택하는 이유"
+  "vorteile_title": "고객들이 우리를 선택하는 이유",
+  "lang_group_common": "자주 사용"
 }

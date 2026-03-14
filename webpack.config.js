@@ -70,10 +70,12 @@ module.exports = (_, argv = {}) => {
         {
           directory: path.join(__dirname, 'dist'),
         },
-        // Try dist/assets/lang first (new format with split files), fallback to src/assets/lang
+        // dist/assets/lang takes priority when built; silently skipped if dist doesn't exist yet
         {
           directory: path.join(__dirname, 'dist/assets/lang'),
           publicPath: '/assets/lang',
+          serveIndex: false,
+          watch: false,
         },
         {
           directory: path.join(__dirname, 'src/assets/lang'),
@@ -87,10 +89,6 @@ module.exports = (_, argv = {}) => {
         {
           directory: path.join(__dirname, 'src/assets/images'),
           publicPath: '/src/assets/images',
-        },
-        {
-          directory: path.join(__dirname, 'src/sw.js'),
-          publicPath: '/sw.js',
         },
       ],
       compress: true,

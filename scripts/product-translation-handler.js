@@ -184,7 +184,7 @@ function prepareForTranslation(text, field) {
     analysis,
   };
 
-  console.log(`[prepare][${field}] Original length: ${fieldInfo.originalLength}, Protected: ${placeholderMap.size} items`);
+  // debug: console.log(`[prepare][${field}] Original length: ${fieldInfo.originalLength}, Protected: ${placeholderMap.size} items`);
 
   return {
     original: trimmed,

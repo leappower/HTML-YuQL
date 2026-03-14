@@ -112,7 +112,7 @@
   "indcustom": "Cellula di lievitazione industriale personalizzata",
   "indicator_desc": "Contattateci direttamente tramite la barra laterale!",
   "indicator_title": "Serve aiuto?",
-  "lang_group_asian": "asiatico",
+  "lang_group_asian": "Asia",
   "lang_group_europe": "Europa",
   "lang_group_europe_global": "Europa e globale",
   "lang_group_global": "Globale",
@@ -265,5 +265,6 @@
   "vorteile_machinery": "I macchinari per la lavorazione degli alimenti includono attrezzature per la lavorazione della carne (come tritacarne, insaccatrici e miscelatori), attrezzature per bevande (come frullatori commerciali, spremiagrumi e macchine da caffè) e attrezzature di lavorazione specializzate (come macchine per il ghiaccio, bollitori e armadi termici).",
   "vorteile_stats": "Il nostro stabilimento dispone di oltre 5.000 metri quadrati di officine di produzione, più di 50 ingegneri e tecnici esperti, che vi offrono prodotti di alta qualità e servizi professionali.",
   "vorteile_subtitle": "La nostra tecnologia garantisce risultati stabili, rendendo il vostro lavoro eccezionale.",
-  "vorteile_title": "Perché i clienti scelgono noi"
+  "vorteile_title": "Perché i clienti scelgono noi",
+  "lang_group_common": "Comuni"
 }

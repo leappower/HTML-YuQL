@@ -83,13 +83,18 @@ function generateProductFiles(productTranslations) {
 
 /**
  * 生成语言列表文件
+ *
+ * UI 与 Product 的语言集合可能不完全相同（UI 支持的语言多于 Product）。
+ * 以 UI 语言列表为基准；productKeys 若该语言不存在则记为 0，避免崩溃。
  */
 function generateLanguageLists(uiTranslations, productTranslations) {
   const languages = Object.keys(uiTranslations).map(lang => ({
     code: lang,
     name: uiTranslations[lang].language || lang,
     uiKeys: Object.keys(uiTranslations[lang]).length,
-    productKeys: Object.keys(productTranslations[lang]).length,
+    productKeys: productTranslations[lang]
+      ? Object.keys(productTranslations[lang]).length
+      : 0,
   }));
 
   const filePath = path.join(config.outputDir, 'languages.json');
@@ -113,13 +118,13 @@ function main() {
     // 检查输入文件
     if (!fs.existsSync(config.inputUIFile)) {
       console.error(`错误: UI翻译文件不存在: ${config.inputUIFile}`);
-      console.log('\n请先运行: node scripts/split-translations.js');
+      console.log('\n请先运行: npm run merge:i18n && npm run split:lang');
       process.exit(1);
     }
 
     if (!fs.existsSync(config.inputProductFile)) {
       console.error(`错误: 产品翻译文件不存在: ${config.inputProductFile}`);
-      console.log('\n请先运行: node scripts/split-translations.js');
+      console.log('\n请先运行: npm run merge:i18n && npm run split:lang');
       process.exit(1);
     }
 

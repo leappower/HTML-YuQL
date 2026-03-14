@@ -15,38 +15,20 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { getSupportedCodes, getAllCodes } = require(path.join(__dirname, '../src/lang-registry'));
 
 const TRANSLATIONS_DIR = path.join(process.cwd(), 'src/assets/lang');
 const PRODUCT_TABLE_PATH = path.join(process.cwd(), 'src/assets/product-data-table.js');
 const PRODUCT_I18N_PATH = path.join(process.cwd(), 'scripts/producti18n.json');
 
 /**
- * 支持的语言映射
- * 飞书列名 → 翻译JSON里的语言code
+ * 支持的语言集合 — 由 src/lang-registry.js 统一管理（hasTranslation: true）
+ * 飞书只提供中文内容，翻译由翻译引擎完成，此处仅用于过滤写入目标
  */
-const LANGUAGE_MAP = {
-  en: 'en',
-  'zh-CN': 'zh-CN',
-  'zh-TW': 'zh-TW',
-  de: 'de',
-  es: 'es',
-  fr: 'fr',
-  ja: 'ja',
-  ko: 'ko',
-  'pt': 'pt',
-  'ru': 'ru',
-  'it': 'it',
-  'nl': 'nl',
-  
-  'vi': 'vi',
-  'th': 'th',
-  'id': 'id',
-  'ms': 'ms',
-  'fil': 'fil',
-  'ar': 'ar',
-  'he': 'he',
-  'tr': 'tr'
-};
+const LANGUAGE_MAP = getSupportedCodes().reduce(function(acc, code) {
+  acc[code] = code;
+  return acc;
+}, {});
 
 /**
  * i18n字段列表 - 这些字段需要做多语言适配
@@ -127,15 +109,6 @@ function extractI18nDataFromProducts(productSeries) {
 
           if (!byLang[lang]) byLang[lang] = {};
           byLang[lang][key] = value;
-
-          // 兼容简体中文语言别名：确保 zh 与 zh-CN 都有同源文案。
-          if (lang === 'zh-CN') {
-            if (!byLang.zh) byLang.zh = {};
-            if (!byLang.zh[key]) byLang.zh[key] = value;
-          } else if (lang === 'zh') {
-            if (!byLang['zh-CN']) byLang['zh-CN'] = {};
-            if (!byLang['zh-CN'][key]) byLang['zh-CN'][key] = value;
-          }
         }
       }
     }
@@ -156,10 +129,12 @@ function loadAllTranslations() {
     return translations;
   }
 
-  const files = fs.readdirSync(TRANSLATIONS_DIR).filter(f => f.endsWith('.json'));
+  // Only read split UI files (-ui.json) to avoid mixing old and new formats
+  const files = fs.readdirSync(TRANSLATIONS_DIR).filter(f => f.endsWith('-ui.json'));
   
   for (const file of files) {
-    const lang = file.replace('.json', '');
+    // Strip -ui.json suffix to get the lang code (e.g. zh-CN-ui.json → zh-CN)
+    const lang = file.replace(/-ui\.json$/, '');
     const filePath = path.join(TRANSLATIONS_DIR, file);
     try {
       const content = fs.readFileSync(filePath, 'utf-8');
@@ -215,7 +190,7 @@ function loadProductI18n() {
  * @param {Object} translationData - 翻译数据
  */
 function saveTranslation(lang, translationData) {
-  const filePath = path.join(TRANSLATIONS_DIR, `${lang}.json`);
+  const filePath = path.join(TRANSLATIONS_DIR, `${lang}-ui.json`);
   
   try {
     const sorted = Object.fromEntries(
@@ -273,7 +248,8 @@ function normalizeProductI18n(rawData) {
   if (!isPlainObject(rawData)) return {};
 
   const topKeys = Object.keys(rawData);
-  const langLikeKeys = new Set(['zh', 'zh-CN', 'zh-TW', 'en', 'de', 'fr', 'es', 'it', 'ja', 'ko', 'ru', 'ar', 'pt', 'pl', 'th', 'tr', 'vi', 'id', 'ms', 'fil', 'he', 'nl']);
+  // langLikeKeys 由注册表派生，包含 zh 用于兼容识别历史数据结构
+  const langLikeKeys = new Set([...getAllCodes(), 'zh']);
   const values = Object.values(rawData);
   const objectValueCount = values.filter(v => isPlainObject(v)).length;
   const hasFlatStringEntries = values.some(v => typeof v === 'string');
