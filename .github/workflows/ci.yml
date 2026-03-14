@@ -2,12 +2,14 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
-  test:
+  # ─── Job 1: Lint ──────────────────────────────────────────────────────────
+  lint:
+    name: Lint (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
 
     strategy:
@@ -15,47 +17,116 @@ jobs:
         node-version: [18.x, 20.x]
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run JavaScript linting
-      run: npm run lint
+      - name: JavaScript lint
+        run: npm run lint
 
-    - name: Run CSS linting
-      run: npm run lint:css
+      - name: CSS lint
+        run: npm run lint:css
 
-    - name: Run tests
-      run: npm run test
-
-    - name: Build application
-      run: npm run build
-
-  docker:
+  # ─── Job 2: Test ──────────────────────────────────────────────────────────
+  test:
+    name: Test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
-    needs: test
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Build Docker image
-      run: docker build -t html-yuql .
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
 
-    - name: Test Docker image
-      run: |
-        docker run -d --name test-container -p 3000:3000 html-yuql
-        sleep 10
-        curl -f http://localhost:3000 || exit 1
-        docker stop test-container
-        docker rm test-container
-        sleep 10
-        curl -f http://localhost:3000/health || exit 1
-        docker stop test-container
-        docker rm test-container
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:ci
+
+  # ─── Job 3: Build ─────────────────────────────────────────────────────────
+  build:
+    name: Build & Verify (Node 20)
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static site
+        # build:static = split:lang → webpack(production) → copy-translations
+        #              → build-i18n → verify-static-build
+        run: npm run build:static
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  # ─── Job 4: Docker ────────────────────────────────────────────────────────
+  docker:
+    name: Docker Build & Health Check
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Build Docker image
+        run: docker build -t html-yuql .
+
+      - name: Start container
+        run: |
+          docker run -d --name test-container -p 3000:3000 html-yuql
+          # Wait for the app to be ready
+          echo "Waiting for server to start..."
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:3000/health > /dev/null 2>&1; then
+              echo "Server is up after ${i}s"
+              break
+            fi
+            sleep 1
+          done
+
+      - name: Health check — root page
+        run: curl -f http://localhost:3000
+
+      - name: Health check — /health endpoint
+        run: curl -f http://localhost:3000/health
+
+      - name: Stop and remove container
+        if: always()
+        run: |
+          docker stop test-container || true
+          docker rm test-container || true

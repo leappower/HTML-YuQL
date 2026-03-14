@@ -2,8 +2,9 @@ name: Sync Feishu Data
 
 on:
   schedule:
-    # 04:00 Asia/Shanghai = 20:00 UTC (previous day)
+    # 每天 04:00 Asia/Shanghai = 20:00 UTC (前一天)
     - cron: '0 20 * * *'
+  # 允许手动触发
   workflow_dispatch:
 
 permissions:
@@ -11,6 +12,7 @@ permissions:
 
 jobs:
   sync:
+    name: Sync Feishu → Build → Commit
     runs-on: ubuntu-latest
 
     steps:
@@ -19,36 +21,68 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Use Node.js
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-          cache: 'npm'
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Sync product data from Feishu Bitable
+      # Step 1: 从飞书拉取产品数据
+      - name: Sync product data from Feishu
         env:
           FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
           FEISHU_SPREADSHEET_TOKEN: ${{ secrets.FEISHU_SPREADSHEET_TOKEN }}
           FEISHU_SHEET_RANGE: ${{ secrets.FEISHU_SHEET_RANGE }}
+        run: node scripts/ensure-product-data-table.js
+
+      # Step 2: 提取 i18n key 并同步中文源
+      - name: Extract and sync i18n source
         run: |
-          node scripts/generate-products-data-table.js --source feishu
+          npm run i18n:extract
+          npm run product:sync:source
+          npm run merge:i18n
 
-      - name: Build site
-        run: npm run build
+      # Step 3: 增量翻译（只翻译新增/变更的 key）
+      - name: Translate new/changed product keys (incremental)
+        run: npm run translate:products:incremental
 
+      # Step 4: 同步翻译到所有语言文件，收集语言包
+      - name: Sync translations to all languages
+        run: |
+          npm run product:sync
+          npm run product:collect
+
+      # Step 5: 打包（含静态验证）
+      - name: Build static site
+        run: npm run build:static
+
+      # Step 6: 如有变更则提交并推送
       - name: Commit and push if changed
         run: |
-          if git diff --quiet; then
-            echo "No changes detected."
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No changes detected, skipping commit."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/assets/product-data-table.js dist
-          git commit -m "chore: sync Feishu product data"
-          git push
+
+          # 提交源文件（产品数据表 + 翻译文件）
+          git add \
+            src/assets/product-data-table.js \
+            src/assets/producti18n.json \
+            src/assets/lang/ \
+            scripts/producti18n.json
+
+          # 仅在有暂存文件时才 commit
+          if git diff --cached --quiet; then
+            echo "No staged changes, skipping commit."
+          else
+            git commit -m "chore(sync): auto-sync Feishu product data & translations [skip ci]"
+            git push
+            echo "Changes committed and pushed."
+          fi
