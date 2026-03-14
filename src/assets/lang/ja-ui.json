@@ -112,7 +112,7 @@
   "indcustom": "カスタムインダストリアルホイロ",
   "indicator_desc": "サイドバーからお気軽にご連絡ください！",
   "indicator_title": "お困りですか？",
-  "lang_group_asian": "アジア",
+  "lang_group_asian": "アジア人",
   "lang_group_europe": "ヨーロッパ",
   "lang_group_europe_global": "ヨーロッパとグローバル",
   "lang_group_global": "グローバル",
@@ -265,7 +265,5 @@
   "vorteile_machinery": "食品加工機械には、肉加工機器（肉挽き機、ソーセージスタッファー、ミキサーなど）、飲料機器（業務用ブレンダー、ジューサー、コーヒーマシンなど）、特殊加工機器（製氷機、湯沸かし器、保温キャビネットなど）が含まれます。",
   "vorteile_stats": "当社工場は5,000平方メートル以上の生産ワークショップを有し、50名以上の経験豊富なエンジニアと技術者が、高品質な製品と専門的なサービスを提供します。",
   "vorteile_subtitle": "当社の技術が安定した結果を保証し、あなたの技術をさらに際立たせます。",
-  "vorteile_title": "お客様が私たちを選ぶ理由",
-  "lang_group_common": "よく使われる",
-  "lang_group_southeast_asia": "東南アジア"
+  "vorteile_title": "お客様が私たちを選ぶ理由"
 }
