@@ -1644,6 +1644,96 @@ function setupJumpingAnimation() {
         const isVisible = (rect.top >= -100 && rect.left >= -100 && rect.bottom <= window.innerHeight + 100 && rect.right <= window.innerWidth + 100);
         if (isVisible && !nextBtn.matches(':hover')) {
           currentIndex = nextIndex;
+
+  // ============================================
+  // Products sticky compact filter (desktop only)
+  // - 当 products 区域滚动到 header 底部时，显示压缩的 title + filters
+  // - 仅在桌面 (>=1024px) 生效，直到离开 products 区域才隐藏
+  // ============================================
+  function setupProductsSticky() {
+    const productsSection = document.getElementById('products');
+    const filterBarId = 'product-filter-bar';
+    if (!productsSection) return;
+
+    let sticky = document.getElementById('products-sticky');
+    if (!sticky) {
+      sticky = document.createElement('div');
+      sticky.id = 'products-sticky';
+      sticky.className = 'hidden lg:block fixed left-0 right-0 z-50 transition-transform';
+      document.body.appendChild(sticky);
+    }
+
+    function isDesktop() { return window.matchMedia('(min-width: 1024px)').matches; }
+
+    function buildStickyContent() {
+      sticky.innerHTML = '';
+      const header = document.querySelector('header');
+      const topOffset = header ? header.getBoundingClientRect().height : 0;
+      sticky.style.top = topOffset + 'px';
+      sticky.style.pointerEvents = 'auto';
+
+      const container = document.createElement('div');
+      container.className = 'mx-auto max-w-7xl px-4 py-2 flex items-center justify-between gap-4 bg-white/80 dark:bg-slate-900/75 border-b border-primary/10 backdrop-blur-sm';
+
+      // title (compact)
+      const title = productsSection.querySelector('h2');
+      const titleClone = title ? title.cloneNode(true) : document.createElement('h2');
+      titleClone.className = 'text-sm font-bold text-primary dark:text-slate-100 truncate';
+      titleClone.style.margin = '0';
+      titleClone.style.maxWidth = '45%';
+
+      // filters (compact)
+      const filterBar = document.getElementById(filterBarId);
+      const filtersClone = filterBar ? filterBar.cloneNode(true) : document.createElement('div');
+      filtersClone.className = 'flex items-center gap-2 overflow-x-auto';
+      filtersClone.style.maxWidth = '55%';
+      // compress buttons inside cloned filter bar
+      filtersClone.querySelectorAll && filtersClone.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('px-5','py-2','text-sm');
+        btn.classList.add('px-3','py-1','text-xs');
+      });
+
+      container.appendChild(titleClone);
+      container.appendChild(filtersClone);
+      sticky.appendChild(container);
+    }
+
+    let ticking = false;
+    function onScroll() {
+      if (!isDesktop()) { sticky.classList.add('hidden'); return; }
+      if (ticking) return; ticking = true;
+      window.requestAnimationFrame(() => {
+        const header = document.querySelector('header');
+        const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+        const secRect = productsSection.getBoundingClientRect();
+        const shouldShow = secRect.top <= headerBottom && secRect.bottom > headerBottom + 10;
+        if (shouldShow) {
+          buildStickyContent();
+          sticky.classList.remove('hidden');
+          sticky.classList.add('show');
+        } else {
+          sticky.classList.add('hidden');
+          sticky.classList.remove('show');
+        }
+        ticking = false;
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    // ensure sticky updates after filters re-render or language change
+    document.addEventListener('DOMContentLoaded', onScroll);
+    window.addEventListener('languageChanged', onScroll);
+    // when product filters re-rendered by utils, trigger update
+    const origRender = window.renderProductFilters;
+    if (typeof origRender === 'function') {
+      window.renderProductFilters = function() { const res = origRender(); setTimeout(onScroll, 50); return res; };
+    }
+    // initial check
+    setTimeout(onScroll, 300);
+  }
+
+  setupProductsSticky();
           break;
         }
       }
