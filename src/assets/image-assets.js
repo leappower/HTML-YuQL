@@ -96,7 +96,23 @@ const IMAGE_FILES = {
   Y40D2C_1: 'Y40D2C_1.png',
   Y50D1C_1: 'Y50D1C_1.png',
   Z6FDB_1: 'Z6FDB_1.png',
-  Z8FCB_1: 'Z8FCB_1.png'
+  Z8FCB_1: 'Z8FCB_1.png',
+  'ESL-GC50_1': 'ESL-GC50_1.png',
+  'ESL-GQ50_1': 'ESL-GQ50_1.png',
+  'ESL-PZJ300_1': 'ESL-PZJ300_1.png',
+  'ESL-GQ30_1': 'ESL-GQ30_1.png',
+  'ESL-GQ36_1': 'ESL-GQ36_1.png',
+  'ESL-GQ30T_1': 'ESL-GQ30T_1.png',
+  'ESL-GQ35T_1': 'ESL-GQ35T_1.png',
+  'ESL-BQ40T_1': 'ESL-BQ40T_1.png',
+  'ESL-TGQ40_1': 'ESL-TGQ40_1.png',
+  'ESL-GQ40_1': 'ESL-GQ40_1.png',
+  'ESL-TGD369_1': 'ESL-TGD369_1.png',
+  'ESL-GD369_1': 'ESL-GD369_1.png',
+  'ESL-TGQ36J9_1': 'ESL-TGQ36J9_1.png',
+  'ESL-GQ36J9_1': 'ESL-GQ36J9_1.png',
+  'ESL-GB50_1': 'ESL-GB50_1.png',
+  'ESL-GQ50_1': 'ESL-GQ50_1.png'
 };
 
 // 生成完整的图片路径
