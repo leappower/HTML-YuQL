@@ -370,21 +370,8 @@
       </p>
     </div>
 
-    <!-- Filter Buttons -->
-    <div class="flex flex-wrap justify-center gap-3 mb-8">
-      <button onclick="filterProducts('all')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold transition-all bg-primary text-white" data-i18n="filter_all" data-filter="all">
-        全部
-      </button>
-      <button onclick="filterProducts('compact')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold transition-all bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700" data-i18n="filter_compact" data-filter="compact">
-        紧凑
-      </button>
-      <button onclick="filterProducts('professional')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold transition-all bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700" data-i18n="filter_professional" data-filter="professional">
-        专业
-      </button>
-      <button onclick="filterProducts('industrial')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold transition-all bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700" data-i18n="filter_industrial" data-filter="industrial">
-        工业
-      </button>
-    </div>
+    <!-- Filter Buttons (rendered dynamically from product data) -->
+    <div id="product-filter-bar" class="flex flex-wrap justify-center gap-3 mb-8"></div>
 
     <!-- Product Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="product-grid">
