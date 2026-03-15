@@ -648,7 +648,13 @@ import { IMAGE_ASSETS } from './image-assets.js';
     <article class="product-card flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all border border-primary/10 group" data-category="${p.category}">
       <!-- 图片区域 (50-55%) -->
       <div class="relative h-[200px] sm:h-[210px] lg:h-[230px] w-full overflow-hidden bg-slate-50 dark:bg-slate-800/60 shrink-0">
-        <img src="${p.productImage || resolveImage(imageRecognitionKey)}" alt="${displayName}" loading="lazy" decoding="async" class="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-500">
+        <picture>
+          <source type="image/webp" srcset="${(p.productImage || resolveImage(imageRecognitionKey)).replace(/\.png$/i, '.webp')}">
+          <img data-src="${p.productImage || resolveImage(imageRecognitionKey)}"
+               src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
+               alt="${displayName}" loading="lazy" decoding="async"
+               class="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-500 lazy-img">
+        </picture>
 
         ${badge ? `<span class="absolute top-2 left-2 ${badgeColorClass} text-white px-2 py-0.5 rounded-full text-[10px] font-bold shadow">${tr(badge, badge)}</span>` : ''}
         ${p.status ? `<span class="absolute top-2 right-2 bg-slate-900/80 text-white px-2 py-0.5 rounded-full text-[10px]">${tr(p.status, p.status)}</span>` : ''}

@@ -1,8 +1,24 @@
-// sw.js - Service Worker for caching language files
+// sw.js - Service Worker for caching language files and images
 // Implements offline caching and intelligent cache management
 
 const CACHE_NAME = 'language-cache-v1';
 const LANGUAGE_FILES_CACHE = 'language-files-v2';
+
+// ─── 图片缓存配置 ──────────────────────────────────────────────────────────────
+const IMAGE_CACHE = 'image-cache-v1';
+// 本地图片（/images/*.png、*.webp）使用 Cache First，命中直接返回，无则网络请求后写缓存
+// 外链图片（百度图床、证书图等）使用 Stale-While-Revalidate：先返回缓存，后台异步更新
+const LOCAL_IMAGE_PATTERN = /^\/images\/.*\.(png|webp|jpg|jpeg|gif|svg)$/i;
+const EXTERNAL_IMAGE_ORIGINS = [
+  'img0.baidu.com',
+  'img1.baidu.com',
+  'img2.baidu.com',
+  'img3.baidu.com',
+  'liuzhoume.com',
+  'images.unsplash.com',
+];
+// 图片缓存最大条目数（防止磁盘占用失控）
+const IMAGE_CACHE_MAX_ENTRIES = 200;
 
 // UI translation files (small, ~16KB each) — cached on install for instant first render
 // Product translation files (large, ~130KB each) — cached on first use
@@ -65,12 +81,13 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   console.log('[SW] Activating Service Worker...');
 
+  const VALID_CACHES = [LANGUAGE_FILES_CACHE, CACHE_NAME, IMAGE_CACHE];
+
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          // Keep only current cache
-          if (cacheName !== LANGUAGE_FILES_CACHE && cacheName !== CACHE_NAME) {
+          if (!VALID_CACHES.includes(cacheName)) {
             console.log('[SW] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
@@ -86,6 +103,58 @@ self.addEventListener('activate', (event) => {
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+
+  // ── 1. 本地图片：Cache First ───────────────────────────────────────────────
+  if (LOCAL_IMAGE_PATTERN.test(url.pathname)) {
+    event.respondWith(
+      caches.open(IMAGE_CACHE).then(async (cache) => {
+        const cached = await cache.match(event.request);
+        if (cached) {
+          return cached;
+        }
+        // 未缓存，从网络拉取并写入缓存
+        try {
+          const response = await fetch(event.request);
+          if (response.ok) {
+            // 异步写缓存（不阻塞返回），并维护缓存条目上限
+            cache.put(event.request, response.clone()).then(() => trimImageCache(cache));
+          }
+          return response;
+        } catch {
+          // 网络失败且无缓存，返回 404
+          return new Response('Image not found', { status: 404 });
+        }
+      })
+    );
+    return;
+  }
+
+  // ── 2. 外链图片：Stale-While-Revalidate ───────────────────────────────────
+  if (EXTERNAL_IMAGE_ORIGINS.some(origin => url.hostname.includes(origin))) {
+    event.respondWith(
+      caches.open(IMAGE_CACHE).then(async (cache) => {
+        const cached = await cache.match(event.request);
+
+        // 后台异步更新
+        const networkFetch = fetch(event.request)
+          .then(response => {
+            if (response.ok) {
+              cache.put(event.request, response.clone()).then(() => trimImageCache(cache));
+            }
+            return response;
+          })
+          .catch(() => null);
+
+        // 有缓存则立即返回，同时后台刷新
+        if (cached) {
+          return cached;
+        }
+        // 无缓存则等网络
+        return networkFetch || new Response('Image not available offline', { status: 503 });
+      })
+    );
+    return;
+  }
 
   // Handle language file requests
   // Match both absolute (/assets/lang/...) and relative (./assets/lang/...) URL forms
@@ -185,6 +254,20 @@ self.addEventListener('message', (event) => {
     console.warn('[SW] Unknown message type:', type);
   }
 });
+
+// Helper function to trim image cache to max entries (FIFO)
+async function trimImageCache(cache) {
+  try {
+    const keys = await cache.keys();
+    if (keys.length > IMAGE_CACHE_MAX_ENTRIES) {
+      // 删除最早的条目
+      const toDelete = keys.slice(0, keys.length - IMAGE_CACHE_MAX_ENTRIES);
+      await Promise.all(toDelete.map(key => cache.delete(key)));
+    }
+  } catch (err) {
+    console.warn('[SW] Failed to trim image cache:', err);
+  }
+}
 
 // Helper function to cache UI + product files for a specific language
 async function cacheLanguageFile(language) {

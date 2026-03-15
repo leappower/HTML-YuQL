@@ -1,6 +1,41 @@
 // 图片路径配置：统一使用 /images 前缀（dev/production 均通过 webpack 映射到 src/assets/images）
 const IMAGE_PATH_PREFIX = 'images';
 
+// ─── WebP 支持检测 ────────────────────────────────────────────────────────────
+// 运行时检测浏览器是否支持 WebP，结果缓存在模块级变量
+let _webpSupported = null;
+
+/**
+ * 检测 WebP 支持（同步返回已知结果，首次调用时异步初始化）
+ * 大多数现代浏览器（Chrome 23+、Firefox 65+、Safari 14+、iOS 14+）均支持 WebP
+ */
+export function initWebPDetection() {
+  if (_webpSupported !== null) return Promise.resolve(_webpSupported);
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => { _webpSupported = (img.width > 0 && img.height > 0); resolve(_webpSupported); };
+    img.onerror = () => { _webpSupported = false; resolve(false); };
+    img.src = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
+  });
+}
+
+/** 根据浏览器支持，返回 WebP 路径或 PNG fallback 路径 */
+export function resolveOptimizedImage(key) {
+  const pngPath = `${IMAGE_PATH_PREFIX}/${key}.png`;
+  if (_webpSupported === null || !_webpSupported) return pngPath;
+  return `${IMAGE_PATH_PREFIX}/${key}.webp`;
+}
+
+/** 生成 <picture> 标签 HTML，优先 WebP，降级 PNG */
+export function pictureTag(key, altText = '', cssClass = '', extraAttrs = '') {
+  const webpSrc = `${IMAGE_PATH_PREFIX}/${key}.webp`;
+  const pngSrc  = `${IMAGE_PATH_PREFIX}/${key}.png`;
+  return `<picture>
+  <source type="image/webp" srcset="${webpSrc}">
+  <img src="${pngSrc}" alt="${altText}" class="${cssClass}" ${extraAttrs} loading="lazy" decoding="async">
+</picture>`;
+}
+
 // 图片文件名映射（不带路径）
 const IMAGE_FILES = {
   B1RAC_1: 'B1RAC_1.png',
@@ -109,7 +144,7 @@ const IMAGE_FILES = {
   'ESL-GB50_1': 'ESL-GB50_1.png',
 };
 
-// 生成完整的图片路径
+// 生成完整的图片路径（PNG 路径，用于 fallback）
 const productImages = {};
 for (const [key, filename] of Object.entries(IMAGE_FILES)) {
   productImages[key] = `${IMAGE_PATH_PREFIX}/${filename}`;

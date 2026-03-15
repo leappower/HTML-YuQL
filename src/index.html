@@ -11,6 +11,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="//fonts.googleapis.com">
+<!-- Preconnect to image CDNs used for hero/gallery/certs -->
+<link rel="preconnect" href="https://img0.baidu.com">
+<link rel="preconnect" href="https://img1.baidu.com">
+<link rel="preconnect" href="https://img2.baidu.com">
+<link rel="preconnect" href="https://liuzhoume.com">
+<!-- LCP 关键资源预加载：Hero 背景图 + Logo -->
+<link rel="preload" as="image" href="images/WORKSHOP_BGM.webp" type="image/webp" id="hero-bg-preload">
+<link rel="preload" as="image" href="images/LOGO_HTML.png" fetchpriority="high">
 <!-- Load translations script immediately for language setup -->
 
 <!-- Load fonts asynchronously -->
@@ -44,7 +52,7 @@
     <header id="main-header"
       class="fixed-header flex items-center justify-between whitespace-nowrap px-4 py-3 lg:px-10">
       <div id="header-logo" class="flex items-center gap-3 text-primary dark:text-slate-100">
-        <img id="header-logo-img" src="images/LOGO_HTML.png" alt="LOGO" class="h-8 lg:h-10 inline-block align-middle" />
+        <img id="header-logo-img" src="images/LOGO_HTML.png" alt="LOGO" class="h-8 lg:h-10 inline-block align-middle" fetchpriority="high" />
         <h2 id="header-logo-company-name-title" class="text-base lg:text-lg font-bold leading-tight tracking-tight"
           data-i18n="company_name">Foshan YuKoLi Technology Co., Ltd.</h2>
       </div>
@@ -345,7 +353,7 @@
 
     <!-- Hero Section -->
     <section id="hero" class="relative px-4 py-10 lg:py-16 mt-16 animate-fadeIn" data-bg-image-key="hero_bg"
-      style="background-size: cover; background-position: center; background-repeat: no-repeat;">
+      style="background-image: url('images/WORKSHOP_BGM.webp'), url('images/WORKSHOP_BGM.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
       <!-- 方案C：左侧渐变遮罩，只覆盖文字区，右侧透出背景图 -->
       <div class="absolute inset-0 bg-gradient-to-r from-black/65 via-black/40 to-transparent pointer-events-none"></div>
       <div id="hero-container" class="relative mx-auto max-w-7xl">
@@ -379,6 +387,7 @@
             <div id="hero-image-card" class="max-h-[300px] overflow-hidden">
               <img id="hero-img" alt="Professional fermentation cabinet" class="w-full h-full object-cover block"
                 data-image-key="hero_main"
+                fetchpriority="high"
                 src="https://img0.baidu.com/it/u=3626245982,2742441385&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500">
             </div>
             <div id="hero-trust-overlay" class="w-full bg-white/95 p-4 flex flex-col gap-2">
@@ -638,25 +647,25 @@
             <div id="factory-gallery-item-1" class="rounded-lg overflow-hidden">
               <img id="factory-gallery-item-1-factory-gallery-1-image"
                 src="https://img2.baidu.com/it/u=168332913,1085575385&fm=253&fmt=auto&app=120&f=JPEG?w=1067&h=800"
-                data-image-key="factory_gallery_1" alt="CNC machining"
+                data-image-key="factory_gallery_1" alt="CNC machining" loading="lazy" decoding="async"
                 class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
             </div>
             <div id="factory-gallery-item-2" class="rounded-lg overflow-hidden">
               <img id="factory-gallery-item-2-factory-gallery-2-image"
                 src="https://img1.baidu.com/it/u=3546157132,670778482&fm=253&fmt=auto&app=120&f=JPEG?w=889&h=500"
-                data-image-key="factory_gallery_2" alt="Assembly line"
+                data-image-key="factory_gallery_2" alt="Assembly line" loading="lazy" decoding="async"
                 class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
             </div>
             <div id="factory-gallery-item-3" class="rounded-lg overflow-hidden">
               <img id="factory-gallery-item-3-factory-gallery-3-image"
                 src="https://img2.baidu.com/it/u=1657229497,365692017&fm=253&fmt=auto&app=138&f=JPEG?w=667&h=500"
-                data-image-key="factory_gallery_3" alt="Quality testing"
+                data-image-key="factory_gallery_3" alt="Quality testing" loading="lazy" decoding="async"
                 class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
             </div>
             <div id="factory-gallery-item-4" class="rounded-lg overflow-hidden">
               <img id="factory-gallery-item-4-factory-gallery-4-image"
                 src="https://img0.baidu.com/it/u=2595055860,25921156&fm=253&app=138&f=JPEG?w=1067&h=800"
-                data-image-key="factory_gallery_4" alt="Finished products"
+                data-image-key="factory_gallery_4" alt="Finished products" loading="lazy" decoding="async"
                 class="w-full h-48 object-cover hover:scale-110 transition-transform duration-300">
             </div>
           </div>
@@ -782,7 +791,7 @@
           <div id="cert-card-1"
             class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
             <img id="cert-card-1-cert-1-image" alt="CE Certification" class="w-24 h-24 object-contain mb-4"
-              data-image-key="cert_1"
+              data-image-key="cert_1" loading="lazy" decoding="async"
               src="https://liuzhoume.com/wp-content/uploads/2024/03/CT11022603-S-E-%E8%AF%81%E4%B9%A6-724x1024.webp">
             <p id="cert-card-1-cert-1-text" class="text-sm font-bold text-center text-primary" data-i18n="cert_1">CE认证
             </p>
@@ -790,7 +799,7 @@
           <div id="cert-card-2"
             class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
             <img id="cert-card-2-cert-2-image" alt="GS Certificate" class="w-24 h-24 object-contain mb-4"
-              data-image-key="cert_2"
+              data-image-key="cert_2" loading="lazy" decoding="async"
               src="https://liuzhoume.com/wp-content/uploads/2024/03/CT11022604-S-R-%E8%AF%81%E4%B9%A6-724x1024.webp">
             <p id="cert-card-2-cert-2-text" class="text-sm font-bold text-center text-primary" data-i18n="cert_2">ROHS认证
             </p>
@@ -798,7 +807,7 @@
           <div id="cert-card-3"
             class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
             <img id="cert-card-3-cert-3-image" alt="ISO 9001" class="w-24 h-24 object-contain mb-4"
-              data-image-key="cert_3"
+              data-image-key="cert_3" loading="lazy" decoding="async"
               src="https://liuzhoume.com/wp-content/uploads/2024/03/CTL2305128012-Q-ROHS10%E9%A1%B9%EF%BC%88%E6%89%AB%E6%8F%8F%E5%8C%96%E6%B5%8B%EF%BC%89%E4%B8%AD%E8%8B%B1%E6%8A%A5%E5%91%8A-%E5%A3%B0%E6%B3%A2%E7%94%B5%E5%8A%A8%E7%89%99%E5%88%B7%E7%B3%BB%E5%88%97-Y1_proc1.webp">
             <p id="cert-card-3-cert-3-text" class="text-sm font-bold text-center text-primary" data-i18n="cert_3">测试报告
             </p>
@@ -806,7 +815,7 @@
           <div id="cert-card-4"
             class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
             <img id="cert-card-4-cert-4-image" alt="Energy Efficiency" class="w-24 h-24 object-contain mb-4"
-              data-image-key="cert_4"
+              data-image-key="cert_4" loading="lazy" decoding="async"
               src="https://liuzhoume.com/wp-content/uploads/2024/03/GP-BBQ022%E5%A4%96%E8%A7%82%E4%B8%93%E5%88%A9%E8%AF%81%E4%B9%A6-_proc1-723x1024.webp">
             <p id="cert-card-4-cert-4-text" class="text-sm font-bold text-center text-primary" data-i18n="cert_4">设计专利
             </p>
@@ -814,7 +823,7 @@
           <div id="cert-card-5"
             class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
             <img id="cert-card-5-cert-5-image" alt="Made in Germany" class="w-24 h-24 object-contain mb-4"
-              data-image-key="cert_5"
+              data-image-key="cert_5" loading="lazy" decoding="async"
               src="https://liuzhoume.com/wp-content/uploads/2024/03/ISO%E8%AF%81%E4%B9%A6-B201709-723x1024.webp">
             <p id="cert-card-5-cert-5-text" class="text-sm font-bold text-center text-primary" data-i18n="cert_5">QAC证书
             </p>
@@ -822,7 +831,7 @@
           <div id="cert-card-6"
             class="certificate-card bg-background-light dark:bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center aspect-square border border-primary/10 hover:border-primary/30">
             <img id="cert-card-6-cert-6-image" alt="Quality Award" class="w-24 h-24 object-contain mb-4"
-              data-image-key="cert_6"
+              data-image-key="cert_6" loading="lazy" decoding="async"
               src="https://liuzhoume.com/wp-content/uploads/2024/03/CTL2305128011-Q%E7%94%B5%E5%8A%A8%E7%89%99%E5%88%B7_proc1.webp">
             <p id="cert-card-6-cert-6-text" class="text-sm font-bold text-center text-primary" data-i18n="cert_6">质检报告
             </p>

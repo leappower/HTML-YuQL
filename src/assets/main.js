@@ -187,6 +187,8 @@ class LazyLoadingModule {
   }
 
   setupLazyLoading() {
+    // 同时支持 data-src（自定义懒加载）和 loading="lazy"（原生懒加载）
+    // 产品卡片图片使用 data-src + IntersectionObserver 实现受控延迟加载
     const lazyImages = document.querySelectorAll('img[data-src]');
     if (lazyImages.length === 0) return;
 
@@ -198,7 +200,10 @@ class LazyLoadingModule {
           imageObserver.unobserve(img);
         }
       });
-    }, { rootMargin: '50px' });
+    }, {
+      rootMargin: '100px',   // 提前 100px 触发（比原 50px 更早，减少可见延迟）
+      threshold: 0,
+    });
 
     lazyImages.forEach(img => imageObserver.observe(img));
   }
@@ -207,19 +212,33 @@ class LazyLoadingModule {
     const src = img.dataset.src;
     if (!src) return;
 
+    // 同时更新父级 <picture> 的 <source srcset>（WebP 路径）
+    const picture = img.closest('picture');
+    if (picture) {
+      const source = picture.querySelector('source[type="image/webp"]');
+      if (source && source.dataset && source.dataset.srcset) {
+        source.srcset = source.dataset.srcset;
+      }
+    }
+
     img.src = src;
-    img.classList.remove('lazy-loading');
+    img.classList.remove('lazy-loading', 'lazy-img');
     img.classList.add('loaded');
 
-    // Handle load/error events
     img.addEventListener('load', () => {
       img.classList.add('fade-in');
-    });
+    }, { once: true });
 
     img.addEventListener('error', () => {
-      console.warn(`Failed to load image: ${src}`);
-      img.src = '/assets/placeholder.png'; // Fallback image
-    });
+      console.warn(`[LazyLoad] Failed to load image: ${src}`);
+      // WebP 失败时降级到同名 PNG
+      if (src.endsWith('.webp')) {
+        img.src = src.replace(/\.webp$/i, '.png');
+      } else {
+        // PNG 也失败，显示占位符（内联 SVG，无需额外请求）
+        img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23f1f5f9\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%2394a3b8\' font-size=\'14\'%3E暂无图片%3C/text%3E%3C/svg%3E';
+      }
+    }, { once: true });
   }
 
   setupProductSectionTracking() {
