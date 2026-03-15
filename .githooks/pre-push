@@ -1,52 +1,49 @@
 #!/usr/bin/env bash
 # pre-push hook
-# 向 release 分支推送时，必须本地通过 lint:all + test:ci 才能继续。
-# 安装方式：已直接写入 .git/hooks/pre-push（chmod +x 已设置）
+# 向任意远端推送前，必须本地通过 lint:all + test:ci 才能继续。
+# 安装方式：package.json prepare 脚本自动配置，npm install 后生效。
 
 set -euo pipefail
 
-RELEASE_BRANCH="release"
-
-# ── 读取推送目标分支 ──────────────────────────────────────────────────────────
+# ── 读取推送信息（仅用于展示目标分支名）────────────────────────────────────────
 # pre-push 接收 stdin 格式：<local_ref> <local_sha> <remote_ref> <remote_sha>
+target_branch=""
 while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
-  # 提取分支名（refs/heads/release → release）
   target_branch="${remote_ref#refs/heads/}"
-
-  if [ "$target_branch" = "$RELEASE_BRANCH" ]; then
-    echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "  🔒  目标分支: release — 执行强制检查"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo ""
-
-    # ── 1. lint:all ──────────────────────────────────────────────────────────
-    echo "▶  [1/2] 运行 lint:all ..."
-    if ! npm run lint:all; then
-      echo ""
-      echo "✖  lint:all 未通过，推送已阻止。"
-      echo "   修复 lint 错误后再 push 到 release 分支。"
-      exit 1
-    fi
-    echo "✔  lint:all 通过"
-    echo ""
-
-    # ── 2. test:ci ───────────────────────────────────────────────────────────
-    echo "▶  [2/2] 运行 test:ci ..."
-    if ! npm run test:ci; then
-      echo ""
-      echo "✖  test:ci 未通过，推送已阻止。"
-      echo "   修复测试失败后再 push 到 release 分支。"
-      exit 1
-    fi
-    echo "✔  test:ci 通过"
-    echo ""
-
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "  ✔  所有检查通过，允许推送到 release 分支"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo ""
-  fi
+  break  # 只需第一条记录确定分支名，检查只跑一次
 done
+
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  🔒  推送目标: ${target_branch:-unknown} — 执行强制检查"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
+# ── 1. lint:all ──────────────────────────────────────────────────────────────
+echo "▶  [1/2] 运行 lint:all ..."
+if ! npm run lint:all; then
+  echo ""
+  echo "✖  lint:all 未通过，推送已阻止。"
+  echo "   修复 lint 错误后再重新 push。"
+  exit 1
+fi
+echo "✔  lint:all 通过"
+echo ""
+
+# ── 2. test:ci ───────────────────────────────────────────────────────────────
+echo "▶  [2/2] 运行 test:ci ..."
+if ! npm run test:ci; then
+  echo ""
+  echo "✖  test:ci 未通过，推送已阻止。"
+  echo "   修复测试失败后再重新 push。"
+  exit 1
+fi
+echo "✔  test:ci 通过"
+echo ""
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  ✔  所有检查通过，允许推送"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
 
 exit 0
