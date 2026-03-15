@@ -56,7 +56,8 @@
     "release:no-feishu": "node scripts/release.js --skip-feishu",
     "release:pack-only": "node scripts/release.js --skip-feishu --skip-translate",
     "release:full-translate": "node scripts/release.js --full-translate",
-    "release:skip-download": "node scripts/release.js --skip-download"
+    "release:skip-download": "node scripts/release.js --skip-download",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {
     "compression": "^1.7.4",

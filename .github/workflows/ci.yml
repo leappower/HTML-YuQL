@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, release]
   pull_request:
-    branches: [main, master]
+    branches: [main, master, release]
 
 jobs:
   # ─── Job 1: Lint ──────────────────────────────────────────────────────────
@@ -130,3 +130,25 @@ jobs:
         run: |
           docker stop test-container || true
           docker rm test-container || true
+
+  # ─── Job 5: Release Gate（仅 release 分支）────────────────────────────────
+  # 只有向 release 分支推送/PR 时才运行。
+  # 要求 lint、test、build、docker 全部绿灯后才标记通过，
+  # 可在 GitHub Branch Protection Rules 中将此 job 设为必须通过的 status check。
+  release-gate:
+    name: Release Gate (release branch only)
+    runs-on: ubuntu-latest
+    if: |
+      github.ref == 'refs/heads/release' ||
+      (github.event_name == 'pull_request' && github.base_ref == 'release')
+    needs: [lint, test, build, docker]
+
+    steps:
+      - name: All checks passed — release branch is ready
+        run: |
+          echo "✔ lint       passed"
+          echo "✔ test       passed"
+          echo "✔ build      passed"
+          echo "✔ docker     passed"
+          echo ""
+          echo "✅ Release gate cleared. Safe to merge / deploy."

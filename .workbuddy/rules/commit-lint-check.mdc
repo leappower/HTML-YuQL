@@ -1,0 +1,36 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-03-15T04:46:32.627Z
+provider: 
+---
+
+# 提交前必须通过 lint:all 检查
+
+在这个项目中，**所有 `git commit` 操作之前必须先执行 `npm run lint:all`**，确认检查通过（无报错）后才能提交。
+
+## 强制流程
+
+```bash
+# 1. 先跑 lint
+npm run lint:all
+
+# 2. 只有 lint 通过（exit code 0）才能提交
+git add ...
+git commit -m "..."
+```
+
+## 规则细节
+
+- lint 有任何 **error** 级别报错时，必须先修复，不得直接提交
+- lint 有 **warning** 时，可以提交，但应在 commit message 中注明或后续跟进修复
+- 不得使用 `--no-verify` 跳过 hooks
+- 适用于所有文件变更，不论大小
+
+## 脚本确认
+
+在执行提交前，用以下命令确认脚本存在：
+```bash
+node -e "const s=require('./package.json').scripts; console.log('lint:all:', s['lint:all'])"
+```

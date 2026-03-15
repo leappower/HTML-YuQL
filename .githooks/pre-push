@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# pre-push hook
+# 向 release 分支推送时，必须本地通过 lint:all + test:ci 才能继续。
+# 安装方式：已直接写入 .git/hooks/pre-push（chmod +x 已设置）
+
+set -euo pipefail
+
+RELEASE_BRANCH="release"
+
+# ── 读取推送目标分支 ──────────────────────────────────────────────────────────
+# pre-push 接收 stdin 格式：<local_ref> <local_sha> <remote_ref> <remote_sha>
+while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
+  # 提取分支名（refs/heads/release → release）
+  target_branch="${remote_ref#refs/heads/}"
+
+  if [ "$target_branch" = "$RELEASE_BRANCH" ]; then
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "  🔒  目标分支: release — 执行强制检查"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+
+    # ── 1. lint:all ──────────────────────────────────────────────────────────
+    echo "▶  [1/2] 运行 lint:all ..."
+    if ! npm run lint:all; then
+      echo ""
+      echo "✖  lint:all 未通过，推送已阻止。"
+      echo "   修复 lint 错误后再 push 到 release 分支。"
+      exit 1
+    fi
+    echo "✔  lint:all 通过"
+    echo ""
+
+    # ── 2. test:ci ───────────────────────────────────────────────────────────
+    echo "▶  [2/2] 运行 test:ci ..."
+    if ! npm run test:ci; then
+      echo ""
+      echo "✖  test:ci 未通过，推送已阻止。"
+      echo "   修复测试失败后再 push 到 release 分支。"
+      exit 1
+    fi
+    echo "✔  test:ci 通过"
+    echo ""
+
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "  ✔  所有检查通过，允许推送到 release 分支"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+  fi
+done
+
+exit 0
