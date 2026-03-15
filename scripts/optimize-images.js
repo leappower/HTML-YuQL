@@ -12,12 +12,20 @@
  *      - 其他文件（JSON、SVG 等）：直接复制，保持不变
  *   4. 删除 imagesCopy/ 备份目录
  *
+ * --download-remote 流程：
+ *   1. 读取 image-assets.js 中所有外部 HTTP(S) 图片 URL
+ *   2. 下载每张图片到临时文件
+ *   3. 用 sharp 转换为 WebP 存入 src/assets/images/
+ *   4. 更新 image-assets.js 和 src/index.html 中的引用为本地路径
+ *   5. 重新生成 image-manifest.json
+ *
  * 用法：
- *   node scripts/optimize-images.js               # 标准执行（压缩 + 生成 manifest）
- *   node scripts/optimize-images.js --dry-run     # 模拟运行，不执行任何文件操作
- *   node scripts/optimize-images.js --stats       # 仅统计当前 images 目录，不处理
- *   node scripts/optimize-images.js --keep-copy   # 处理完后保留 imagesCopy（调试用）
- *   node scripts/optimize-images.js --gen-manifest  # 仅重新生成 manifest，不处理图片
+ *   node scripts/optimize-images.js                    # 标准执行（压缩 + 生成 manifest）
+ *   node scripts/optimize-images.js --dry-run          # 模拟运行，不执行任何文件操作
+ *   node scripts/optimize-images.js --stats            # 仅统计当前 images 目录，不处理
+ *   node scripts/optimize-images.js --keep-copy        # 处理完后保留 imagesCopy（调试用）
+ *   node scripts/optimize-images.js --gen-manifest     # 仅重新生成 manifest，不处理图片
+ *   node scripts/optimize-images.js --download-remote  # 下载所有外部图片并本地化
  *
  * 注意：脚本是幂等的。若 imagesCopy 已存在（上次中断），会直接从 imagesCopy 继续处理。
  */
@@ -25,6 +33,8 @@
 const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
+const http = require('http');
 
 // ─── 路径配置 ─────────────────────────────────────────────────────────────────
 const ASSETS_DIR   = path.join(__dirname, '../src/assets');
@@ -33,10 +43,15 @@ const BACKUP_DIR   = path.join(ASSETS_DIR, 'imagesCopy');
 
 // ─── 命令行参数 ───────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
-const DRY_RUN      = args.includes('--dry-run');
-const STATS_ONLY   = args.includes('--stats');
-const KEEP_COPY    = args.includes('--keep-copy');
-const GEN_MANIFEST = args.includes('--gen-manifest');
+const DRY_RUN         = args.includes('--dry-run');
+const STATS_ONLY      = args.includes('--stats');
+const KEEP_COPY       = args.includes('--keep-copy');
+const GEN_MANIFEST    = args.includes('--gen-manifest');
+const DOWNLOAD_REMOTE = args.includes('--download-remote');
+
+// ─── 路径配置（download-remote 用到的源文件）────────────────────────────────
+const IMAGE_ASSETS_JS = path.join(ASSETS_DIR, 'image-assets.js');
+const INDEX_HTML      = path.join(__dirname, '../src/index.html');
 
 // ─── 压缩参数 ─────────────────────────────────────────────────────────────────
 const WEBP_QUALITY   = 85;    // WebP 质量（0-100），85 = 视觉无损
@@ -227,6 +242,7 @@ async function main() {
   if (DRY_RUN) warn('DRY RUN 模式：不会执行任何实际文件操作');
   if (STATS_ONLY) { await runStats(); return; }
   if (GEN_MANIFEST) { generateManifest(); return; }
+  if (DOWNLOAD_REMOTE) { await downloadRemoteImages(); return; }
 
   // ── Step 1: 确定源目录 ────────────────────────────────────────────────────
   // 幂等处理：若 imagesCopy 已存在（上次中断）则直接使用，否则从 images 改名
@@ -378,6 +394,183 @@ function generateManifest() {
   const manifestPath = path.join(IMAGES_DIR, 'image-manifest.json');
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
   ok(`image-manifest.json 已生成，包含 ${webpFiles.length} 张图片`);
+}
+
+// ─── 下载远程图片 ─────────────────────────────────────────────────────────────
+
+/**
+ * 用 Node 内置 http/https 下载 URL 内容到 Buffer
+ * 支持最多 5 次重定向
+ */
+function downloadBuffer(url, redirectCount) {
+  const count = redirectCount || 0;
+  return new Promise((resolve, reject) => {
+    if (count > 5) {
+      reject(new Error('重定向次数过多: ' + url));
+      return;
+    }
+    const client = url.startsWith('https') ? https : http;
+    const req = client.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; image-downloader/1.0)',
+        'Accept': 'image/*,*/*;q=0.8',
+      },
+      timeout: 30000,
+    }, (res) => {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        resolve(downloadBuffer(res.headers.location, count + 1));
+        return;
+      }
+      if (res.statusCode !== 200) {
+        reject(new Error(`HTTP ${res.statusCode}: ${url}`));
+        return;
+      }
+      const chunks = [];
+      res.on('data', chunk => chunks.push(chunk));
+      res.on('end', () => resolve(Buffer.concat(chunks)));
+      res.on('error', reject);
+    });
+    req.on('error', reject);
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('请求超时: ' + url));
+    });
+  });
+}
+
+/**
+ * 从 image-assets.js 源码中提取所有外部 URL 条目
+ * 返回 [{ key, url }] 数组
+ */
+function extractRemoteUrls(source) {
+  const entries = [];
+  // 匹配形如:  key: 'https://...',  或  key: "https://...",
+  const re = /^\s*([\w_]+)\s*:\s*['"]((https?:\/\/)[^'"]+)['"]/gm;
+  let m;
+  while ((m = re.exec(source)) !== null) {
+    entries.push({ key: m[1], url: m[2] });
+  }
+  return entries;
+}
+
+/**
+ * 下载所有外部图片 → 压缩为 WebP → 存入 images/
+ * 然后替换 image-assets.js 和 index.html 中的引用
+ */
+async function downloadRemoteImages() {
+  title('下载远程图片并本地化');
+
+  if (!fs.existsSync(IMAGE_ASSETS_JS)) {
+    fail('找不到 image-assets.js: ' + IMAGE_ASSETS_JS);
+    process.exit(1);
+  }
+
+  const source = fs.readFileSync(IMAGE_ASSETS_JS, 'utf8');
+  const entries = extractRemoteUrls(source);
+
+  if (entries.length === 0) {
+    ok('未发现外部图片 URL，无需处理');
+    return;
+  }
+
+  log(`发现 ${entries.length} 个外部图片 URL`);
+  entries.forEach(e => log(`  ${e.key.padEnd(22)} ${e.url.substring(0, 80)}...`));
+
+  if (!fs.existsSync(IMAGES_DIR)) {
+    fs.mkdirSync(IMAGES_DIR, { recursive: true });
+  }
+
+  // 下载并转换
+  let countOk = 0;
+  let countFail = 0;
+
+  /** @type {Array<{key: string, url: string, localKey: string}>} */
+  const succeeded = [];
+
+  for (const entry of entries) {
+    const localKey = entry.key;   // 直接以 key 名作为文件名
+    const destPath = path.join(IMAGES_DIR, `${localKey}.webp`);
+
+    if (DRY_RUN) {
+      drylog(`下载 ${entry.url.substring(0, 70)} → ${localKey}.webp`);
+      succeeded.push({ key: entry.key, url: entry.url, localKey });
+      continue;
+    }
+
+    log(`下载 ${entry.key}: ${entry.url.substring(0, 70)}...`);
+
+    try {
+      const buf = await downloadBuffer(entry.url);
+      await sharp(buf)
+        .webp({ quality: WEBP_QUALITY, effort: 4 })
+        .toFile(destPath);
+      const size = fs.statSync(destPath).size;
+      ok(`  ✔ ${localKey}.webp  (${formatBytes(size)})`);
+      succeeded.push({ key: entry.key, url: entry.url, localKey });
+      countOk++;
+    } catch (err) {
+      fail(`  ✘ ${entry.key}: ${err.message}`);
+      countFail++;
+    }
+  }
+
+  if (succeeded.length === 0) {
+    fail('所有下载均失败，终止替换');
+    process.exit(1);
+  }
+
+  // 替换 image-assets.js 中的外部 URL
+  log('替换 image-assets.js 中的外部 URL');
+  let newSource = source;
+  for (const { key, url, localKey } of succeeded) {
+    // 将  key: 'https://...'  或  key: "https://..."  替换为本地路径模板字符串
+    const escapedUrl = url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(
+      '(\\b' + key + '\\s*:\\s*)[\'"]' + escapedUrl + '[\'"]',
+      'g'
+    );
+    newSource = newSource.replace(re, `$1\`\${IMAGE_PATH_PREFIX}/${localKey}.webp\``);
+  }
+  if (!DRY_RUN) {
+    fs.writeFileSync(IMAGE_ASSETS_JS, newSource, 'utf8');
+    ok('image-assets.js 已更新');
+  } else {
+    drylog('image-assets.js 替换预览（dry-run 跳过写入）');
+  }
+
+  // 替换 index.html 中硬编码的外部 URL
+  if (fs.existsSync(INDEX_HTML)) {
+    log('替换 index.html 中的外部 URL');
+    let html = fs.readFileSync(INDEX_HTML, 'utf8');
+    for (const { url, localKey } of succeeded) {
+      // 直接字符串替换（URL 在 HTML 属性中，无需正则转义特殊字符以外的情况）
+      const localPath = `images/${localKey}.webp`;
+      while (html.includes(url)) {
+        html = html.replace(url, localPath);
+      }
+    }
+    if (!DRY_RUN) {
+      fs.writeFileSync(INDEX_HTML, html, 'utf8');
+      ok('index.html 已更新');
+    } else {
+      drylog('index.html 替换预览（dry-run 跳过写入）');
+    }
+  }
+
+  // 重新生成 manifest
+  if (!DRY_RUN) {
+    log('重新生成 image-manifest.json');
+    generateManifest();
+  }
+
+  console.log('');
+  title('下载统计');
+  log(`成功: ${countOk}  失败: ${countFail}  共: ${entries.length}`);
+  if (countFail > 0) {
+    warn(`${countFail} 张图片下载失败，对应 URL 未被替换，请手动处理`);
+    process.exit(1);
+  }
+  ok('所有外部图片已本地化完成');
 }
 
 main().catch(err => {

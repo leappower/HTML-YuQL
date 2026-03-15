@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-03-15T04:12:45.460Z",
+  "generated": "2026-03-15T04:53:45.902Z",
   "images": [
     "B1RAC_1",
     "B4RTD_1",
@@ -108,6 +108,21 @@
     "Y40D2C_1",
     "Y50D1C_1",
     "Z6FDB_1",
-    "Z8FCB_1"
+    "Z8FCB_1",
+    "cert_1",
+    "cert_2",
+    "cert_3",
+    "cert_4",
+    "cert_5",
+    "cert_6",
+    "factory_gallery_1",
+    "factory_gallery_2",
+    "factory_gallery_3",
+    "factory_gallery_4",
+    "factory_video_poster",
+    "hero_main",
+    "product_compact",
+    "product_industrial",
+    "product_professional"
   ]
 }
