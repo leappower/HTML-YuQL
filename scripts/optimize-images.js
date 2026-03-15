@@ -40,8 +40,10 @@ const GEN_MANIFEST = args.includes('--gen-manifest');
 
 // ─── 压缩参数 ─────────────────────────────────────────────────────────────────
 const WEBP_QUALITY   = 85;    // WebP 质量（0-100），85 = 视觉无损
-const PNG_QUALITY    = 80;    // PNG palette 调色板颜色数控制（80 ≈ 200 色）
-const JPEG_QUALITY   = 82;    // JPEG 压缩质量
+// eslint-disable-next-line no-unused-vars
+const PNG_QUALITY    = 80;    // PNG palette 调色板颜色数控制（80 ≈ 200 色），预留
+// eslint-disable-next-line no-unused-vars
+const JPEG_QUALITY   = 82;    // JPEG 压缩质量，预留
 const LARGE_THRESHOLD = 1 * 1024 * 1024;  // 1MB：超过此大小的 WebP 也重新压缩
 
 // ─── ANSI 颜色 ────────────────────────────────────────────────────────────────
