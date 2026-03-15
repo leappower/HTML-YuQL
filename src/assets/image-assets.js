@@ -3,7 +3,10 @@ const IMAGE_PATH_PREFIX = 'images';
 
 // ─── WebP 图片路径 ────────────────────────────────────────────────────────────
 // 所有本地图片均已转换为 WebP（IE 已于 2022 年停止支持，WebP 全球支持率 97%+）
-// IMAGE_FILES 硬编码已废弃，改由 optimize-images.js 自动生成 image-manifest.json
+// 产品图列表由 optimize-images.js 自动生成 image-manifest.json，构建时静态 import
+// 不再需要运行时 fetch，IMAGE_ASSETS 在模块加载时同步可用
+
+import manifest from './images/image-manifest.json';
 
 /** 返回图片的 WebP 路径 */
 export function resolveImage(key) {
@@ -30,8 +33,20 @@ export function pictureTag(key, altText = '', cssClass = '', extraAttrs = '') {
   return imgTag(key, altText, cssClass, extraAttrs);
 }
 
-// ─── 静态资源（非产品图，路径固定）────────────────────────────────────────────
-const STATIC_ASSETS = {
+// ─── 非产品图（路径固定，不来自 manifest）────────────────────────────────────
+const NON_PRODUCT_KEYS = new Set(['LOGO_HTML', 'LOGO_HTML_2', 'WORKSHOP_BGM']);
+
+// ─── 从 manifest 构建产品图映射（构建时静态解析，运行时同步可用）────────────
+const productImages = {};
+for (const key of (manifest.images || [])) {
+  if (!NON_PRODUCT_KEYS.has(key)) {
+    productImages[key] = `${IMAGE_PATH_PREFIX}/${key}.webp`;
+  }
+}
+
+// ─── 完整图片资源表 ──────────────────────────────────────────────────────────
+export const IMAGE_ASSETS = {
+  // 静态资源（logo、背景、外部 URL）
   logo:                `${IMAGE_PATH_PREFIX}/LOGO_HTML.webp`,
   logo_dark:           `${IMAGE_PATH_PREFIX}/LOGO_HTML_2.webp`,
   hero_bg:             `${IMAGE_PATH_PREFIX}/WORKSHOP_BGM.webp`,
@@ -50,55 +65,9 @@ const STATIC_ASSETS = {
   product_compact:     'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
   product_professional:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400',
   product_industrial:  'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400',
+  // 产品图片（从 manifest 自动展开，新增图片无需手动维护）
+  ...productImages,
 };
-
-// ─── 动态产品图片：从 image-manifest.json 加载 ───────────────────────────────
-// manifest 由 optimize-images.js 自动生成，格式：{ images: ["B1RAC_1", ...] }
-// 非产品图（LOGO_HTML、LOGO_HTML_2、WORKSHOP_BGM）已在 STATIC_ASSETS 中单独定义，此处跳过
-const NON_PRODUCT_KEYS = new Set(['LOGO_HTML', 'LOGO_HTML_2', 'WORKSHOP_BGM']);
-
-let _imageAssetsCache = null;
-
-/**
- * 异步加载 IMAGE_ASSETS（含 manifest 中所有产品图）
- * 首次调用触发 fetch，后续调用返回缓存结果
- * @returns {Promise<object>}
- */
-export async function loadImageAssets() {
-  if (_imageAssetsCache) return _imageAssetsCache;
-
-  let productImages = {};
-  try {
-    const res = await fetch(`/${IMAGE_PATH_PREFIX}/image-manifest.json`);
-    if (res.ok) {
-      const manifest = await res.json();
-      for (const key of (manifest.images || [])) {
-        if (!NON_PRODUCT_KEYS.has(key)) {
-          productImages[key] = `${IMAGE_PATH_PREFIX}/${key}.webp`;
-        }
-      }
-    } else {
-      console.warn('[image-assets] image-manifest.json 加载失败，状态码:', res.status);
-    }
-  } catch (e) {
-    console.warn('[image-assets] image-manifest.json 加载异常:', e.message);
-  }
-
-  _imageAssetsCache = { ...STATIC_ASSETS, ...productImages };
-  return _imageAssetsCache;
-}
-
-/**
- * 同步获取 IMAGE_ASSETS（需要先调用 loadImageAssets() 初始化）
- * 若 manifest 未加载，仅返回 STATIC_ASSETS（产品图路径缺失）
- */
-export function getImageAssets() {
-  return _imageAssetsCache || STATIC_ASSETS;
-}
-
-// ─── 向后兼容：同步导出（仅含静态资源，产品图需通过 loadImageAssets() 获取）────
-// 旧代码直接 import { IMAGE_ASSETS } 的地方不报错，但产品图需改用 loadImageAssets()
-export const IMAGE_ASSETS = STATIC_ASSETS;
 
 // 产品图片资源 - 生产环境下应替换为实际CDN链接或本地路径
 export const PRODUCT_SERIES = {
