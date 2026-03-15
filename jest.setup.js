@@ -11,17 +11,21 @@ const localStorageMock = {
 global.localStorage = localStorageMock;
 
 // Mock fetch with proper implementation
-global.fetch = jest.fn((url) => {
-  // Return a valid response for any URL
-  return Promise.resolve({
-    ok: true,
-    status: 200,
-    statusText: 'OK',
-    json: () => Promise.resolve({}),
-    text: () => Promise.resolve('{}'),
-    headers: new Map(),
-  });
-});
+// Note: resetMocks:true in jest.config.js resets mock implementations before each test,
+// so we define a factory and re-apply it in beforeEach to keep fetch always functional.
+const makeFetchMock = () =>
+  jest.fn((_url) =>
+    Promise.resolve({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: () => Promise.resolve({}),
+      text: () => Promise.resolve('{}'),
+      headers: new Map(),
+    })
+  );
+
+global.fetch = makeFetchMock();
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -65,5 +69,6 @@ beforeEach(() => {
   localStorageMock.setItem.mockClear();
   localStorageMock.removeItem.mockClear();
   localStorageMock.clear.mockClear();
-  global.fetch.mockClear();
+  // resetMocks:true clears mock implementations, so re-apply fetch default each test
+  global.fetch = makeFetchMock();
 });
