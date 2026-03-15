@@ -339,9 +339,9 @@ if (opts.skipBuild) {
   }
 } else {
   try {
-    // Step 5b 已单独执行 download:images（增量），这里只跑压缩+打包链
-    // split:lang → optimize:images(增量) → webpack → copy-translations → build-i18n → verify
-    runLive('npm run build:static');
+    // Step 5b 已单独执行 download:images（增量），这里用 build:pack 跳过重复的 download 步骤
+    // optimize:images(增量) → split:lang → webpack → copy-translations → build-i18n → verify
+    runLive('npm run build:pack');
     ok('打包完成');
   } catch (e) {
     fail('打包失败，请检查构建日志');

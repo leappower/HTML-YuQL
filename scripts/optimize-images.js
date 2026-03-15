@@ -10,7 +10,7 @@
  *     - 缓存中没有该文件 → 首次处理，压缩后写入缓存
  *
  *   这样无论 build 执行多少次，每张图片只被压缩一次，不会因反复有损压缩而越来越模糊。
- *   缓存文件保存在 src/assets/images/.image-cache.json，建议加入 .gitignore。
+ *   缓存文件保存在 src/assets/images/.image-cache.json，已纳入 git 版本管理（多人协作共享缓存）。
  *
  * ── 标准压缩流程 ─────────────────────────────────────────────────────────────
  *   1. 将 src/assets/images/ 改名为 src/assets/imagesCopy/（原图备份）
@@ -615,10 +615,7 @@ async function initCache() {
 
   for (const filename of imageFiles) {
     const filePath = path.join(IMAGES_DIR, filename);
-    const ext      = getExt(filename);
-    const basename = path.basename(filename, `.${ext}`);
     // init-cache 模式：以 images/ 里的文件名作为"输出名"（因为文件已经是最终产物）
-    const outputName = filename;
 
     // 已有缓存且非 force：跳过
     if (cache[filename] && !FORCE) {
@@ -636,11 +633,11 @@ async function initCache() {
       const hash = hashFile(filePath);
       cache[filename] = {
         hash,
-        output: outputName,
+        output: filename,
         ts: Date.now(),
         initBy: '--init-cache',  // 标记来源，便于排查
       };
-      ok(`${basename.padEnd(30)} ${formatBytes(fs.statSync(filePath).size).padStart(9)}  ✔ 缓存已写入`);
+      ok(`${path.basename(filename, path.extname(filename)).padEnd(30)} ${formatBytes(fs.statSync(filePath).size).padStart(9)}  ✔ 缓存已写入`);
       countNew++;
     } catch (err) {
       fail(`${filename}: 哈希计算失败 - ${err.message}`);
