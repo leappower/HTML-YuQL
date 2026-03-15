@@ -38,6 +38,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
           const imageKey = product.imageRecognitionKey || `product_${category}`;
           const imageUrl = product.imageUrl || resolveImage(imageKey);
           return {
+          return {
             ...PRODUCT_DEFAULTS,
             id: nextId++,
             category,
