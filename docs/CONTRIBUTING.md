@@ -1,72 +1,121 @@
-# Contributing
+# 贡献指南
 
-Thank you for your interest in contributing to HTML-YuQL! We welcome contributions from everyone.
+感谢你对本项目的关注！欢迎通过 Issue 或 Pull Request 参与贡献。
 
-## Getting Started
+---
 
-1. Fork the repository
-2. Clone your fork: `git clone https://github.com/your-username/html-yuql.git`
-3. Install dependencies: `npm install`
-4. Create a feature branch: `git checkout -b feature/your-feature-name`
+## 开发环境准备
 
-## Development Workflow
-
-1. Make your changes
-2. Run tests: `npm test`
-3. Run linting: `npm run lint`
-4. Build the project: `npm run build`
-5. Commit your changes: `git commit -m "Add your commit message"`
-
-## Code Style
-
-- Use ESLint configuration for consistent code style
-- Follow the EditorConfig settings
-- Use single quotes for strings
-- Add semicolons
-- Use 2 spaces for indentation
-
-## Testing
-
-- Run the translation tests: `node test-translations-cli.js`
-- Ensure all tests pass before submitting a PR
-- Add tests for new features
-
-## Pull Request Process
-
-1. Update the CHANGELOG.md file with your changes
-2. Ensure your PR description clearly describes the changes
-3. Wait for review and address any feedback
-
-## Adding Translations
-
-When adding a new language:
-
-1. Create a new JSON file in `assets/lang/`
-2. Use the language code as filename (e.g., `fr.json` for French)
-3. Include all required keys from existing translations
-4. Test the new language thoroughly
-5. Update the CHANGELOG.md
-
-## Docker Development
-
-For local development with Docker:
+**环境要求：** Node.js ≥ 16.0.0，npm ≥ 8.0.0
 
 ```bash
-docker-compose up
+# 克隆仓库
+git clone https://github.com/your-username/html-yuql.git
+cd html-yuql
+
+# 安装依赖（自动激活 Git Hooks）
+npm install
+
+# 启动开发服务器
+npm start
 ```
 
-This will start the development server with hot reloading.
+---
 
-## Reporting Issues
+## 开发工作流
 
-When reporting bugs, please include:
+1. **创建功能分支**
+   ```bash
+   git checkout -b feat/your-feature-name
+   # 或
+   git checkout -b fix/your-bugfix-name
+   ```
 
-- Steps to reproduce
-- Expected behavior
-- Actual behavior
-- Browser and OS information
-- Node.js version
+2. **编写代码，确保 lint 通过**
+   ```bash
+   # 提交前必须执行，0 errors 才能提交
+   npm run lint:all
+
+   # 自动修复可修复的问题
+   npm run lint:all:fix
+   ```
+
+3. **确保测试通过**
+   ```bash
+   npm test
+   ```
+
+4. **提交代码（遵循 Commit Message 规范）**
+   ```bash
+   git commit -m "feat: 描述你的改动"
+   ```
+
+5. **推送分支**（推送时 pre-push hook 会自动执行 lint + test）
+   ```bash
+   git push origin feat/your-feature-name
+   ```
+
+6. **创建 Pull Request**，描述改动内容和测试情况
+
+---
+
+## Commit Message 规范
+
+使用语义化前缀：
+
+| 前缀 | 用途 |
+|------|------|
+| `feat:` | 新功能 |
+| `fix:` | Bug 修复 |
+| `refactor:` | 重构（不影响功能） |
+| `docs:` | 文档变更 |
+| `style:` | 格式/样式（不影响逻辑） |
+| `test:` | 测试相关 |
+| `chore:` | 构建/工具链/依赖变更 |
+
+---
+
+## 代码风格
+
+- 使用 `.eslintrc` 配置（ESLint）
+- 2 个空格缩进
+- 单引号字符串
+- 语句末尾加分号
+- CSS 使用 Stylelint 检查
+
+---
+
+## 测试规范
+
+- 新功能应添加对应的单元测试，测试文件放在 `tests/` 目录
+- 运行测试：`npm test`
+- 带覆盖率报告：`npm run test:coverage`
+- CI 模式（限制并发，适合本地验证 CI 行为）：`npm run test:ci`
+
+---
+
+## 新增翻译语言
+
+详细步骤见 [I18N.md](./I18N.md#新增语言)。简要：
+
+1. 在 `src/lang-registry.js` 注册新语言
+2. 在 `src/assets/lang/` 创建对应的 `{lang}-ui.json`
+3. 运行 `npm run product:sync:source && npm run translate:products:incremental`
+4. 启动开发服务器验证语言切换效果
+
+---
+
+## 提交 Issue
+
+报告 Bug 时请提供：
+- 复现步骤
+- 期望行为
+- 实际行为
+- 浏览器和操作系统信息
+- Node.js 版本
+
+---
 
 ## License
 
-By contributing to this project, you agree that your contributions will be licensed under the MIT License.
+提交贡献即表示你同意你的代码以 MIT License 授权。

@@ -6,11 +6,11 @@ updatedAt: 2026-03-15T04:46:32.627Z
 provider: 
 ---
 
-# 提交前必须通过 lint:all 检查
+# 提交与推送规范
+
+## 一、所有分支：提交前必须通过 lint:all
 
 在这个项目中，**所有 `git commit` 操作之前必须先执行 `npm run lint:all`**，确认检查通过（无报错）后才能提交。
-
-## 强制流程
 
 ```bash
 # 1. 先跑 lint
@@ -21,16 +21,42 @@ git add ...
 git commit -m "..."
 ```
 
-## 规则细节
+### 规则细节
 
 - lint 有任何 **error** 级别报错时，必须先修复，不得直接提交
 - lint 有 **warning** 时，可以提交，但应在 commit message 中注明或后续跟进修复
 - 不得使用 `--no-verify` 跳过 hooks
 - 适用于所有文件变更，不论大小
 
-## 脚本确认
+### 脚本确认
 
-在执行提交前，用以下命令确认脚本存在：
 ```bash
 node -e "const s=require('./package.json').scripts; console.log('lint:all:', s['lint:all'])"
+```
+
+---
+
+## 二、所有分支：推送前必须通过 lint:all + test:ci
+
+**向任意远端（origin）push 代码时，本地 git hook 会自动强制执行以下检查**，任意一项失败则推送被阻止：
+
+1. `npm run lint:all` — JS + CSS 全量 lint
+2. `npm run test:ci` — Jest 完整测试套件
+
+### Hook 实现
+
+- 脚本位于 `.githooks/pre-push`（已纳入版本管理）
+- `package.json` 的 `prepare` 脚本会自动配置 `git config core.hooksPath .githooks`
+- 新成员 clone 后执行 `npm install` 即自动激活此 hook
+
+### GitHub CI 保障（双重防护）
+
+CI 已配置 `CI Gate` job（`.github/workflows/ci.yml`），**所有分支**推送均触发：
+- 依赖 lint → test → build → docker 全部绿灯
+- 可在 GitHub 仓库设置 → Branch Protection Rules 中将 `CI Gate` 设为**必须通过的 status check**，从而在 server 侧彻底拦截未通过检查的代码
+
+### 手动执行（供参考）
+
+```bash
+npm run lint:all && npm run test:ci
 ```
