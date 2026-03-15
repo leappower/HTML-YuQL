@@ -128,54 +128,54 @@ async function processFile(filename, srcDir, destDir) {
 
   try {
     switch (action) {
-      case 'copy': {
-        // 直接复制（WebP ≤1MB，或非图片文件）
-        const destPath = path.join(destDir, filename);
-        fs.copyFileSync(srcPath, destPath);
-        result.outputs.push({ path: destPath, size: srcSize, role: 'copy' });
-        break;
-      }
+    case 'copy': {
+      // 直接复制（WebP ≤1MB，或非图片文件）
+      const destPath = path.join(destDir, filename);
+      fs.copyFileSync(srcPath, destPath);
+      result.outputs.push({ path: destPath, size: srcSize, role: 'copy' });
+      break;
+    }
 
-      case 'compress-webp': {
-        // 大 WebP 重新压缩
-        const destPath = path.join(destDir, filename);
-        await sharp(srcPath)
-          .webp({ quality: WEBP_QUALITY, effort: 5, alphaQuality: 90 })
-          .toFile(destPath);
-        const newSize = fs.statSync(destPath).size;
-        result.outputs.push({ path: destPath, size: newSize, role: 'webp-recompressed' });
-        break;
-      }
+    case 'compress-webp': {
+      // 大 WebP 重新压缩
+      const destPath = path.join(destDir, filename);
+      await sharp(srcPath)
+        .webp({ quality: WEBP_QUALITY, effort: 5, alphaQuality: 90 })
+        .toFile(destPath);
+      const newSize = fs.statSync(destPath).size;
+      result.outputs.push({ path: destPath, size: newSize, role: 'webp-recompressed' });
+      break;
+    }
 
-      case 'compress-png': {
-        // PNG → 只输出 WebP（不再保留 PNG，IE 已死，WebP 支持率 97%+）
-        const webpDest = path.join(destDir, `${basename}.webp`);
+    case 'compress-png': {
+      // PNG → 只输出 WebP（不再保留 PNG，IE 已死，WebP 支持率 97%+）
+      const webpDest = path.join(destDir, `${basename}.webp`);
 
-        await sharp(srcPath)
-          .webp({
-            quality: WEBP_QUALITY,
-            lossless: false,
-            smartSubsample: true,
-            effort: 4,
-            alphaQuality: 90,
-          })
-          .toFile(webpDest);
+      await sharp(srcPath)
+        .webp({
+          quality: WEBP_QUALITY,
+          lossless: false,
+          smartSubsample: true,
+          effort: 4,
+          alphaQuality: 90,
+        })
+        .toFile(webpDest);
 
-        result.outputs.push({ path: webpDest, size: fs.statSync(webpDest).size, role: 'webp-from-png' });
-        break;
-      }
+      result.outputs.push({ path: webpDest, size: fs.statSync(webpDest).size, role: 'webp-from-png' });
+      break;
+    }
 
-      case 'compress-jpg': {
-        // JPG → 只输出 WebP（不再保留 JPG）
-        const webpDest = path.join(destDir, `${basename}.webp`);
+    case 'compress-jpg': {
+      // JPG → 只输出 WebP（不再保留 JPG）
+      const webpDest = path.join(destDir, `${basename}.webp`);
 
-        await sharp(srcPath)
-          .webp({ quality: WEBP_QUALITY, effort: 4 })
-          .toFile(webpDest);
+      await sharp(srcPath)
+        .webp({ quality: WEBP_QUALITY, effort: 4 })
+        .toFile(webpDest);
 
-        result.outputs.push({ path: webpDest, size: fs.statSync(webpDest).size, role: 'webp-from-jpg' });
-        break;
-      }
+      result.outputs.push({ path: webpDest, size: fs.statSync(webpDest).size, role: 'webp-from-jpg' });
+      break;
+    }
     }
   } catch (err) {
     result.error = err.message;
@@ -230,10 +230,10 @@ async function main() {
   // 幂等处理：若 imagesCopy 已存在（上次中断）则直接使用，否则从 images 改名
   let srcDir;
   if (fs.existsSync(BACKUP_DIR)) {
-    warn(`imagesCopy 已存在（上次中断？），直接从备份继续`);
+    warn('imagesCopy 已存在（上次中断？），直接从备份继续');
     srcDir = BACKUP_DIR;
   } else if (fs.existsSync(IMAGES_DIR)) {
-    log(`Step 1: images → imagesCopy (改名备份)`);
+    log('Step 1: images → imagesCopy (改名备份)');
     if (!DRY_RUN) {
       fs.renameSync(IMAGES_DIR, BACKUP_DIR);
     } else {
@@ -246,7 +246,7 @@ async function main() {
   }
 
   // ── Step 2: 创建新 images 目录 ────────────────────────────────────────────
-  log(`Step 2: 创建新的 images/ 目录`);
+  log('Step 2: 创建新的 images/ 目录');
   if (!DRY_RUN) {
     fs.mkdirSync(IMAGES_DIR, { recursive: true });
   } else {
@@ -254,7 +254,7 @@ async function main() {
   }
 
   // ── Step 3: 处理所有文件 ──────────────────────────────────────────────────
-  log(`Step 3: 处理 imagesCopy/ 中的图片`);
+  log('Step 3: 处理 imagesCopy/ 中的图片');
   // dry-run 下 rename 未真正执行，fallback 读 images 目录做预览
   const readDir = DRY_RUN ? (fs.existsSync(srcDir) ? srcDir : IMAGES_DIR) : srcDir;
   const files = fs.readdirSync(readDir).filter(f => {
@@ -306,12 +306,12 @@ async function main() {
 
   // ── Step 4: 删除备份目录 ──────────────────────────────────────────────────
   if (KEEP_COPY) {
-    warn(`Step 4: --keep-copy 已设置，保留 imagesCopy/`);
+    warn('Step 4: --keep-copy 已设置，保留 imagesCopy/');
   } else {
-    log(`Step 4: 删除 imagesCopy/ 备份目录`);
+    log('Step 4: 删除 imagesCopy/ 备份目录');
     if (!DRY_RUN) {
       fs.rmSync(BACKUP_DIR, { recursive: true, force: true });
-      ok(`imagesCopy/ 已删除`);
+      ok('imagesCopy/ 已删除');
     } else {
       drylog(`fs.rmSync(${BACKUP_DIR}, { recursive: true })`);
     }
@@ -339,10 +339,10 @@ async function main() {
   // 扫描 images/ 目录，输出所有 WebP 的 basename（不含扩展名）列表
   // 供 image-assets.js 运行时动态构建 IMAGE_ASSETS，无需手动维护硬编码列表
   if (!DRY_RUN) {
-    log(`Step 5: 生成 image-manifest.json`);
+    log('Step 5: 生成 image-manifest.json');
     generateManifest();
   } else {
-    drylog(`生成 image-manifest.json（dry-run 跳过）`);
+    drylog('生成 image-manifest.json（dry-run 跳过）');
   }
 
   if (countFailed > 0) {
@@ -358,7 +358,7 @@ async function main() {
  */
 function generateManifest() {
   if (!fs.existsSync(IMAGES_DIR)) {
-    warn(`images 目录不存在，跳过 manifest 生成`);
+    warn('images 目录不存在，跳过 manifest 生成');
     return;
   }
 
