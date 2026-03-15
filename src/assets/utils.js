@@ -296,8 +296,18 @@ import { IMAGE_ASSETS } from './image-assets.js';
     }
     updateProductFilterButtonState(currentFilter || defaultFilter);
     scheduleRenderProducts();
-    if (window.translationManager && typeof window.translationManager.applyTranslations === 'function') {
-      window.translationManager.applyTranslations();
+    if (window.translationManager) {
+      // renderProductFilters() rewrites innerHTML synchronously.
+      // MutationObserver's invalidateDomCache() fires as a microtask and may not
+      // have run yet when applyTranslations() calls getCachedElements(), causing
+      // the newly-injected filter buttons to be missed (stale cache).
+      // Proactively invalidating the cache here closes that race window.
+      if (typeof window.translationManager.invalidateDomCache === 'function') {
+        window.translationManager.invalidateDomCache();
+      }
+      if (typeof window.translationManager.applyTranslations === 'function') {
+        window.translationManager.applyTranslations();
+      }
     }
   });
 
