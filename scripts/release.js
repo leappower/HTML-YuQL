@@ -12,15 +12,17 @@
  *   node scripts/release.js --skip-lint            # 跳过 lint 检查
  *   node scripts/release.js --skip-feishu          # 跳过飞书数据拉取（保留翻译步骤）
  *   node scripts/release.js --skip-translate       # 跳过多语言翻译（仅用已有翻译数据打包）
+ *   node scripts/release.js --skip-download        # 跳过图片下载（图片已全部本地化时使用）
  *   node scripts/release.js --no-feishu            # 同 --skip-feishu（别名）
  *   node scripts/release.js --no-translate         # 同 --skip-translate（别名）
  *   node scripts/release.js --full-translate       # 全量翻译（默认为增量翻译）
  *
- * 构建模式（由 --skip-feishu / --skip-translate 组合决定）：
- *   完整模式（默认）：飞书拉取 → i18n提取 → 增量翻译 → webpack → 验证
- *   跳过翻译：       飞书拉取 → i18n提取 → webpack → 验证（复用已有翻译数据）
- *   跳过飞书：       i18n提取 → 增量翻译 → webpack → 验证
- *   仅打包：         webpack → 验证（最快，适合纯前端改动）
+ * 构建模式（由各 --skip-* 开关组合决定）：
+ *   完整模式（默认）：飞书拉取 → i18n提取 → 增量翻译 → 图片下载(增量) → 图片压缩(增量) → webpack → 验证
+ *   跳过翻译：       飞书拉取 → i18n提取 → 图片下载(增量) → 图片压缩(增量) → webpack → 验证
+ *   跳过飞书：       i18n提取 → 增量翻译 → 图片下载(增量) → 图片压缩(增量) → webpack → 验证
+ *   跳过下载：       飞书拉取 → i18n提取 → 增量翻译 → 图片压缩(增量) → webpack → 验证
+ *   仅打包：         图片下载(增量) → 图片压缩(增量) → webpack → 验证（最快）
  *
  * 流程：
  *   1. 从远端读取最新 release 分支，解析当前版本号
@@ -28,10 +30,11 @@
  *   3. lint 检查（--skip-lint 可跳过）
  *   4. 飞书数据同步（--skip-feishu 可跳过）
  *   5. 多语言翻译（--skip-translate 可跳过）
- *   6. webpack 打包 + 验证（--skip-build 可跳过）
- *   7. 创建新的 release/vX.Y.Z 分支（孤立分支，仅含产物）
- *   8. 提交产物并推送到远端
- *   9. 打印发布摘要
+ *   6. 图片下载（--download-remote，增量；--skip-download 可跳过）
+ *   7. webpack 打包 + 验证（--skip-build 可跳过，含图片增量压缩）
+ *   8. 创建新的 release/vX.Y.Z 分支（孤立分支，仅含产物）
+ *   9. 提交产物并推送到远端
+ *  10. 打印发布摘要
  */
 
 'use strict';
@@ -70,6 +73,8 @@ const opts = {
   skipFeishu:    args.includes('--skip-feishu') || args.includes('--no-feishu'),
   // 多语言翻译：--skip-translate 或 --no-translate
   skipTranslate: args.includes('--skip-translate') || args.includes('--no-translate'),
+  // 图片下载：--skip-download（图片已全部本地化时使用）
+  skipDownload:  args.includes('--skip-download'),
   // 全量翻译（默认增量）：--full-translate
   fullTranslate: args.includes('--full-translate'),
   version:       (args.find(a => a.startsWith('--version=')) || '').replace('--version=', ''),
@@ -227,7 +232,8 @@ if (opts.dryRun) {
   drylog('构建模式:');
   drylog(`  飞书数据拉取: ${opts.skipFeishu    ? '跳过 (--skip-feishu)'    : '执行'}`);
   drylog(`  多语言翻译:   ${opts.skipTranslate ? '跳过 (--skip-translate)' : opts.fullTranslate ? '全量翻译 (--full-translate)' : '增量翻译（默认）'}`);
-  drylog(`  webpack 打包: ${opts.skipBuild     ? '跳过 (--skip-build)'     : '执行'}`);
+  drylog(`  图片下载:     ${opts.skipDownload  ? '跳过 (--skip-download)'  : '增量下载（已有文件自动跳过）'}`);
+  drylog(`  webpack 打包: ${opts.skipBuild     ? '跳过 (--skip-build)'     : '执行（含图片增量压缩）'}`);
   drylog('');
   drylog('后续步骤: lint → feishu → translate → build → 推送产物');
   drylog('dry-run 模式，不执行任何实际操作');
@@ -306,6 +312,22 @@ if (opts.skipTranslate || opts.skipBuild) {
   }
 }
 
+// ─── Step 5b: 图片下载（增量）────────────────────────────────────────────────
+title('Step 5b  图片下载（增量）');
+
+if (opts.skipDownload || opts.skipBuild) {
+  warn(opts.skipBuild ? '已跳过图片下载（--skip-build 包含此步骤）' : '已跳过图片下载（--skip-download）');
+} else {
+  try {
+    log('检查并下载新增外部图片（已本地化的图片自动跳过）...');
+    runLive('node scripts/optimize-images.js --download-remote');
+    ok('图片下载完成（增量）');
+  } catch (e) {
+    fail('图片下载失败，请检查网络或手动处理（或使用 --skip-download 跳过）', e);
+    process.exit(1);
+  }
+}
+
 // ─── Step 6: 打包构建 ─────────────────────────────────────────────────────────
 title('Step 6  打包构建');
 
@@ -317,8 +339,8 @@ if (opts.skipBuild) {
   }
 } else {
   try {
-    // split:lang → webpack → copy-translations → build-i18n → verify
-    // 飞书同步和翻译已在 Step 4/5 完成，这里只跑打包链
+    // Step 5b 已单独执行 download:images（增量），这里只跑压缩+打包链
+    // split:lang → optimize:images(增量) → webpack → copy-translations → build-i18n → verify
     runLive('npm run build:static');
     ok('打包完成');
   } catch (e) {
@@ -357,20 +379,14 @@ try {
 
 // 使用临时目录来存放产物并创建孤立分支（tmpDir 已在顶部声明）
 try {
-  // 清理旧的临时目录
+  // 清理旧的临时目录和遗留 worktree 记录
+  log('初始化临时发布工作区...');
+  try {
+    run(`git worktree remove --force "${tmpDir}"`, { silent: true });
+  } catch (_) { /* ignore if no existing worktree */ }
   if (fs.existsSync(tmpDir)) {
     run(`rm -rf "${tmpDir}"`, { silent: true });
   }
-
-  // 创建临时工作区
-  log('初始化临时发布工作区...');
-  fs.mkdirSync(tmpDir, { recursive: true });
-
-  // 在临时目录里用 worktree 方式操作（避免污染主工作区）
-  // 先删除已有同名 worktree（如果有遗留）
-  try {
-    run(`git worktree remove --force "${tmpDir}"`, { silent: true });
-  } catch (_) { /* ignore existing worktree records */ }
 
   // 创建孤立分支并 checkout 到 worktree
   log(`创建孤立分支 ${releaseBranch}...`);
@@ -385,7 +401,20 @@ try {
   } catch (_) { /* ignore if branch listing fails */ }
 
   // 添加 worktree（孤立分支）
-  run(`git worktree add --orphan -b "${releaseBranch}" "${tmpDir}"`, { silent: false });
+  // git 2.40+ 支持 --orphan，旧版本用兼容方案：先建普通 worktree，再在其中执行 checkout --orphan
+  const gitVersion = run('git --version', { silent: true }).match(/(\d+)\.(\d+)/);
+  const gitMajor = gitVersion ? parseInt(gitVersion[1], 10) : 0;
+  const gitMinor = gitVersion ? parseInt(gitVersion[2], 10) : 0;
+  if (gitMajor > 2 || (gitMajor === 2 && gitMinor >= 40)) {
+    // git 2.40+：原生支持 --orphan
+    run(`git worktree add --orphan -b "${releaseBranch}" "${tmpDir}"`, { silent: false });
+  } else {
+    // git < 2.40：先创建 detach 状态的 worktree，再在其中 checkout --orphan 新分支，最后清空继承文件
+    run(`git worktree add --detach "${tmpDir}" HEAD`, { silent: false });
+    run(`git -C "${tmpDir}" checkout --orphan "${releaseBranch}"`, { silent: false });
+    // 清空 worktree 中从 HEAD 带过来的文件（orphan 分支不应继承任何历史文件）
+    run(`git -C "${tmpDir}" rm -rf . --quiet`, { silent: true });
+  }
 
   // 复制 dist 内容到 worktree
   log('复制产物到发布分支...');
