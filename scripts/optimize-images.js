@@ -15,9 +15,16 @@
  * --download-remote 流程：
  *   1. 读取 image-assets.js 中所有外部 HTTP(S) 图片 URL
  *   2. 下载每张图片到临时文件
- *   3. 用 sharp 转换为 WebP 存入 src/assets/images/
+ *   3. 用 sharp 转换为 WebP 存入 src/assets/images/（文件名自动规范化为 snake_case）
  *   4. 更新 image-assets.js 和 src/index.html 中的引用为本地路径
  *   5. 重新生成 image-manifest.json
+ *
+ * 命名规则（snake_case）：
+ *   - 所有字母转小写
+ *   - 连字符（-）替换为下划线（_）
+ *   - 加号（+）替换为 _p（如 M4DAD+1 → m4dad_p1）
+ *   - 不允许空格或其他特殊字符
+ *   - 示例：ESL-GB50_1 → esl_gb50_1、LOGO_HTML → logo_html
  *
  * 用法：
  *   node scripts/optimize-images.js                    # 标准执行（压缩 + 生成 manifest）
@@ -87,6 +94,21 @@ function formatBytes(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
+/**
+ * 将文件名（不含扩展名）规范化为 snake_case 小写
+ * 规则：大写→小写，连字符→下划线，+→_p，其余特殊字符→下划线
+ * 示例：ESL-GB50_1 → esl_gb50_1，M4DAD+1 → m4dad_p1，LOGO_HTML → logo_html
+ */
+function toSnakeCase(name) {
+  return name
+    .toLowerCase()
+    .replace(/\+/g, '_p')     // + 号 → _p
+    .replace(/-/g, '_')       // 连字符 → 下划线
+    .replace(/[^a-z0-9_]/g, '_')  // 其他特殊字符 → 下划线
+    .replace(/__+/g, '_')     // 连续下划线合并
+    .replace(/^_|_$/g, '');   // 去掉首尾下划线
+}
+
 function getSavings(original, optimized) {
   if (original === 0) return { saved: 0, pct: '0.0' };
   const saved = original - optimized;
@@ -147,15 +169,21 @@ async function processFile(filename, srcDir, destDir) {
     switch (action) {
     case 'copy': {
       // 直接复制（WebP ≤1MB，或非图片文件）
-      const destPath = path.join(destDir, filename);
+      // WebP 文件复制时同步规范化文件名为 snake_case
+      const ext = path.extname(filename);
+      const nameBase = path.basename(filename, ext);
+      const normalizedName = ext.toLowerCase() === '.webp'
+        ? `${toSnakeCase(nameBase)}${ext}`
+        : filename;
+      const destPath = path.join(destDir, normalizedName);
       fs.copyFileSync(srcPath, destPath);
       result.outputs.push({ path: destPath, size: srcSize, role: 'copy' });
       break;
     }
 
     case 'compress-webp': {
-      // 大 WebP 重新压缩
-      const destPath = path.join(destDir, filename);
+      // 大 WebP 重新压缩，同时规范化文件名为 snake_case
+      const destPath = path.join(destDir, `${toSnakeCase(basename)}.webp`);
       await sharp(srcPath)
         .webp({ quality: WEBP_QUALITY, effort: 5, alphaQuality: 90 })
         .toFile(destPath);
@@ -166,7 +194,8 @@ async function processFile(filename, srcDir, destDir) {
 
     case 'compress-png': {
       // PNG → 只输出 WebP（不再保留 PNG，IE 已死，WebP 支持率 97%+）
-      const webpDest = path.join(destDir, `${basename}.webp`);
+      // 输出文件名规范化为 snake_case
+      const webpDest = path.join(destDir, `${toSnakeCase(basename)}.webp`);
 
       await sharp(srcPath)
         .webp({
@@ -184,7 +213,8 @@ async function processFile(filename, srcDir, destDir) {
 
     case 'compress-jpg': {
       // JPG → 只输出 WebP（不再保留 JPG）
-      const webpDest = path.join(destDir, `${basename}.webp`);
+      // 输出文件名规范化为 snake_case
+      const webpDest = path.join(destDir, `${toSnakeCase(basename)}.webp`);
 
       await sharp(srcPath)
         .webp({ quality: WEBP_QUALITY, effort: 4 })
@@ -488,7 +518,7 @@ async function downloadRemoteImages() {
   const succeeded = [];
 
   for (const entry of entries) {
-    const localKey = entry.key;   // 直接以 key 名作为文件名
+    const localKey = toSnakeCase(entry.key);  // 规范化为 snake_case
     const destPath = path.join(IMAGES_DIR, `${localKey}.webp`);
 
     if (DRY_RUN) {
