@@ -108,7 +108,9 @@ function normalizeProduct(product, fallbackCategory) {
     product.imageRecognitionKey ||
     (product.i18n?.imageRecognitionKey?.['zh-CN']) ||
     null;
-  const imageRecognitionKey = rawKey || modelToImageKey(product.model || '');
+  // rawKey 可能来自飞书同步数据（如 "ESL-GB60_1"），需经 modelToImageKey 统一转为 snake_case
+  // IMAGE_ASSETS 的 key 全是小写 snake_case，直接用原始格式会导致查不到图片路径
+  const imageRecognitionKey = rawKey ? modelToImageKey(rawKey) : modelToImageKey(product.model || '');
 
   // 先取主字段，主字段为 null 时自动 fallback 到 i18n 下以 _fieldName 结尾的 key
   function getFieldWithI18nKey(fieldName) {
