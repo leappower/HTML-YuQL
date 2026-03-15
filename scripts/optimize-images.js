@@ -8,9 +8,7 @@
  *   3. 遍历 imagesCopy/ 中所有图片文件，按以下规则处理：
  *      - WebP 图片且 ≤ 1MB：直接复制到 images/（已是最优格式）
  *      - WebP 图片且 > 1MB：重新压缩后输出到 images/
- *      - PNG/JPG/JPEG 图片：
- *          * 压缩后的 PNG 输出到 images/（palette 减色，~80% 体积节省）
- *          * 同时生成 WebP 版本输出到 images/（供 <picture> 元素使用）
+ *      - PNG/JPG/JPEG 图片：转换为 WebP 输出到 images/（不保留原格式，IE 已死）
  *      - 其他文件（JSON、SVG 等）：直接复制，保持不变
  *   4. 删除 imagesCopy/ 备份目录
  *
@@ -83,7 +81,10 @@ function getExt(filename) {
 
 /**
  * 判断文件是否需要处理（压缩或转换）
- * 返回 'compress-webp' | 'compress-png' | 'compress-jpg' | 'copy' | 'skip-json'
+ * 返回 'compress-webp' | 'compress-png' | 'compress-jpg' | 'copy' | 'drop'
+ *
+ * 注：PNG/JPG 只转 WebP，不再输出 PNG fallback（IE 已死，WebP 支持率 97%+）
+ *     原始 PNG/JPG 文件本身不复制到输出目录（'drop'）
  */
 function getAction(filename, fileSize) {
   const ext = getExt(filename);
@@ -145,18 +146,8 @@ async function processFile(filename, srcDir, destDir) {
       }
 
       case 'compress-png': {
-        // PNG → 压缩 PNG（palette 减色）+ WebP（新增）
-        const pngDest  = path.join(destDir, `${basename}.png`);
+        // PNG → 只输出 WebP（不再保留 PNG，IE 已死，WebP 支持率 97%+）
         const webpDest = path.join(destDir, `${basename}.webp`);
-
-        await sharp(srcPath)
-          .png({
-            palette: true,       // 256 色调色板，最显著的体积优化（实测 -75~-83%）
-            quality: PNG_QUALITY,
-            compressionLevel: 9,
-            dither: 1.0,         // 抖动，减少色带伪影
-          })
-          .toFile(pngDest);
 
         await sharp(srcPath)
           .webp({
@@ -168,26 +159,19 @@ async function processFile(filename, srcDir, destDir) {
           })
           .toFile(webpDest);
 
-        result.outputs.push({ path: pngDest,  size: fs.statSync(pngDest).size,  role: 'png-compressed' });
-        result.outputs.push({ path: webpDest, size: fs.statSync(webpDest).size, role: 'webp-generated' });
+        result.outputs.push({ path: webpDest, size: fs.statSync(webpDest).size, role: 'webp-from-png' });
         break;
       }
 
       case 'compress-jpg': {
-        // JPG → 压缩 JPG + WebP
-        const jpgDest  = path.join(destDir, filename);
+        // JPG → 只输出 WebP（不再保留 JPG）
         const webpDest = path.join(destDir, `${basename}.webp`);
-
-        await sharp(srcPath)
-          .jpeg({ quality: JPEG_QUALITY, progressive: true, mozjpeg: true })
-          .toFile(jpgDest);
 
         await sharp(srcPath)
           .webp({ quality: WEBP_QUALITY, effort: 4 })
           .toFile(webpDest);
 
-        result.outputs.push({ path: jpgDest,  size: fs.statSync(jpgDest).size,  role: 'jpg-compressed' });
-        result.outputs.push({ path: webpDest, size: fs.statSync(webpDest).size, role: 'webp-generated' });
+        result.outputs.push({ path: webpDest, size: fs.statSync(webpDest).size, role: 'webp-from-jpg' });
         break;
       }
     }

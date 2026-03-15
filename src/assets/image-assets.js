@@ -1,159 +1,155 @@
 // 图片路径配置：统一使用 /images 前缀（dev/production 均通过 webpack 映射到 src/assets/images）
 const IMAGE_PATH_PREFIX = 'images';
 
-// ─── WebP 支持检测 ────────────────────────────────────────────────────────────
-// 运行时检测浏览器是否支持 WebP，结果缓存在模块级变量
-let _webpSupported = null;
+// ─── WebP 图片路径 ────────────────────────────────────────────────────────────
+// 所有本地图片均已转换为 WebP（IE 已于 2022 年停止支持，WebP 全球支持率 97%+）
+// <picture> + PNG fallback 已废弃，直接使用 <img src="xxx.webp">
 
-/**
- * 检测 WebP 支持（同步返回已知结果，首次调用时异步初始化）
- * 大多数现代浏览器（Chrome 23+、Firefox 65+、Safari 14+、iOS 14+）均支持 WebP
- */
-export function initWebPDetection() {
-  if (_webpSupported !== null) return Promise.resolve(_webpSupported);
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => { _webpSupported = (img.width > 0 && img.height > 0); resolve(_webpSupported); };
-    img.onerror = () => { _webpSupported = false; resolve(false); };
-    img.src = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
-  });
-}
-
-/** 根据浏览器支持，返回 WebP 路径或 PNG fallback 路径 */
-export function resolveOptimizedImage(key) {
-  const pngPath = `${IMAGE_PATH_PREFIX}/${key}.png`;
-  if (_webpSupported === null || !_webpSupported) return pngPath;
+/** 返回图片的 WebP 路径 */
+export function resolveImage(key) {
   return `${IMAGE_PATH_PREFIX}/${key}.webp`;
 }
 
-/** 生成 <picture> 标签 HTML，优先 WebP，降级 PNG */
-export function pictureTag(key, altText = '', cssClass = '', extraAttrs = '') {
-  const webpSrc = `${IMAGE_PATH_PREFIX}/${key}.webp`;
-  const pngSrc  = `${IMAGE_PATH_PREFIX}/${key}.png`;
-  return `<picture>
-  <source type="image/webp" srcset="${webpSrc}">
-  <img src="${pngSrc}" alt="${altText}" class="${cssClass}" ${extraAttrs} loading="lazy" decoding="async">
-</picture>`;
+/** 生成 <img> 标签 HTML（直接 WebP，不再需要 <picture> fallback） */
+export function imgTag(key, altText = '', cssClass = '', extraAttrs = '') {
+  const src = `${IMAGE_PATH_PREFIX}/${key}.webp`;
+  return `<img src="${src}" alt="${altText}" class="${cssClass}" ${extraAttrs} loading="lazy" decoding="async">`;
 }
 
-// 图片文件名映射（不带路径）
+/**
+ * @deprecated 使用 resolveImage(key) 代替
+ * 保留此函数避免旧调用报错，行为已等同于 resolveImage
+ */
+export function resolveOptimizedImage(key) {
+  return resolveImage(key);
+}
+
+/**
+ * @deprecated 使用 imgTag(key, ...) 代替
+ * 保留此函数避免旧调用报错，改为直接输出 <img>（不再有 <picture> 包裹）
+ */
+export function pictureTag(key, altText = '', cssClass = '', extraAttrs = '') {
+  return imgTag(key, altText, cssClass, extraAttrs);
+}
+
+// 图片文件名映射（不带路径，key 对应 images/xxx.webp）
 const IMAGE_FILES = {
-  B1RAC_1: 'B1RAC_1.png',
-  B4RTD_1: 'B4RTD_1.png',
-  B6RBD_1: 'B6RBD_1.png',
-  B8RBD_1: 'B8RBD_1.png',
-  'ESL-4BQ30_1': 'ESL-4BQ30_1.png',
-  'ESL-4QBQ30_1': 'ESL-4QBQ30_1.png',
-  'ESL-BXC800_1': 'ESL-BXC800_1.png',
-  'ESL-GB60_1': 'ESL-GB60_1.png',
-  'ESL-GB70_1': 'ESL-GB70_1.png',
-  'ESL-GB80_1': 'ESL-GB80_1.png',
-  'ESL-GB90_1': 'ESL-GB90_1.png',
-  'ESL-GC60_1': 'ESL-GC60_1.png',
-  'ESL-GC70_1': 'ESL-GC70_1.png',
-  'ESL-GC80_1': 'ESL-GC80_1.png',
-  'ESL-GC90_1': 'ESL-GC90_1.png',
-  'ESL-GD30_1': 'ESL-GD30_1.png',
-  'ESL-GD369_1': 'ESL-GD369_1.png',
-  'ESL-GD36_1': 'ESL-GD36_1.png',
-  'ESL-GQ30J_1': 'ESL-GQ30J_1.png',
-  'ESL-GQ36J9_1': 'ESL-GQ36J9_1.png',
-  'ESL-GQ60_1': 'ESL-GQ60_1.png',
-  'ESL-GQ70_1': 'ESL-GQ70_1.png',
-  'ESL-GQ80_1': 'ESL-GQ80_1.png',
-  'ESL-GQ90_1': 'ESL-GQ90_1.png',
-  'ESL-PZJ100_1': 'ESL-PZJ100_1.png',
-  'ESL-PZJ120_1': 'ESL-PZJ120_1.png',
-  'ESL-PZJ200_1': 'ESL-PZJ200_1.png',
-  'ESL-PZJ400_1': 'ESL-PZJ400_1.png',
-  'ESL-PZJ80_1': 'ESL-PZJ80_1.png',
-  'ESL-QXC100_1': 'ESL-QXC100_1.png',
-  'ESL-QXC120_1': 'ESL-QXC120_1.png',
-  'ESL-QXC80_1': 'ESL-QXC80_1.png',
-  'ESL-TBQ30_1': 'ESL-TBQ30_1.png',
-  'ESL-TBS30_1': 'ESL-TBS30_1.png',
-  'ESL-TBS40_1': 'ESL-TBS40_1.png',
-  'ESL-TBS50_1': 'ESL-TBS50_1.png',
-  'ESL-TGD30_1': 'ESL-TGD30_1.png',
-  'ESL-TGD36_1': 'ESL-TGD36_1.png',
-  'ESL-TGQ30J_1': 'ESL-TGQ30J_1.png',
-  'ESL-TGQ30_1': 'ESL-TGQ30_1.png',
-  'ESL-TGQ36J9_1': 'ESL-TGQ36J9_1.png',
-  'ESL-TGQ36J_1': 'ESL-TGQ36J_1.png',
-  'ESL-TGQ40J_1': 'ESL-TGQ40J_1.png',
-  'ESL-TGS30_1': 'ESL-TGS30_1.png',
-  'ESL-TQBQ30_1': 'ESL-TQBQ30_1.png',
-  'ESL-TZS40_1': 'ESL-TZS40_1.png',
-  'ESL-XC100_1': 'ESL-XC100_1.png',
-  'ESL-XC120_1': 'ESL-XC120_1.png',
-  'ESL-XC80_1': 'ESL-XC80_1.png',
-  F32F1C_1: 'F32F1C_1.png',
-  G26D1A_1: 'G26D1A_1.png',
-  G26D1R_1: 'G26D1R_1.png',
-  G26DAA_1: 'G26DAA_1.png',
-  G26DAR_1: 'G26DAR_1.png',
-  G30D1A_1: 'G30D1A_1.png',
-  G30D1R_1: 'G30D1R_1.png',
-  G30D1T_1: 'G30D1T_1.png',
-  G30DAA_1: 'G30DAA_1.png',
-  G30DAG_1: 'G30DAG_1.png',
-  G30DAR_1: 'G30DAR_1.png',
-  G30E1A_1: 'G30E1A_1.png',
-  G36D1A_1: 'G36D1A_1.png',
-  G36D1R_1: 'G36D1R_1.png',
-  G36DAA_1: 'G36DAA_1.png',
-  G36DAR_1: 'G36DAR_1.png',
-  G50AAB_1: 'G50AAB_1.png',
-  G50AAC_1: 'G50AAC_1.png',
-  G50GAT_1: 'G50GAT_1.png',
-  G60EAC_1: 'G60EAC_1.png',
-  G60EAS_1: 'G60EAS_1.png',
-  G70EAC_1: 'G70EAC_1.png',
-  G70EAS_1: 'G70EAS_1.png',
-  GT2D1B_1: 'GT2D1B_1.png',
-  J100BAB_1: 'J100BAB_1.png',
-  J40CBA5_1: 'J40CBA5_1.png',
-  J40_1: 'J40_1.png',
-  JZ2CA_1: 'JZ2CA_1.png',
-  LZ80D1B_1: 'LZ80D1B_1.png',
-  M3DAD_1: 'M3DAD_1.png',
-  'M4DAD+1_1': 'M4DAD+1_1.png',
-  'M4DAD+2_1': 'M4DAD+2_1.png',
-  M6DAD_1: 'M6DAD_1.png',
-  M6DBD_1: 'M6DBD_1.png',
-  M6RAD_1: 'M6RAD_1.png',
-  T21B_1: 'T21B_1.png',
-  Y12D1C_1: 'Y12D1C_1.png',
-  Y12D2C_1: 'Y12D2C_1.png',
-  Y24C1C_1: 'Y24C1C_1.png',
-  Y40D2C_1: 'Y40D2C_1.png',
-  Y50D1C_1: 'Y50D1C_1.png',
-  Z6FDB_1: 'Z6FDB_1.png',
-  Z8FCB_1: 'Z8FCB_1.png',
-  'ESL-GC50_1': 'ESL-GC50_1.png',
-  'ESL-GQ50_1': 'ESL-GQ50_1.png',
-  'ESL-PZJ300_1': 'ESL-PZJ300_1.png',
-  'ESL-GQ30_1': 'ESL-GQ30_1.png',
-  'ESL-GQ36_1': 'ESL-GQ36_1.png',
-  'ESL-GQ30T_1': 'ESL-GQ30T_1.png',
-  'ESL-GQ35T_1': 'ESL-GQ35T_1.png',
-  'ESL-BQ40T_1': 'ESL-BQ40T_1.png',
-  'ESL-TGQ40_1': 'ESL-TGQ40_1.png',
-  'ESL-GQ40_1': 'ESL-GQ40_1.png',
-  'ESL-TGD369_1': 'ESL-TGD369_1.png',
-  'ESL-GB50_1': 'ESL-GB50_1.png',
+  B1RAC_1: 'B1RAC_1',
+  B4RTD_1: 'B4RTD_1',
+  B6RBD_1: 'B6RBD_1',
+  B8RBD_1: 'B8RBD_1',
+  'ESL-4BQ30_1': 'ESL-4BQ30_1',
+  'ESL-4QBQ30_1': 'ESL-4QBQ30_1',
+  'ESL-BXC800_1': 'ESL-BXC800_1',
+  'ESL-GB60_1': 'ESL-GB60_1',
+  'ESL-GB70_1': 'ESL-GB70_1',
+  'ESL-GB80_1': 'ESL-GB80_1',
+  'ESL-GB90_1': 'ESL-GB90_1',
+  'ESL-GC60_1': 'ESL-GC60_1',
+  'ESL-GC70_1': 'ESL-GC70_1',
+  'ESL-GC80_1': 'ESL-GC80_1',
+  'ESL-GC90_1': 'ESL-GC90_1',
+  'ESL-GD30_1': 'ESL-GD30_1',
+  'ESL-GD369_1': 'ESL-GD369_1',
+  'ESL-GD36_1': 'ESL-GD36_1',
+  'ESL-GQ30J_1': 'ESL-GQ30J_1',
+  'ESL-GQ36J9_1': 'ESL-GQ36J9_1',
+  'ESL-GQ60_1': 'ESL-GQ60_1',
+  'ESL-GQ70_1': 'ESL-GQ70_1',
+  'ESL-GQ80_1': 'ESL-GQ80_1',
+  'ESL-GQ90_1': 'ESL-GQ90_1',
+  'ESL-PZJ100_1': 'ESL-PZJ100_1',
+  'ESL-PZJ120_1': 'ESL-PZJ120_1',
+  'ESL-PZJ200_1': 'ESL-PZJ200_1',
+  'ESL-PZJ400_1': 'ESL-PZJ400_1',
+  'ESL-PZJ80_1': 'ESL-PZJ80_1',
+  'ESL-QXC100_1': 'ESL-QXC100_1',
+  'ESL-QXC120_1': 'ESL-QXC120_1',
+  'ESL-QXC80_1': 'ESL-QXC80_1',
+  'ESL-TBQ30_1': 'ESL-TBQ30_1',
+  'ESL-TBS30_1': 'ESL-TBS30_1',
+  'ESL-TBS40_1': 'ESL-TBS40_1',
+  'ESL-TBS50_1': 'ESL-TBS50_1',
+  'ESL-TGD30_1': 'ESL-TGD30_1',
+  'ESL-TGD36_1': 'ESL-TGD36_1',
+  'ESL-TGQ30J_1': 'ESL-TGQ30J_1',
+  'ESL-TGQ30_1': 'ESL-TGQ30_1',
+  'ESL-TGQ36J9_1': 'ESL-TGQ36J9_1',
+  'ESL-TGQ36J_1': 'ESL-TGQ36J_1',
+  'ESL-TGQ40J_1': 'ESL-TGQ40J_1',
+  'ESL-TGS30_1': 'ESL-TGS30_1',
+  'ESL-TQBQ30_1': 'ESL-TQBQ30_1',
+  'ESL-TZS40_1': 'ESL-TZS40_1',
+  'ESL-XC100_1': 'ESL-XC100_1',
+  'ESL-XC120_1': 'ESL-XC120_1',
+  'ESL-XC80_1': 'ESL-XC80_1',
+  F32F1C_1: 'F32F1C_1',
+  G26D1A_1: 'G26D1A_1',
+  G26D1R_1: 'G26D1R_1',
+  G26DAA_1: 'G26DAA_1',
+  G26DAR_1: 'G26DAR_1',
+  G30D1A_1: 'G30D1A_1',
+  G30D1R_1: 'G30D1R_1',
+  G30D1T_1: 'G30D1T_1',
+  G30DAA_1: 'G30DAA_1',
+  G30DAG_1: 'G30DAG_1',
+  G30DAR_1: 'G30DAR_1',
+  G30E1A_1: 'G30E1A_1',
+  G36D1A_1: 'G36D1A_1',
+  G36D1R_1: 'G36D1R_1',
+  G36DAA_1: 'G36DAA_1',
+  G36DAR_1: 'G36DAR_1',
+  G50AAB_1: 'G50AAB_1',
+  G50AAC_1: 'G50AAC_1',
+  G50GAT_1: 'G50GAT_1',
+  G60EAC_1: 'G60EAC_1',
+  G60EAS_1: 'G60EAS_1',
+  G70EAC_1: 'G70EAC_1',
+  G70EAS_1: 'G70EAS_1',
+  GT2D1B_1: 'GT2D1B_1',
+  J100BAB_1: 'J100BAB_1',
+  J40CBA5_1: 'J40CBA5_1',
+  J40_1: 'J40_1',
+  JZ2CA_1: 'JZ2CA_1',
+  LZ80D1B_1: 'LZ80D1B_1',
+  M3DAD_1: 'M3DAD_1',
+  'M4DAD+1_1': 'M4DAD+1_1',
+  'M4DAD+2_1': 'M4DAD+2_1',
+  M6DAD_1: 'M6DAD_1',
+  M6DBD_1: 'M6DBD_1',
+  M6RAD_1: 'M6RAD_1',
+  T21B_1: 'T21B_1',
+  Y12D1C_1: 'Y12D1C_1',
+  Y12D2C_1: 'Y12D2C_1',
+  Y24C1C_1: 'Y24C1C_1',
+  Y40D2C_1: 'Y40D2C_1',
+  Y50D1C_1: 'Y50D1C_1',
+  Z6FDB_1: 'Z6FDB_1',
+  Z8FCB_1: 'Z8FCB_1',
+  'ESL-GC50_1': 'ESL-GC50_1',
+  'ESL-GQ50_1': 'ESL-GQ50_1',
+  'ESL-PZJ300_1': 'ESL-PZJ300_1',
+  'ESL-GQ30_1': 'ESL-GQ30_1',
+  'ESL-GQ36_1': 'ESL-GQ36_1',
+  'ESL-GQ30T_1': 'ESL-GQ30T_1',
+  'ESL-GQ35T_1': 'ESL-GQ35T_1',
+  'ESL-BQ40T_1': 'ESL-BQ40T_1',
+  'ESL-TGQ40_1': 'ESL-TGQ40_1',
+  'ESL-GQ40_1': 'ESL-GQ40_1',
+  'ESL-TGD369_1': 'ESL-TGD369_1',
+  'ESL-GB50_1': 'ESL-GB50_1',
 };
 
-// 生成完整的图片路径（PNG 路径，用于 fallback）
+// 生成完整的图片路径（WebP 路径）
 const productImages = {};
-for (const [key, filename] of Object.entries(IMAGE_FILES)) {
-  productImages[key] = `${IMAGE_PATH_PREFIX}/${filename}`;
+for (const [key, basename] of Object.entries(IMAGE_FILES)) {
+  productImages[key] = `${IMAGE_PATH_PREFIX}/${basename}.webp`;
 }
 
 export const IMAGE_ASSETS = {
-  logo: `${IMAGE_PATH_PREFIX}/LOGO_HTML.png`,
-  logo_dark: `${IMAGE_PATH_PREFIX}/LOGO_HTML_2.png`,
-  hero_bg: `${IMAGE_PATH_PREFIX}/WORKSHOP_BGM.png`,
+  logo: `${IMAGE_PATH_PREFIX}/LOGO_HTML.webp`,
+  logo_dark: `${IMAGE_PATH_PREFIX}/LOGO_HTML_2.webp`,
+  hero_bg: `${IMAGE_PATH_PREFIX}/WORKSHOP_BGM.webp`,
   hero_main: 'https://img0.baidu.com/it/u=3626245982,2742441385&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500',
   factory_video_poster: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
   factory_gallery_1: 'https://img2.baidu.com/it/u=168332913,1085575385&fm=253&fmt=auto&app=120&f=JPEG?w=1067&h=800',
@@ -173,6 +169,6 @@ export const IMAGE_ASSETS = {
   ...productImages
 };
 
-// 产品图片资源 - 生产环境下应替换为实际CDN链接或本地路径 
+// 产品图片资源 - 生产环境下应替换为实际CDN链接或本地路径
 export const PRODUCT_SERIES = {
 };
