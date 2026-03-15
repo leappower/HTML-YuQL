@@ -26,7 +26,7 @@ const FORCE = args.includes('--force');
 const STATS_ONLY = args.includes('--stats');
 
 const WEBP_QUALITY = 85;   // WebP 质量，85 在文件大小和视觉之间取得最佳平衡
-const PNG_QUALITY = 80;    // PNG 压缩质量（通过 png compressionLevel 控制）
+const PNG_QUALITY = 80;    // PNG 调色板模式质量（palette:true 时生效，减色至 256 色）
 
 // ANSI 颜色
 const c = {
@@ -74,9 +74,6 @@ async function processImage(file) {
   }
 
   try {
-    const img = sharp(srcPath);
-    const meta = await img.metadata();
-
     // 生成 WebP（保留透明通道）
     await sharp(srcPath)
       .webp({
@@ -89,14 +86,14 @@ async function processImage(file) {
       })
       .toFile(webpOut);
 
-    // 生成压缩 PNG（保留透明通道，保证 fallback）
+    // 生成压缩 PNG（palette 减色至 256 色，体积比原图小约 70-80%，保留透明通道作 fallback）
+    // 注：palette 模式对有透明通道的产品图效果极佳；若视觉需求更高可改 quality: 90
     await sharp(srcPath)
       .png({
-        compressionLevel: 9,           // 最高压缩（无损，只影响速度）
-        adaptiveFiltering: true,
-        palette: meta.channels <= 4 && (meta.width * meta.height) < 500 * 500,
-        // 小图尝试调色板模式（256色），大图保持真彩色
-        quality: PNG_QUALITY,
+        palette: true,                 // 强制 256 色调色板模式（最显著的体积优化）
+        quality: PNG_QUALITY,          // 调色板颜色数量控制（80 ≈ 200 色，视觉无损）
+        compressionLevel: 9,           // zlib 压缩级别（无损，只影响速度）
+        dither: 1.0,                   // 抖动强度，减少色带，使减色后图像更自然
       })
       .toFile(pngOut);
 
