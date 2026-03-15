@@ -3,14 +3,14 @@ const IMAGE_PATH_PREFIX = 'images';
 
 // ─── WebP 图片路径 ────────────────────────────────────────────────────────────
 // 所有本地图片均已转换为 WebP（IE 已于 2022 年停止支持，WebP 全球支持率 97%+）
-// <picture> + PNG fallback 已废弃，直接使用 <img src="xxx.webp">
+// IMAGE_FILES 硬编码已废弃，改由 optimize-images.js 自动生成 image-manifest.json
 
 /** 返回图片的 WebP 路径 */
 export function resolveImage(key) {
   return `${IMAGE_PATH_PREFIX}/${key}.webp`;
 }
 
-/** 生成 <img> 标签 HTML（直接 WebP，不再需要 <picture> fallback） */
+/** 生成 <img> 标签 HTML（直接 WebP，无需 <picture> fallback） */
 export function imgTag(key, altText = '', cssClass = '', extraAttrs = '') {
   const src = `${IMAGE_PATH_PREFIX}/${key}.webp`;
   return `<img src="${src}" alt="${altText}" class="${cssClass}" ${extraAttrs} loading="lazy" decoding="async">`;
@@ -18,7 +18,6 @@ export function imgTag(key, altText = '', cssClass = '', extraAttrs = '') {
 
 /**
  * @deprecated 使用 resolveImage(key) 代替
- * 保留此函数避免旧调用报错，行为已等同于 resolveImage
  */
 export function resolveOptimizedImage(key) {
   return resolveImage(key);
@@ -26,148 +25,80 @@ export function resolveOptimizedImage(key) {
 
 /**
  * @deprecated 使用 imgTag(key, ...) 代替
- * 保留此函数避免旧调用报错，改为直接输出 <img>（不再有 <picture> 包裹）
  */
 export function pictureTag(key, altText = '', cssClass = '', extraAttrs = '') {
   return imgTag(key, altText, cssClass, extraAttrs);
 }
 
-// 图片文件名映射（不带路径，key 对应 images/xxx.webp）
-const IMAGE_FILES = {
-  B1RAC_1: 'B1RAC_1',
-  B4RTD_1: 'B4RTD_1',
-  B6RBD_1: 'B6RBD_1',
-  B8RBD_1: 'B8RBD_1',
-  'ESL-4BQ30_1': 'ESL-4BQ30_1',
-  'ESL-4QBQ30_1': 'ESL-4QBQ30_1',
-  'ESL-BXC800_1': 'ESL-BXC800_1',
-  'ESL-GB60_1': 'ESL-GB60_1',
-  'ESL-GB70_1': 'ESL-GB70_1',
-  'ESL-GB80_1': 'ESL-GB80_1',
-  'ESL-GB90_1': 'ESL-GB90_1',
-  'ESL-GC60_1': 'ESL-GC60_1',
-  'ESL-GC70_1': 'ESL-GC70_1',
-  'ESL-GC80_1': 'ESL-GC80_1',
-  'ESL-GC90_1': 'ESL-GC90_1',
-  'ESL-GD30_1': 'ESL-GD30_1',
-  'ESL-GD369_1': 'ESL-GD369_1',
-  'ESL-GD36_1': 'ESL-GD36_1',
-  'ESL-GQ30J_1': 'ESL-GQ30J_1',
-  'ESL-GQ36J9_1': 'ESL-GQ36J9_1',
-  'ESL-GQ60_1': 'ESL-GQ60_1',
-  'ESL-GQ70_1': 'ESL-GQ70_1',
-  'ESL-GQ80_1': 'ESL-GQ80_1',
-  'ESL-GQ90_1': 'ESL-GQ90_1',
-  'ESL-PZJ100_1': 'ESL-PZJ100_1',
-  'ESL-PZJ120_1': 'ESL-PZJ120_1',
-  'ESL-PZJ200_1': 'ESL-PZJ200_1',
-  'ESL-PZJ400_1': 'ESL-PZJ400_1',
-  'ESL-PZJ80_1': 'ESL-PZJ80_1',
-  'ESL-QXC100_1': 'ESL-QXC100_1',
-  'ESL-QXC120_1': 'ESL-QXC120_1',
-  'ESL-QXC80_1': 'ESL-QXC80_1',
-  'ESL-TBQ30_1': 'ESL-TBQ30_1',
-  'ESL-TBS30_1': 'ESL-TBS30_1',
-  'ESL-TBS40_1': 'ESL-TBS40_1',
-  'ESL-TBS50_1': 'ESL-TBS50_1',
-  'ESL-TGD30_1': 'ESL-TGD30_1',
-  'ESL-TGD36_1': 'ESL-TGD36_1',
-  'ESL-TGQ30J_1': 'ESL-TGQ30J_1',
-  'ESL-TGQ30_1': 'ESL-TGQ30_1',
-  'ESL-TGQ36J9_1': 'ESL-TGQ36J9_1',
-  'ESL-TGQ36J_1': 'ESL-TGQ36J_1',
-  'ESL-TGQ40J_1': 'ESL-TGQ40J_1',
-  'ESL-TGS30_1': 'ESL-TGS30_1',
-  'ESL-TQBQ30_1': 'ESL-TQBQ30_1',
-  'ESL-TZS40_1': 'ESL-TZS40_1',
-  'ESL-XC100_1': 'ESL-XC100_1',
-  'ESL-XC120_1': 'ESL-XC120_1',
-  'ESL-XC80_1': 'ESL-XC80_1',
-  F32F1C_1: 'F32F1C_1',
-  G26D1A_1: 'G26D1A_1',
-  G26D1R_1: 'G26D1R_1',
-  G26DAA_1: 'G26DAA_1',
-  G26DAR_1: 'G26DAR_1',
-  G30D1A_1: 'G30D1A_1',
-  G30D1R_1: 'G30D1R_1',
-  G30D1T_1: 'G30D1T_1',
-  G30DAA_1: 'G30DAA_1',
-  G30DAG_1: 'G30DAG_1',
-  G30DAR_1: 'G30DAR_1',
-  G30E1A_1: 'G30E1A_1',
-  G36D1A_1: 'G36D1A_1',
-  G36D1R_1: 'G36D1R_1',
-  G36DAA_1: 'G36DAA_1',
-  G36DAR_1: 'G36DAR_1',
-  G50AAB_1: 'G50AAB_1',
-  G50AAC_1: 'G50AAC_1',
-  G50GAT_1: 'G50GAT_1',
-  G60EAC_1: 'G60EAC_1',
-  G60EAS_1: 'G60EAS_1',
-  G70EAC_1: 'G70EAC_1',
-  G70EAS_1: 'G70EAS_1',
-  GT2D1B_1: 'GT2D1B_1',
-  J100BAB_1: 'J100BAB_1',
-  J40CBA5_1: 'J40CBA5_1',
-  J40_1: 'J40_1',
-  JZ2CA_1: 'JZ2CA_1',
-  LZ80D1B_1: 'LZ80D1B_1',
-  M3DAD_1: 'M3DAD_1',
-  'M4DAD+1_1': 'M4DAD+1_1',
-  'M4DAD+2_1': 'M4DAD+2_1',
-  M6DAD_1: 'M6DAD_1',
-  M6DBD_1: 'M6DBD_1',
-  M6RAD_1: 'M6RAD_1',
-  T21B_1: 'T21B_1',
-  Y12D1C_1: 'Y12D1C_1',
-  Y12D2C_1: 'Y12D2C_1',
-  Y24C1C_1: 'Y24C1C_1',
-  Y40D2C_1: 'Y40D2C_1',
-  Y50D1C_1: 'Y50D1C_1',
-  Z6FDB_1: 'Z6FDB_1',
-  Z8FCB_1: 'Z8FCB_1',
-  'ESL-GC50_1': 'ESL-GC50_1',
-  'ESL-GQ50_1': 'ESL-GQ50_1',
-  'ESL-PZJ300_1': 'ESL-PZJ300_1',
-  'ESL-GQ30_1': 'ESL-GQ30_1',
-  'ESL-GQ36_1': 'ESL-GQ36_1',
-  'ESL-GQ30T_1': 'ESL-GQ30T_1',
-  'ESL-GQ35T_1': 'ESL-GQ35T_1',
-  'ESL-BQ40T_1': 'ESL-BQ40T_1',
-  'ESL-TGQ40_1': 'ESL-TGQ40_1',
-  'ESL-GQ40_1': 'ESL-GQ40_1',
-  'ESL-TGD369_1': 'ESL-TGD369_1',
-  'ESL-GB50_1': 'ESL-GB50_1',
+// ─── 静态资源（非产品图，路径固定）────────────────────────────────────────────
+const STATIC_ASSETS = {
+  logo:                `${IMAGE_PATH_PREFIX}/LOGO_HTML.webp`,
+  logo_dark:           `${IMAGE_PATH_PREFIX}/LOGO_HTML_2.webp`,
+  hero_bg:             `${IMAGE_PATH_PREFIX}/WORKSHOP_BGM.webp`,
+  hero_main:           'https://img0.baidu.com/it/u=3626245982,2742441385&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500',
+  factory_video_poster:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+  factory_gallery_1:   'https://img2.baidu.com/it/u=168332913,1085575385&fm=253&fmt=auto&app=120&f=JPEG?w=1067&h=800',
+  factory_gallery_2:   'https://img1.baidu.com/it/u=3546157132,670778482&fm=253&fmt=auto&app=120&f=JPEG?w=889&h=500',
+  factory_gallery_3:   'https://img2.baidu.com/it/u=1657229497,365692017&fm=253&fmt=auto&app=138&f=JPEG?w=667&h=500',
+  factory_gallery_4:   'https://img0.baidu.com/it/u=2595055860,25921156&fm=253&app=138&f=JPEG?w=1067&h=800',
+  cert_1:              'https://liuzhoume.com/wp-content/uploads/2024/03/CT11022603-S-E-%E8%AF%81%E4%B9%A6-724x1024.webp',
+  cert_2:              'https://liuzhoume.com/wp-content/uploads/2024/03/CT11022604-S-R-%E8%AF%81%E4%B9%A6-724x1024.webp',
+  cert_3:              'https://liuzhoume.com/wp-content/uploads/2024/03/CTL2305128012-Q-ROHS10%E9%A1%B9%EF%BC%88%E6%89%AB%E6%8F%8F%E5%8C%96%E6%B5%8B%EF%BC%89%E4%B8%AD%E8%8B%B1%E6%8A%A5%E5%91%8A-%E5%A3%B0%E6%B3%A2%E7%94%B5%E5%8A%A8%E7%89%99%E5%88%B7%E7%B3%BB%E5%88%97-Y1_proc1.webp',
+  cert_4:              'https://liuzhoume.com/wp-content/uploads/2024/03/GP-BBQ022%E5%A4%96%E8%A7%82%E4%B8%93%E5%88%A9%E8%AF%81%E4%B9%A6-_proc1-723x1024.webp',
+  cert_5:              'https://liuzhoume.com/wp-content/uploads/2024/03/ISO%E8%AF%81%E4%B9%A6-B201709-723x1024.webp',
+  cert_6:              'https://liuzhoume.com/wp-content/uploads/2024/03/CTL2305128011-Q%E7%94%B5%E5%8A%A8%E7%89%99%E5%88%B7_proc1.webp',
+  product_compact:     'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+  product_professional:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400',
+  product_industrial:  'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400',
 };
 
-// 生成完整的图片路径（WebP 路径）
-const productImages = {};
-for (const [key, basename] of Object.entries(IMAGE_FILES)) {
-  productImages[key] = `${IMAGE_PATH_PREFIX}/${basename}.webp`;
+// ─── 动态产品图片：从 image-manifest.json 加载 ───────────────────────────────
+// manifest 由 optimize-images.js 自动生成，格式：{ images: ["B1RAC_1", ...] }
+// 非产品图（LOGO_HTML、LOGO_HTML_2、WORKSHOP_BGM）已在 STATIC_ASSETS 中单独定义，此处跳过
+const NON_PRODUCT_KEYS = new Set(['LOGO_HTML', 'LOGO_HTML_2', 'WORKSHOP_BGM']);
+
+let _imageAssetsCache = null;
+
+/**
+ * 异步加载 IMAGE_ASSETS（含 manifest 中所有产品图）
+ * 首次调用触发 fetch，后续调用返回缓存结果
+ * @returns {Promise<object>}
+ */
+export async function loadImageAssets() {
+  if (_imageAssetsCache) return _imageAssetsCache;
+
+  let productImages = {};
+  try {
+    const res = await fetch(`/${IMAGE_PATH_PREFIX}/image-manifest.json`);
+    if (res.ok) {
+      const manifest = await res.json();
+      for (const key of (manifest.images || [])) {
+        if (!NON_PRODUCT_KEYS.has(key)) {
+          productImages[key] = `${IMAGE_PATH_PREFIX}/${key}.webp`;
+        }
+      }
+    } else {
+      console.warn('[image-assets] image-manifest.json 加载失败，状态码:', res.status);
+    }
+  } catch (e) {
+    console.warn('[image-assets] image-manifest.json 加载异常:', e.message);
+  }
+
+  _imageAssetsCache = { ...STATIC_ASSETS, ...productImages };
+  return _imageAssetsCache;
 }
 
-export const IMAGE_ASSETS = {
-  logo: `${IMAGE_PATH_PREFIX}/LOGO_HTML.webp`,
-  logo_dark: `${IMAGE_PATH_PREFIX}/LOGO_HTML_2.webp`,
-  hero_bg: `${IMAGE_PATH_PREFIX}/WORKSHOP_BGM.webp`,
-  hero_main: 'https://img0.baidu.com/it/u=3626245982,2742441385&fm=253&fmt=auto&app=138&f=JPEG?w=751&h=500',
-  factory_video_poster: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-  factory_gallery_1: 'https://img2.baidu.com/it/u=168332913,1085575385&fm=253&fmt=auto&app=120&f=JPEG?w=1067&h=800',
-  factory_gallery_2: 'https://img1.baidu.com/it/u=3546157132,670778482&fm=253&fmt=auto&app=120&f=JPEG?w=889&h=500',
-  factory_gallery_3: 'https://img2.baidu.com/it/u=1657229497,365692017&fm=253&fmt=auto&app=138&f=JPEG?w=667&h=500',
-  factory_gallery_4: 'https://img0.baidu.com/it/u=2595055860,25921156&fm=253&app=138&f=JPEG?w=1067&h=800',
-  cert_1: 'https://liuzhoume.com/wp-content/uploads/2024/03/CT11022603-S-E-%E8%AF%81%E4%B9%A6-724x1024.webp',
-  cert_2: 'https://liuzhoume.com/wp-content/uploads/2024/03/CT11022604-S-R-%E8%AF%81%E4%B9%A6-724x1024.webp',
-  cert_3: 'https://liuzhoume.com/wp-content/uploads/2024/03/CTL2305128012-Q-ROHS10%E9%A1%B9%EF%BC%88%E6%89%AB%E6%8F%8F%E5%8C%96%E6%B5%8B%EF%BC%89%E4%B8%AD%E8%8B%B1%E6%8A%A5%E5%91%8A-%E5%A3%B0%E6%B3%A2%E7%94%B5%E5%8A%A8%E7%89%99%E5%88%B7%E7%B3%BB%E5%88%97-Y1_proc1.webp',
-  cert_4: 'https://liuzhoume.com/wp-content/uploads/2024/03/GP-BBQ022%E5%A4%96%E8%A7%82%E4%B8%93%E5%88%A9%E8%AF%81%E4%B9%A6-_proc1-723x1024.webp',
-  cert_5: 'https://liuzhoume.com/wp-content/uploads/2024/03/ISO%E8%AF%81%E4%B9%A6-B201709-723x1024.webp',
-  cert_6: 'https://liuzhoume.com/wp-content/uploads/2024/03/CTL2305128011-Q%E7%94%B5%E5%8A%A8%E7%89%99%E5%88%B7_proc1.webp',
-  product_compact: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
-  product_professional: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400',
-  product_industrial: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400',
-  // 产品图片资源 - 根据环境自动选择路径
-  ...productImages
-};
+/**
+ * 同步获取 IMAGE_ASSETS（需要先调用 loadImageAssets() 初始化）
+ * 若 manifest 未加载，仅返回 STATIC_ASSETS（产品图路径缺失）
+ */
+export function getImageAssets() {
+  return _imageAssetsCache || STATIC_ASSETS;
+}
+
+// ─── 向后兼容：同步导出（仅含静态资源，产品图需通过 loadImageAssets() 获取）────
+// 旧代码直接 import { IMAGE_ASSETS } 的地方不报错，但产品图需改用 loadImageAssets()
+export const IMAGE_ASSETS = STATIC_ASSETS;
 
 // 产品图片资源 - 生产环境下应替换为实际CDN链接或本地路径
 export const PRODUCT_SERIES = {

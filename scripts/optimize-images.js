@@ -13,10 +13,11 @@
  *   4. 删除 imagesCopy/ 备份目录
  *
  * 用法：
- *   node scripts/optimize-images.js              # 标准执行
- *   node scripts/optimize-images.js --dry-run    # 模拟运行，不执行任何文件操作
- *   node scripts/optimize-images.js --stats      # 仅统计当前 images 目录，不处理
- *   node scripts/optimize-images.js --keep-copy  # 处理完后保留 imagesCopy（调试用）
+ *   node scripts/optimize-images.js               # 标准执行（压缩 + 生成 manifest）
+ *   node scripts/optimize-images.js --dry-run     # 模拟运行，不执行任何文件操作
+ *   node scripts/optimize-images.js --stats       # 仅统计当前 images 目录，不处理
+ *   node scripts/optimize-images.js --keep-copy   # 处理完后保留 imagesCopy（调试用）
+ *   node scripts/optimize-images.js --gen-manifest  # 仅重新生成 manifest，不处理图片
  *
  * 注意：脚本是幂等的。若 imagesCopy 已存在（上次中断），会直接从 imagesCopy 继续处理。
  */
@@ -32,9 +33,10 @@ const BACKUP_DIR   = path.join(ASSETS_DIR, 'imagesCopy');
 
 // ─── 命令行参数 ───────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
-const DRY_RUN    = args.includes('--dry-run');
-const STATS_ONLY = args.includes('--stats');
-const KEEP_COPY  = args.includes('--keep-copy');
+const DRY_RUN      = args.includes('--dry-run');
+const STATS_ONLY   = args.includes('--stats');
+const KEEP_COPY    = args.includes('--keep-copy');
+const GEN_MANIFEST = args.includes('--gen-manifest');
 
 // ─── 压缩参数 ─────────────────────────────────────────────────────────────────
 const WEBP_QUALITY   = 85;    // WebP 质量（0-100），85 = 视觉无损
@@ -222,6 +224,7 @@ async function main() {
 
   if (DRY_RUN) warn('DRY RUN 模式：不会执行任何实际文件操作');
   if (STATS_ONLY) { await runStats(); return; }
+  if (GEN_MANIFEST) { generateManifest(); return; }
 
   // ── Step 1: 确定源目录 ────────────────────────────────────────────────────
   // 幂等处理：若 imagesCopy 已存在（上次中断）则直接使用，否则从 images 改名
@@ -332,10 +335,47 @@ async function main() {
 
   ok(`输出目录: ${IMAGES_DIR}`);
 
+  // ── Step 5: 生成 image-manifest.json ─────────────────────────────────────
+  // 扫描 images/ 目录，输出所有 WebP 的 basename（不含扩展名）列表
+  // 供 image-assets.js 运行时动态构建 IMAGE_ASSETS，无需手动维护硬编码列表
+  if (!DRY_RUN) {
+    log(`Step 5: 生成 image-manifest.json`);
+    generateManifest();
+  } else {
+    drylog(`生成 image-manifest.json（dry-run 跳过）`);
+  }
+
   if (countFailed > 0) {
     warn(`${countFailed} 个文件处理失败，已用原文件兜底`);
     process.exit(1);
   }
+}
+
+/**
+ * 扫描 images/ 目录，生成 image-manifest.json
+ * 格式：{ "version": 1, "images": ["B1RAC_1", "ESL-4BQ30_1", ...] }
+ * 可单独调用：node scripts/optimize-images.js --gen-manifest
+ */
+function generateManifest() {
+  if (!fs.existsSync(IMAGES_DIR)) {
+    warn(`images 目录不存在，跳过 manifest 生成`);
+    return;
+  }
+
+  const webpFiles = fs.readdirSync(IMAGES_DIR)
+    .filter(f => f.toLowerCase().endsWith('.webp'))
+    .map(f => path.basename(f, '.webp'))
+    .sort();
+
+  const manifest = {
+    version: 1,
+    generated: new Date().toISOString(),
+    images: webpFiles,
+  };
+
+  const manifestPath = path.join(IMAGES_DIR, 'image-manifest.json');
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
+  ok(`image-manifest.json 已生成，包含 ${webpFiles.length} 张图片`);
 }
 
 main().catch(err => {
