@@ -649,7 +649,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
       <!-- 图片区域 (50-55%) -->
       <div class="relative h-[200px] sm:h-[210px] lg:h-[230px] w-full overflow-hidden bg-slate-50 dark:bg-slate-800/60 shrink-0">
         <picture>
-          <source type="image/webp" srcset="${(p.productImage || resolveImage(imageRecognitionKey)).replace(/\.png$/i, '.webp')}">
+          <source type="image/webp" data-srcset="${(p.productImage || resolveImage(imageRecognitionKey)).replace(/\.png$/i, '.webp')}">
           <img data-src="${p.productImage || resolveImage(imageRecognitionKey)}"
                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
                alt="${displayName}" loading="lazy" decoding="async"
@@ -1106,14 +1106,7 @@ import { IMAGE_ASSETS } from './image-assets.js';
     const overlay = document.getElementById('mobile-menu-overlay');
     const menu = document.getElementById('mobile-menu');
 
-    if (!overlay || !menu) {
-      console.error('setMobileMenuOpen: overlay or menu not found', { overlay, menu });
-      return;
-    }
-
-    console.log('setMobileMenuOpen called with:', shouldOpen);
-    console.log('Before change - menu classes:', menu.className);
-    console.log('Before change - overlay classes:', overlay.className);
+    if (!overlay || !menu) return;
 
     if (shouldOpen) {
       overlay.classList.remove('hidden');
@@ -1126,33 +1119,15 @@ import { IMAGE_ASSETS } from './image-assets.js';
       menu.classList.remove('translate-x-0');
       document.body.style.overflow = '';
     }
-
-    console.log('After change - menu classes:', menu.className);
-    console.log('After change - overlay classes:', overlay.className);
   }
 
   function toggleMobileMenu(forceOpen) {
-    console.log('toggleMobileMenu called with:', forceOpen);
     const menu = document.getElementById('mobile-menu');
-    const button = document.getElementById('mobile-menu-btn');
-    console.log('menu element:', menu);
-    console.log('menu classes:', menu?.className);
-    console.log('isMobileMenuOpen:', isMobileMenuOpen(menu));
-    console.log('button element:', button);
-    console.log('button classes:', button?.className);
-    console.log('button z-index:', window.getComputedStyle(button).zIndex);
-    console.log('button pointer-events:', window.getComputedStyle(button).pointerEvents);
-
-    if (!menu) {
-      console.error('Mobile menu element not found!');
-      return;
-    }
+    if (!menu) return;
 
     lastMobileMenuToggleAt = Date.now();
     const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !isMobileMenuOpen(menu);
-    console.log('shouldOpen:', shouldOpen);
     setMobileMenuOpen(shouldOpen);
-    console.log('After setMobileMenuOpen, menu classes:', menu?.className);
   }
 
   function setupMobileMenuAutoClose() {
@@ -1178,26 +1153,19 @@ import { IMAGE_ASSETS } from './image-assets.js';
   }
 
   function ensureMobileMenuClosed() {
-    console.log('ensureMobileMenuClosed: ensuring menu is closed on page load');
     const menu = document.getElementById('mobile-menu');
     const overlay = document.getElementById('mobile-menu-overlay');
 
     if (menu) {
-      console.log('Menu classes before reset:', menu.className);
       menu.classList.add('translate-x-full');
       menu.classList.remove('translate-x-0', 'open');
-      console.log('Menu classes after reset:', menu.className);
     }
 
     if (overlay) {
-      console.log('Overlay classes before reset:', overlay.className);
       overlay.classList.add('hidden');
-      console.log('Overlay classes after reset:', overlay.className);
     }
 
-    // Ensure body scroll is not locked
     document.body.style.overflow = '';
-    console.log('ensureMobileMenuClosed: menu reset complete');
   }
 
   // ============================================

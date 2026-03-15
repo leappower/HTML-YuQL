@@ -181,38 +181,67 @@ class FormValidationModule {
 
 // Lazy Loading Module
 class LazyLoadingModule {
-  init() {
-    this.setupLazyLoading();
-    this.setupProductSectionTracking();
+  constructor() {
+    this._imageObserver = null;
+    this._mutationObserver = null;
   }
 
-  setupLazyLoading() {
-    // 同时支持 data-src（自定义懒加载）和 loading="lazy"（原生懒加载）
-    // 产品卡片图片使用 data-src + IntersectionObserver 实现受控延迟加载
-    const lazyImages = document.querySelectorAll('img[data-src]');
-    if (lazyImages.length === 0) return;
-
-    const imageObserver = new IntersectionObserver((entries) => {
+  init() {
+    this._imageObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const img = entry.target;
-          this.loadImage(img);
-          imageObserver.unobserve(img);
+          this.loadImage(entry.target);
+          this._imageObserver.unobserve(entry.target);
         }
       });
     }, {
-      rootMargin: '100px',   // 提前 100px 触发（比原 50px 更早，减少可见延迟）
+      rootMargin: '100px',
       threshold: 0,
     });
 
-    lazyImages.forEach(img => imageObserver.observe(img));
+    // 观察当前已有的 data-src 图片
+    this._observeImages(document);
+
+    // 监听 DOM 变化，自动处理动态渲染的产品卡片图片
+    this._mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            this._observeImages(node);
+          }
+        });
+      });
+    });
+
+    const productGrid = document.getElementById('product-grid');
+    if (productGrid) {
+      this._mutationObserver.observe(productGrid, { childList: true, subtree: true });
+    } else {
+      // product-grid 尚未渲染，监听整个 #products 区域
+      const productsSection = document.getElementById('products');
+      if (productsSection) {
+        this._mutationObserver.observe(productsSection, { childList: true, subtree: true });
+      }
+    }
+  }
+
+  _observeImages(root) {
+    const imgs = (root instanceof Element && root.matches('img[data-src]'))
+      ? [root]
+      : Array.from(root.querySelectorAll ? root.querySelectorAll('img[data-src]') : []);
+    imgs.forEach(img => {
+      if (!img.dataset.lazyObserved) {
+        img.dataset.lazyObserved = '1';
+        this._imageObserver.observe(img);
+      }
+    });
   }
 
   loadImage(img) {
     const src = img.dataset.src;
     if (!src) return;
 
-    // 同时更新父级 <picture> 的 <source srcset>（WebP 路径）
+    // 同时激活父级 <picture> 的 <source data-srcset>（WebP 路径）
     const picture = img.closest('picture');
     if (picture) {
       const source = picture.querySelector('source[type="image/webp"]');
@@ -239,27 +268,6 @@ class LazyLoadingModule {
         img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23f1f5f9\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%2394a3b8\' font-size=\'14\'%3E暂无图片%3C/text%3E%3C/svg%3E';
       }
     }, { once: true });
-  }
-
-  setupProductSectionTracking() {
-    const productSection = document.getElementById('produkten');
-    if (!productSection) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          this.loadProductImages();
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '50px' });
-
-    observer.observe(productSection);
-  }
-
-  loadProductImages() {
-    const images = document.querySelectorAll('.product-image[data-src]');
-    images.forEach(img => this.loadImage(img));
   }
 }
 
