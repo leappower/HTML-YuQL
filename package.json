@@ -11,6 +11,7 @@
     "dev:webpack": "node scripts/ensure-product-data-table.js && webpack serve --mode development",
     "optimize:images": "node scripts/optimize-images.js",
     "optimize:images:force": "node scripts/optimize-images.js --force",
+    "download:images": "node scripts/optimize-images.js --download-remote",
     "build": "npm run optimize:images && npm run split:lang && webpack --mode=production && node scripts/copy-translations.js && node scripts/build-i18n.js",
     "build:fast": "npm run optimize:images && npm run split:lang && webpack --mode=production && node scripts/copy-translations.js && node scripts/build-i18n.js",
     "build:static": "npm run optimize:images && npm run split:lang && webpack --mode=production && node scripts/copy-translations.js && node scripts/build-i18n.js && node scripts/verify-static-build.js",
