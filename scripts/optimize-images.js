@@ -51,6 +51,8 @@
  *   node scripts/optimize-images.js --gen-manifest     # 仅重新生成 manifest，不处理图片
  *   node scripts/optimize-images.js --download-remote  # 下载所有外部图片并本地化（增量）
  *   node scripts/optimize-images.js --download-remote --force  # 强制重新下载所有图片
+ *   node scripts/optimize-images.js --init-cache       # 为已压缩图片初始化缓存记录（避免二次压缩）
+ *                                                       # 适用场景：首次启用缓存、新成员 clone 项目后
  *
  * 注意：脚本是幂等的。若 imagesCopy 已存在（上次中断），会直接从 imagesCopy 继续处理。
  */
@@ -75,6 +77,7 @@ const KEEP_COPY       = args.includes('--keep-copy');
 const GEN_MANIFEST    = args.includes('--gen-manifest');
 const DOWNLOAD_REMOTE = args.includes('--download-remote');
 const FORCE           = args.includes('--force');  // 强制全量重新压缩，忽略缓存
+const INIT_CACHE      = args.includes('--init-cache');  // 为已压缩图片初始化缓存记录
 
 // ─── 路径配置（download-remote 用到的源文件）────────────────────────────────
 const IMAGE_ASSETS_JS = path.join(ASSETS_DIR, 'image-assets.js');
@@ -413,6 +416,7 @@ async function main() {
   if (STATS_ONLY) { await runStats(); return; }
   if (GEN_MANIFEST) { generateManifest(); return; }
   if (DOWNLOAD_REMOTE) { await downloadRemoteImages(); return; }
+  if (INIT_CACHE) { await initCache(); return; }
 
   // ── Step 1: 确定源目录 ────────────────────────────────────────────────────
   // 幂等处理：若 imagesCopy 已存在（上次中断）则直接使用，否则从 images 改名
@@ -557,6 +561,104 @@ async function main() {
   if (countFailed > 0) {
     warn(`${countFailed} 个文件处理失败，已用原文件兜底`);
     process.exit(1);
+  }
+}
+
+/**
+ * 为当前 images/ 目录中已压缩的图片初始化缓存记录
+ *
+ * 使用场景：
+ *   1. 首次引入增量缓存机制时，图片已经压缩过但缓存文件为空
+ *   2. 新成员 clone 项目后（缓存不在 git 里时），避免首次 build 触发全量二次压缩
+ *   3. 缓存文件损坏/丢失时，快速重建
+ *
+ * 逻辑：
+ *   - 扫描 images/ 中所有 WebP 文件
+ *   - 以"当前文件内容"作为哈希基准写入缓存，标记为"已处理"
+ *   - 这样下次 build 时脚本会认为这些文件"哈希未变"，直接跳过，不再二次压缩
+ *   - 对已有缓存记录的文件：默认跳过（不覆盖），--force 时全量刷新
+ */
+async function initCache() {
+  title('初始化图片缓存记录（--init-cache）');
+
+  if (!fs.existsSync(IMAGES_DIR)) {
+    fail(`images 目录不存在: ${IMAGES_DIR}`);
+    process.exit(1);
+  }
+
+  const files = fs.readdirSync(IMAGES_DIR).filter(f => {
+    const stat = fs.statSync(path.join(IMAGES_DIR, f));
+    return stat.isFile() && f !== '.image-cache.json';
+  });
+
+  const imageFiles = files.filter(f => {
+    const ext = getExt(f);
+    return ['webp', 'png', 'jpg', 'jpeg'].includes(ext);
+  });
+
+  if (imageFiles.length === 0) {
+    warn('images/ 目录中没有图片文件，无需初始化');
+    return;
+  }
+
+  log(`发现 ${imageFiles.length} 个图片文件`);
+
+  // 加载已有缓存（FORCE 模式则忽略，从头重建）
+  const cache = FORCE ? {} : loadCache();
+  const existingCount = Object.keys(cache).length;
+  if (existingCount > 0 && !FORCE) {
+    log(`已有缓存记录 ${existingCount} 条，将跳过已记录文件（使用 --force 可强制全量刷新）`);
+  }
+
+  let countNew    = 0;
+  let countExist  = 0;
+
+  for (const filename of imageFiles) {
+    const filePath = path.join(IMAGES_DIR, filename);
+    const ext      = getExt(filename);
+    const basename = path.basename(filename, `.${ext}`);
+    // init-cache 模式：以 images/ 里的文件名作为"输出名"（因为文件已经是最终产物）
+    const outputName = filename;
+
+    // 已有缓存且非 force：跳过
+    if (cache[filename] && !FORCE) {
+      countExist++;
+      continue;
+    }
+
+    if (DRY_RUN) {
+      drylog(`${filename}  →  写入缓存记录  (${formatBytes(fs.statSync(filePath).size)})`);
+      countNew++;
+      continue;
+    }
+
+    try {
+      const hash = hashFile(filePath);
+      cache[filename] = {
+        hash,
+        output: outputName,
+        ts: Date.now(),
+        initBy: '--init-cache',  // 标记来源，便于排查
+      };
+      ok(`${basename.padEnd(30)} ${formatBytes(fs.statSync(filePath).size).padStart(9)}  ✔ 缓存已写入`);
+      countNew++;
+    } catch (err) {
+      fail(`${filename}: 哈希计算失败 - ${err.message}`);
+    }
+  }
+
+  if (!DRY_RUN) {
+    saveCache(cache);
+    ok(`缓存文件已保存: ${CACHE_FILE}`);
+  }
+
+  console.log('');
+  title('初始化统计');
+  log(`新写入: ${countNew}  已有(跳过): ${countExist}  总计: ${imageFiles.length}`);
+  if (countNew > 0) {
+    ok(`完成！下次 build 时这 ${countNew} 张图片将被跳过，不再二次压缩`);
+  } else {
+    ok('所有图片均已有缓存记录，无需更新');
   }
 }
 
