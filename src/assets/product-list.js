@@ -110,7 +110,6 @@ function normalizeProduct(product, fallbackCategory) {
     null;
   const imageRecognitionKey = rawKey || modelToImageKey(product.model || '');
 
-
   // 先取主字段，主字段为 null 时自动 fallback 到 i18n 下以 _fieldName 结尾的 key
   function getFieldWithI18nKey(fieldName) {
     const mainVal = toNullableString(product[fieldName]);
@@ -186,7 +185,6 @@ function normalizeProduct(product, fallbackCategory) {
     stockQuantity: toNullableString(product.stockQuantity),
     productImageKey: imageRecognitionKey
   };
-  // ...existing code...
   return new ProductEntity({
     ...PRODUCT_DEFAULTS,
     ...product,
@@ -247,11 +245,6 @@ function filterValidProducts(products) {
 
 
 
-SAFE_PRODUCT_DATA_TABLE.forEach((series) => {
-  console.log('[分析] series:', series && series.category, 'products类型:', Array.isArray(series && series.products), 'products长度:', series && series.products && series.products.length);
-  // ...existing code...
-});
-
 const GENERATED_PRODUCT_SERIES = SAFE_PRODUCT_DATA_TABLE.map((series) => ({
   ...series,
   products: filterValidProducts(series.products).map((product) => {
@@ -285,13 +278,6 @@ function withImageUrl(seriesList) {
       });
     })
   }));
-}
-
-function detectRuntimeEnv() {
-  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV) {
-    return process.env.NODE_ENV;
-  }
-  return 'development';
 }
 
 function hasTableData(seriesList) {
@@ -337,10 +323,7 @@ function mergeSeriesByIdentity(seriesList) {
   return Array.from(grouped.values()).map(({ category, products }) => ({ category, products }));
 }
 
-export function assembleProductSeries(options = {}) {
-  const runtimeEnv = options.runtimeEnv || detectRuntimeEnv();
-  void runtimeEnv; // runtimeEnv 供调试/扩展保留，当前通过 hasTableData 决策
-  
+export function assembleProductSeries() {
   const useTableData = hasTableData(GENERATED_PRODUCT_SERIES);
 
   const baseSeries = useTableData

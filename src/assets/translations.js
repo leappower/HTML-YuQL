@@ -32,12 +32,9 @@ class TranslationManager {
     // Always prioritize user's explicit choice
     const userChoice = localStorage.getItem('userLanguage');
     if (userChoice && languageNames[userChoice]) {
-      console.log('Using user-selected language:', userChoice);
       return userChoice;
     }
-
-    // Default to Chinese, don't use browser language for initial choice
-    console.log('Using default language: zh-CN');
+    // Default to Chinese (Simplified)
     return 'zh-CN';
   }
 
@@ -194,40 +191,31 @@ class TranslationManager {
   async lazyLoadProductData(lang, showLoadingIndicator = true) {
     const cacheKey = `product-${lang}`;
 
-    // Check if already loaded
+    // Already loaded — return from cache directly
     if (this.translationsCache.has(cacheKey)) {
-      console.log(`✅ Product data already loaded for ${lang}`);
       return this.translationsCache.get(cacheKey);
     }
 
-    // Show loading indicator
     if (showLoadingIndicator) {
       this.showLoadingIndicator();
     }
 
     try {
-      console.log(`🔄 Lazy loading product data for ${lang}...`);
       const productTranslations = await this.loadProductTranslations(lang);
 
       // Merge with existing UI translations
-      const uiCacheKey = `ui-${lang}`;
-      const uiTranslations = this.translationsCache.get(uiCacheKey) || {};
+      const uiTranslations = this.translationsCache.get(`ui-${lang}`) || {};
       const mergedTranslations = this.mergeTranslations(uiTranslations, productTranslations);
-
-      // Update cache with merged data
       this.translationsCache.set(lang, mergedTranslations);
 
-      // Hide loading indicator
       if (showLoadingIndicator) {
         this.hideLoadingIndicator();
       }
 
-      console.log(`✅ Product data loaded and merged for ${lang}`);
       return mergedTranslations;
     } catch (error) {
-      console.error(`❌ Failed to lazy load product data for ${lang}:`, error);
+      console.error(`Failed to lazy load product data for ${lang}:`, error);
 
-      // Hide loading indicator
       if (showLoadingIndicator) {
         this.hideLoadingIndicator();
       }

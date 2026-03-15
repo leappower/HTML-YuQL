@@ -48,82 +48,6 @@ class App {
 // Create global app instance
 const app = new App();
 
-// Back to Top Module
-class BackToTopModule {
-  init() {
-    this.setupBackToTopButton();
-  }
-
-  setupBackToTopButton() {
-    const backToTopBtn = document.getElementById('back-to-top');
-    if (!backToTopBtn) return;
-
-    // 初始隐藏按钮
-    backToTopBtn.classList.add('hide');
-
-    const checkScrollPosition = () => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollableHeight = documentHeight - windowHeight;
-      
-      // 手机端（< 768px）显示阈值为40%，桌面端为60%
-      const isMobile = window.innerWidth < 768;
-      const threshold = isMobile ? 0.4 : 0.6;
-      const scrollThreshold = scrollableHeight * threshold;
-
-      if (window.pageYOffset > scrollThreshold) {
-        backToTopBtn.classList.remove('hide');
-      } else {
-        backToTopBtn.classList.add('hide');
-      }
-    };
-
-    window.addEventListener('scroll', checkScrollPosition, { passive: true });
-    window.addEventListener('resize', checkScrollPosition, { passive: true });
-    backToTopBtn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    checkScrollPosition();
-  }
-}
-
-// Mobile Menu Module
-class MobileMenuModule {
-  init() {
-    this.setupMobileMenu();
-  }
-
-  setupMobileMenu() {
-    // Mobile menu is handled by utils.js toggleMobileMenu() function
-    // This module is disabled to avoid conflicts
-    return;
-
-    // Original code disabled:
-    /*
-    const mobileMenuToggle = document.querySelector('[onclick="toggleMobileMenu()"]');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-
-    if (!mobileMenuToggle || !mobileMenu) return;
-
-    const toggleMenu = () => {
-      mobileMenu.classList.toggle('open');
-      mobileMenuOverlay?.classList.toggle('hidden');
-      document.body.classList.toggle('overflow-hidden');
-    };
-
-    mobileMenuToggle.addEventListener('click', toggleMenu);
-    mobileMenuOverlay?.addEventListener('click', toggleMenu);
-
-    // Close menu when clicking on links
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', toggleMenu);
-    });
-    */
-  }
-}
-
 // Form Validation Module
 class FormValidationModule {
   init() {
@@ -281,7 +205,7 @@ class ErrorHandlingModule {
     // Global error handler
     window.addEventListener('error', (e) => {
       console.error('JavaScript error:', e.error);
-      this.reportError(e.error, e.filename, e.lineno, e.colno);
+      this.reportError(e.error);
     });
 
     // Unhandled promise rejection handler
@@ -300,25 +224,10 @@ class ErrorHandlingModule {
     });
   }
 
-  reportError(error, filename, lineno, colno) {
-    // In a real app, send to error reporting service
-    const errorData = {
-      message: error.message || error,
-      stack: error.stack,
-      filename,
-      lineno,
-      colno,
-      url: window.location.href,
-      userAgent: navigator.userAgent,
-      timestamp: new Date().toISOString()
-    };
-
-    console.log('Error reported:', errorData);
-
-    // Could send to analytics service
+  reportError(error) {
     if (window.gtag) {
       window.gtag('event', 'exception', {
-        description: error.message,
+        description: error && error.message ? error.message : String(error),
         fatal: false
       });
     }
@@ -340,8 +249,6 @@ class ErrorHandlingModule {
 }
 
 // Register modules
-app.registerModule('backToTop', new BackToTopModule());
-app.registerModule('mobileMenu', new MobileMenuModule());
 app.registerModule('formValidation', new FormValidationModule());
 app.registerModule('lazyLoading', new LazyLoadingModule());
 app.registerModule('errorHandling', new ErrorHandlingModule());

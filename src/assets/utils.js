@@ -1744,8 +1744,6 @@ ${tr('mailto_label_scroll_depth', 'Scroll Depth')}: ${userState.scrollDepth || 0
 ${tr('mailto_label_product_interest_clicks', 'Product Interest Clicks')}: 0
 ------------ ${tr('mailto_section_browser_info', 'Browser Information')} ------------
 ${tr('mailto_label_user_agent', 'User Agent')}: ${navigator.userAgent}
-${tr('mailto_label_language', 'Language')}: ${navigator.language}
-${tr('mailto_label_resolution', 'Resolution')}: ${window.screen.width}x${window.screen.height}
   `);
     window.location.href = `mailto:179564128@qq.com?subject=${subject}&body=${body}`;
   }

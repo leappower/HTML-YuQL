@@ -19,20 +19,6 @@ export function imgTag(key, altText = '', cssClass = '', extraAttrs = '') {
   return `<img src="${src}" alt="${altText}" class="${cssClass}" ${extraAttrs} loading="lazy" decoding="async">`;
 }
 
-/**
- * @deprecated 使用 resolveImage(key) 代替
- */
-export function resolveOptimizedImage(key) {
-  return resolveImage(key);
-}
-
-/**
- * @deprecated 使用 imgTag(key, ...) 代替
- */
-export function pictureTag(key, altText = '', cssClass = '', extraAttrs = '') {
-  return imgTag(key, altText, cssClass, extraAttrs);
-}
-
 // ─── 非产品图（路径固定，不来自 manifest）────────────────────────────────────
 // 命名规则：全小写 snake_case，如 logo_html、workshop_bgm
 const NON_PRODUCT_KEYS = new Set([
@@ -75,8 +61,4 @@ export const IMAGE_ASSETS = {
   product_industrial:   `${IMAGE_PATH_PREFIX}/product_industrial.webp`,
   // 产品图片（从 manifest 自动展开，新增图片无需手动维护）
   ...productImages,
-};
-
-// 产品图片资源 - 生产环境下应替换为实际CDN链接或本地路径
-export const PRODUCT_SERIES = {
 };
