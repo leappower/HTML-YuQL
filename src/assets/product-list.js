@@ -63,6 +63,28 @@ function toNullableString(value) {
   return text ? text : null;
 }
 
+/**
+ * 将型号名转换为图片 key（与 optimize-images.js 的 toSnakeCase 规则一致）
+ * 额外处理两种边界情况：
+ *   1. 斜杠（/）→ 直接去掉（ESL-TGD36/9 → esl_tgd369_1，与实际图片文件名一致）
+ *   2. 型号末尾已带 _1 → 不再追加（ESL-GQ60_1 → esl_gq60_1，避免产生 esl_gq60_1_1）
+ * @param {string} model - 产品型号，如 "ESL-GB60"、"M4DAD+1"、"ESL-TGD36/9"
+ * @returns {string} 图片 key，如 "esl_gb60_1"
+ */
+function modelToImageKey(model) {
+  if (!model) return '';
+  const snake = model
+    .toLowerCase()
+    .replace(/\//g, '')          // 斜杠直接删除（ESL-TGD36/9 → esl-tgd369）
+    .replace(/\+/g, '_p')        // + 号 → _p（M4DAD+1 → m4dad_p1）
+    .replace(/-/g, '_')          // 连字符 → 下划线
+    .replace(/[^a-z0-9_]/g, '_') // 其他特殊字符 → 下划线
+    .replace(/__+/g, '_')        // 连续下划线合并
+    .replace(/^_|_$/g, '');      // 去掉首尾下划线
+  // 避免双重 _1（型号本身末尾已带 _1 时不再追加）
+  return snake.endsWith('_1') ? snake : `${snake}_1`;
+}
+
 function toBooleanOrDefault(value, defaultValue = true) {
   if (value == null) return defaultValue;
   if (typeof value === 'boolean') return value;
@@ -77,11 +99,16 @@ function toBooleanOrDefault(value, defaultValue = true) {
 }
 
 function normalizeProduct(product, fallbackCategory) {
-  // 提取 imageRecognitionKey，支持从 i18n 对象中提取
-  const imageRecognitionKey =
+  // 提取 imageRecognitionKey，优先级：
+  //   1. 数据表中明确填写的 imageRecognitionKey
+  //   2. i18n 对象里的 imageRecognitionKey（兼容飞书同步格式）
+  //   3. 由产品型号（model）自动推导（snake_case + _1 后缀）
+  //      规则与 optimize-images.js toSnakeCase 一致，额外处理斜杠和末尾 _1 边界
+  const rawKey =
     product.imageRecognitionKey ||
     (product.i18n?.imageRecognitionKey?.['zh-CN']) ||
     null;
+  const imageRecognitionKey = rawKey || modelToImageKey(product.model || '');
 
 
   // 先取主字段，主字段为 null 时自动 fallback 到 i18n 下以 _fieldName 结尾的 key
